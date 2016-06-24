@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link type="text/css" rel="stylesheet" href="../stylesheets/simditor.css">
+    <!--<link rel="stylesheet" href="/stylesheets/simditor.css">-->
+    <!--<link rel="stylesheet" href="./stylesheets/simditor.css">-->
+    <!--<link rel="stylesheet" href="../../public/stylesheets/simditor.css">-->
+    <link href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/dropzone/4.3.0/basic.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/dropzone/4.3.0/dropzone.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+</head>
+<body ng-app="xSongtaoAdminApp" class="animated fadeIn">
+<div class="admin">
+    <div class="adminBox center-block">
+        <div class="adminBox-nav">
+            <ul>
+                <li><a href="/"><span class="word">HOME</span> <span class="icon"><i class="fa fa-fw fa-lg fa-home"></i></span></a></li>
+                <li ui-sref="myInfo" ui-sref-active="active"><span class="word">MYINFO</span> <span class="icon"><i class="fa fa-fw fa-lg fa-user"></i></span></li>
+                <!--<li ui-sref="catalogue" ui-sref-active="active">CAT. <span><i class="fa fa-fw fa-lg fa-list"></i></span></li>-->
+                <li ui-sref="tags" ui-sref-active="active"><span class="word">TAGS</span> <span class="icon"><i class="fa fa-fw fa-lg fa-tag"></i></span></li>
+                <li ui-sref="article" ui-sref-active="active"><span class="word">ARTICLE</span> <span class="icon"><i class="fa fa-fw fa-lg fa-file-text-o"></i></span></li>
+            </ul>
+        </div>
+        <div class="adminBox-content">
+            <div class="adminBox-content-header">
+                <h1 class="text-right textItem"><span class="blue">X</span>-SONGTAO
+                    <small class="blue">后台管理</small>
+                </h1>
+            </div>
+            <!--修改信息的内部-->
+            <div class="adminBox-content-innerBox" ui-view="">
+
+                <!--<div ui-view=""></div>-->
+            </div>
+        </div>
+    </div>
+
+
+    <div class="admin-bottom text-center">
+        <div class="adminBottomInner">
+            <p><i class="fa fa-copyright"></i> 2015-2006 All Rights Reserved.Designed by Myself.渝ICP备16000583号.</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- build:js(.) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+<script src="//cdn.bootcss.com/angular.js/1.5.0/angular.min.js"></script>
+<script src="../javascripts/module.js"></script>
+<script src="../javascripts/hotkeys.js"></script>
+<script src="../javascripts/uploader.js"></script>
+<script src="../javascripts/simditor.js"></script>
+<script src="//cdn.bootcss.com/angular-ui-router/1.0.0-alpha0/angular-ui-router.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+<script src="../javascripts/jquery.tabledit.min.js"></script>
+<script src="//cdn.bootcss.com/dropzone/4.3.0/dropzone.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="/admin/scripts/app.js"></script>
+<script src="/admin/scripts/routes.js"></script>
+<script src="/admin/scripts/controllers/main.js"></script>
+<script src="/admin/scripts/directives/mainDirect.js"></script>
+<script src="/admin/views/myInfo/myInfo.tpl.js"></script>
+<script src="/admin/views/tags/tags.tpl.js"></script>
+<script src="/admin/views/catalogue/catalogue.tpl.js"></script>
+<script src="/admin/views/article/article.tpl.js"></script>
+<!-- endbuild -->
+
+<script>
+
+</script>
+</body>
+</html>

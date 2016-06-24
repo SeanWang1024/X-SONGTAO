@@ -1,0 +1,50 @@
+/*手机模式*/
+@media (max-width: 767px) {
+
+  .contentInnerBox {
+    padding: 0 10px;
+  }
+
+  body {
+    min-height: inherit;
+  }
+
+  .bg-right-content {
+    padding-top: 45px;
+    min-height: calc(100% - 45px)!important;
+  }
+
+  .st-leftNav-top-each {
+    font-size: 18px;
+    width: 45px;
+    transition: all 400ms ease;
+    /*background-color: #444;*/
+  }
+
+  //.contentNavBox-innerBox {
+  //  width: 100%;
+  //  max-width: 100%;
+  //  /*padding: 0 10px;*/
+  //
+  //
+  //}
+  //.contentNavBox{
+  //  background: linear-gradient(to bottom,rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5))!important;
+  //}
+  .article-index{
+    padding: 0px 10px 10px!important;
+  }
+
+}
+@media (max-width: 768px) {
+  .index-content-innerBox-img {
+    height: 55%;
+    top: 13%;
+  }
+}
+@media (max-width: 767px) {
+  .labelDetailPage-box,
+  .articleDetailPage-box {
+    padding: 30px 10px 60px;
+  }
+}

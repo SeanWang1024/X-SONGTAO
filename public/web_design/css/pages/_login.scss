@@ -1,0 +1,46 @@
+//登录页面
+.login-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  background: transparent radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+  .blue{
+    color:$base-theme-color;
+  }
+  .login-content-inner {
+    width: 300px;
+    text-align: right;
+    box-sizing: content-box;
+    padding: 30px;
+    margin-bottom: 110px;
+    h1,h4{
+      color:#fff;
+    }
+    .divider {
+      width: 30px;
+      height: 3px;
+      background-color: #49c8fb;
+      float: right;
+      margin: 0px auto 15px;
+    }
+  }
+  //登录按钮
+  .btn-x-songtao {
+    width: 100px;
+    background-color: $base-theme-color;
+    transition: all ease 300ms;
+    color:#fff;
+    &:hover {
+      color: #fff;
+      background-color: #49c8fb;
+    }
+  }
+}
+
+
+
+
+
+

@@ -1,0 +1,73 @@
+/*文章盒子*/
+.article-index {
+  padding: 30px 35px 10px;
+  width: 100%;
+  margin-bottom: 30px;
+  background-color: #fff;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: all ease 300ms;
+  color: $base-word-color;
+  h1 {
+    margin-top: 0px;
+    padding-bottom:10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    color: $base-word-color;
+    transition: all ease 200ms;
+    &:hover {
+      color: $base-theme-color;
+    }
+  }
+}
+
+.article-index-info {
+  //text-align: center;
+  @include display-flex;
+  @include justify-content(center);
+  @include align-items(center);
+  .article-time {
+    background-color: $base-theme-color;
+    height: 18px;
+    border-radius: 18px;
+    color: #fff;
+    padding: 0 9px;
+  }
+}
+
+.article-index-info span {
+  color: $base-word-color;
+  margin: 0 3px;
+  line-height: 18px;
+}
+
+.article-index-body-content {
+  text-indent: 2em;
+  padding-top: 0px;
+  color: #333;
+  font-size:16px;
+}
+
+.article-index-body-content p {
+  line-height: 1.6em;
+  margin: 1.6em 0;
+}
+
+.article-index-body-readmoreBox {
+  width: 100%;
+  display: block;
+  border-top: 1px solid #ddd;
+  height: 50px;
+  @include display-flex;
+  @include justify-content(flex-end);
+  @include align-items(center);
+  .article-index-body-readmore {
+    color: $base-word-color;
+    transition: all ease 200ms;
+    &:hover{
+      text-decoration: none;
+      color: $base-theme-color;
+    }
+  }
+}

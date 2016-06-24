@@ -1,0 +1,51 @@
+<!--<div class="contentInnerBox center-block">-->
+<!--<div ng-include="'views/home.footer.html'"></div>-->
+<section class="index-bottom-info text-center text-overflow">
+  <p><i class="fa fa-copyright"></i> 2015-2006 All Rights Reserved.Designed by Myself.渝ICP备16000583号.</p>
+</section>
+
+<article class="articleDetailPage animated fadeIn"  scroll-top-zero>
+  <div class="articleDetailPage-box center-block">
+    <section class="articleDetailPage-nav">
+      <strong><i class="fa fa-street-view"></i> 你的位置:</strong>&ensp;
+      <span class="labelDetailPage-nav-back">
+        <i class="fa {{detail.catalogueIconClass}}"></i>
+        <span ng-bind="detail.catalogueCNName"  ui-sref="{{detail.catalogueName}}"></span>
+      </span>
+
+      <i>/</i>&ensp;
+      <i class="fa fa-newspaper-o"></i>
+      <span ng-bind="detail.typeName"></span>
+      <i>/</i>&ensp;
+      <span ng-bind="detail.title"></span>
+    </section>
+    <section class="articleDetailPage-info center-block text-center">
+      <h1 ng-bind="detail.title"></h1>
+      <h5 class="article-index-info text-overflow">
+        <span class="article-time" ng-bind="detail.time | date: 'yyyy-MM-dd'"></span>
+        <span ng-if="detail.readNum>0">阅读数<span class="article-readnum" ng-bind="detail.readNum"></span></span>
+        <span ng-if="detail.commentNum">评论数<span class="article-comment" ng-bind="detail.commentNum"></span></span>
+        <span ng-repeat="tag in detail.tags"><i class="fa fa-tag"></i>&ensp;{{tag.name}}&emsp;</span>
+      </h5>
+    </section>
+    <section class="articleDetailContent" ng-bind-html="detail.content | toTrusted">
+     <!--page-->
+    </section>
+    <section class="articleDetailPage-footerNav">
+      <nav>
+        <ul class="pager">
+          <li class="pager-prev"  ng-if="detail.otherPages.prevPageID">
+            <a ui-sref="detail({catalogueName:'{{detail.catalogueName}}',type:'article',id:'{{detail.otherPages.prevPageID}}'})">上一篇</a>
+          </li>
+          <li class="pager-next"  ng-if="detail.otherPages.nextPageID">
+            <a ui-sref="detail({catalogueName:'{{detail.catalogueName}}',type:'article',id:'{{detail.otherPages.nextPageID}}'})">下一篇</a>
+          </li>
+        </ul>
+      </nav>
+    </section>
+  </div>
+</article>
+
+
+
+<!--</div>-->

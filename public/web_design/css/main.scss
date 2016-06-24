@@ -1,0 +1,47 @@
+@charset "UTF-8";
+* {
+  //outline: 1px solid #eee;
+}
+//base
+@import "basic/variables";
+@import "basic/mixins";
+
+@import "basic/reset";
+@import "basic/transitions";
+//排版
+@import "basic/typography";
+//常用class类
+@import "basic/util";
+//动画
+@import "basic/animations";
+
+
+//bootscrip的栅格系统及媒体查询规则
+@import "basic/grid";
+
+//左侧的主导航
+//@import "pages/_framework.scss";
+@import "pages/_pages.scss";
+@import "pages/_index.scss";
+@import "pages/_articleList.scss";
+@import "pages/_historyList.scss";
+@import "pages/_tagList.scss";
+//微信图片的modal样式
+@import "pages/_socialContact.modal.scss";
+@import "pages/_login.scss";
+
+//响应式
+@import "mediaQuery/_768_991.scss";
+@import "mediaQuery/_768_1199.scss";
+@import "mediaQuery/_768_larger.scss";
+@import "mediaQuery/_992_1199.scss";
+@import "mediaQuery/_992_larger.scss";
+@import "mediaQuery/_1200_larger.scss";
+@import "mediaQuery/_1500_larger.scss";
+@import "mediaQuery/_smaller_414.scss";
+@import "mediaQuery/_smaller_767.scss";
+@import "mediaQuery/_smaller_991.scss";
+@import "mediaQuery/_smaller_1199.scss";
+
+
+

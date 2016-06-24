@@ -1,0 +1,37 @@
+@media (max-width: 1199px) {
+
+  .bg-right-innerBlock {
+    background-color: transparent;
+    padding: 0;
+
+  }
+
+  .contentContentBox {
+    /*min-height: 487px;*/
+  }
+
+  ///*平板模式下,全局body具有滚动属性*/
+  //.bg-right-content {
+  //  overflow: inherit;
+  //  height: auto;
+  //  /*min-height: 600px;*/
+  //  min-height: calc(100% - 270px);
+  //  position: absolute;
+  //  top: 270px;
+  //}
+  //
+  //.bg-right-contentInner {
+  //  overflow: inherit;
+  //}
+
+  /*平板模式下,内容区的nav变为relative*/
+  //.contentNavBox {
+  //  position: relative;
+  //}
+  .bg-left {
+    //.st-leftNav-top-each {
+    //  //background: #eee;
+    //}
+    //background: rgba(0, 0, 0, 0.9) !important;
+  }
+}

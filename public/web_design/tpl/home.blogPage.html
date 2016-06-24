@@ -1,0 +1,92 @@
+<div class="container-fulid bigScreen animated fadeIn" scroll-top-zero>
+    <div class="col-lg-4  bg-right-imgBox col-md-12 hidden-xs">
+        <div class="bg-right-innerBlock text-center clearfix">
+            <!--img-->
+            <div class="bg-right-innerBlock-myImg">
+                <img class="myInfo-box-shadow img-circle aboutme" width="100%" ng-src="{{myInfo.imgurl}}" alt="我的头像好像没加载出来诶..">
+
+
+            </div>
+            <!--info-->
+            <div class="bg-right-innerBlock-myInfo">
+                <!--name-->
+                <h2 class="myInfo_name myInfo-shadow" ng-bind="myInfo.name"></h2>
+                <!--Web Developer & Full Stack-->
+                <h4 class="myInfo_position myInfo-shadow" ng-bind="myInfo.position"></h4>
+                <!--location: Suzhou, China-->
+                <h5 class="myInfo_address myInfo-shadow">
+                    <span class="fa fa-map-marker"></span> {{myInfo.address}}
+                </h5>
+                <h5 class="myInfo_mood myInfo-shadow"><i class="fa fa-coffee"></i> {{myInfo.mood}}</h5>
+                <section class="bg-right-innerBlock-myInfo-nav myInfo-shadow">
+                    <h5>
+                        <span ng-repeat="item in blogPage.column" ui-sref="{{item.uiUrl}}" ui-sref-active="active" ng-bind="item.name"></span>
+
+                    </h5>
+                </section>
+                <div class="bg-right-innerBlock-myInfo-follow clearfix">
+                    <!--follow-->
+                    <a href="https://github.com/xiangsongtao" target="_blank" class="btn-follow text-overflow myInfo-shadow">FOLLOW</a>
+                    <div class="bg-right-innerBlock-info text-overflow">
+                        <!--社交相关的icon-->
+                        <i class="fa fa-qq hidden-xs"
+                           data-toggle="modal"
+                           data-target="#socialContact"
+                           data-title="加我QQ!"
+                           data-url="images/qq-addme.jpg"></i>
+                        <i class="fa fa-weixin hidden-xs"
+                           data-toggle="modal"
+                           data-target="#socialContact"
+                           data-title="加我微信也行!"
+                           data-url="images/weixin-addme.jpg"></i>
+                        <a href="http://weibo.com"><i class="fa fa-weibo hidden-xs"></i></a>
+                        <a href="http://t.qq.com/hsiang-sootao"><i class="fa fa-tencent-weibo hidden-xs"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--saySomething-->
+        <div class="saySomething myInfo-shadow">
+
+            <div class="saySomething-inner">
+                <div class="saySomething-inner-word" ng-bind-html="myInfo.personalStateHTML | toTrusted">
+                    <!--我的陈述-->
+                </div>
+                <!--<div class="center-block text-center">-->
+                <!--<div class="btn-back"><i class="fa fa-reply"></i> 返回</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+        <!--source: git qq weixin csr-->
+
+
+    </div>
+    <div class="col-lg-8 col-md-12  bg-right-content noPadding">
+        <div class="bg-right-contentInner">
+            <div class="contentContentBox  center-block">
+                <div class="contentInnerBox center-block">
+                    <!--blogPage.具体内容的区域-->
+                    <div ui-view>
+
+                        <!--loadingPage-->
+                        <div class="top">
+                            <div class="blackShadeInner text-center center-block">
+                                <section>
+                                    <i class="fa fa-spinner fa-spin fa-4x"></i>
+                                    <h3>小涛正在加载...</h3>
+                                    <span></span>
+                                    <small>just a moment!</small>
+                                </section>
+                            </div>
+                        </div>
+                        <!--loadingPage end-->
+                    </div>
+                    <!--blogPage.具体内容的区域 end-->
+                </div>
+            </div>
+        </div>
+        <!--footer-->
+        <div ng-include="'/web/views/home.footer.html'"></div>
+    </div>
+</div>

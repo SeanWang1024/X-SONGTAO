@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-cn" ng-app="xstApp">
+<head>
+  <meta charset="utf-8">
+  <title>X-SONGTA</title>
+  <meta name="description" content="X-SONGTAO的个人博客,前端技术,全栈工程">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="web/css/common.css">
+  <link rel="stylesheet" href="web/css/main.css">
+
+</head>
+<body>
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+  your browser</a> to improve your experience.</p>
+<![endif]-->
+<div class="bigBox clearfix">
+  <!--左边nav-->
+  <div class="bg-left">
+    <div class="st-leftNav">
+      <div class="st-leftNav-top clearfix">
+        <span href="#" class="st-leftNav-top-each text-overflow text-center " data-toggle="tooltip"
+              data-placement="auto right" title="X-SONGTAO">
+          <span class="siteLogo">
+          </span>
+        </span>
+        <span ui-sref="home"
+              ui-sref-active="st-leftNav-top-each-active"
+              class="st-leftNav-top-each text-overflow" data-toggle="tooltip" data-placement="right"
+              title="Home">
+          <i class="fa fa-home fa-fw fa-lg"></i>
+          <!--<span class="glyphicon glyphicon-home hidden-xs "></span>-->
+          <span class="hidden-md hidden-lg hidden-xs">Home</span>
+        </span>
+        <span ui-sref="blog" ui-sref-active="st-leftNav-top-each-active"
+              class="st-leftNav-top-each text-overflow" data-toggle="tooltip" data-placement="right"
+              title="Blog">
+          <i class="fa fa-map-signs fa-fw fa-lg"></i>
+          <span class="hidden-md hidden-lg hidden-xs">Blog</span>
+        </span>
+      </div>
+      <div class="st-leftNav-bottom clearfix">
+        <span class="st-leftNav-top-each text-overflow hidden" data-toggle="tooltip"
+              data-placement="auto right" title="阅读模式">
+          <i class="fa fa-cogs fa-lg"></i>
+          <span class="hidden-md hidden-lg hidden-xs">阅读模式</span>
+        </span>
+        <span ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip" data-placement="auto right"
+              title="Login">
+          <i class="fa fa-sign-in fa-lg"></i>
+          <span class="hidden-md hidden-lg hidden-xs">Login</span>
+        </span>
+
+      </div>
+    </div>
+  </div>
+  <!--右边内容-->
+  <!--<div class="bg-right" ui-view>-->
+  <div class="bg-right" ui-view>
+    <!--blogPage-内容-->
+    <!--loadingPage-->
+    <div class="blackShade loading">
+      <div class="blackShadeInner text-center center-block">
+        <section class="blackShadeInnerBox">
+          <i class="fa fa-spinner fa-spin fa-inverse fa-4x"></i>
+          <h3>小涛正在加载...</h3>
+          <span></span>
+          <small>just a moment!</small>
+        </section>
+      </div>
+    </div>
+    <!--loadingPage end-->
+
+
+  </div>
+
+
+</div>
+
+
+<div class="modal fade" id="articleImg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img width="100%" class="article-img" src="" alt="展示的图片">
+      </div>
+      <div class="modal-footer">
+        <i class="fa fa-paper-plane"></i>
+        <span class="article-title"></span>
+        <span class="article-position"></span>
+        <span class="article-time"></span>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="socialContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img width="100%" class="socialContact-img" src="" alt="来加我!!">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--loadingPage-->
+<div class="blackShade error">
+  <div class="blackShadeInner text-center center-block">
+    <section>
+      <i class="fa fa-exclamation-triangle fa-inverse fa-4x"></i>
+      <h3></h3>
+      <span></span>
+      <small></small>
+    </section>
+  </div>
+</div>
+<!--loadingPage end-->
+<script src="web/js/common.js"></script>
+<script src="web/js/main.js"></script>
+
+</body>
+</html>
