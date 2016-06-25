@@ -202,27 +202,18 @@ module.exports = {
                 return next();
             }
             if (!!article) {
-                //先删除评论
-                Comments.findOne({_id: article.comment_id}, function (err, comment) {
+                //先删除评论!!
+                Comments.remove({article_id: article._id}, function (err) {
                     if (err) {
                         DO_ERROR_RES(res);
                         return next();
                     }
-                    if (!!comment) {
-                        comment.remove();
-                        article.remove();
-                        res.status(200);
-                        res.send({
-                            "code": "1",
-                            "msg": `delete success, article && comment has removed!`
-                        });
-                    } else {
-                        res.status(200);
-                        res.send({
-                            "code": "2",
-                            "msg": `comment non-exist!`
-                        });
-                    }
+                    article.remove();
+                    res.status(200);
+                    res.send({
+                        "code": "1",
+                        "msg": `delete success, article && comment has removed!`
+                    });
                 });
             } else {
                 res.status(200);

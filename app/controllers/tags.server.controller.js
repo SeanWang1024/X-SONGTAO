@@ -102,25 +102,16 @@ module.exports = {
         });
     },
     delete:function (req, res, next) {
-        Tags.findOne({_id: req.params.id}, function (err, doc) {
+        Tags.remove({_id: req.params.id}, function (err) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
-            if (!!doc) {
-                doc.remove();
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": `tag ${req.params.id} delete success!`
-                });
-            } else {
-                res.status(200);
-                res.send({
-                    "code": "2",
-                    "msg": `delete failure, tag not find!`
-                });
-            }
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": `tag ${req.params.id} delete success!`
+            });
 
         });
     }

@@ -10,8 +10,8 @@
 6 silly lifecycle x-songtao@0.0.1~prestart: no script for prestart, continuing
 7 info lifecycle x-songtao@0.0.1~start: x-songtao@0.0.1
 8 verbose lifecycle x-songtao@0.0.1~start: unsafe-perm in lifecycle true
-9 verbose lifecycle x-songtao@0.0.1~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/xiangsongtao/我的ST项目/My Blog/x-songtao/node_modules/.bin:/usr/local/bin:/Users/xiangsongtao/.node/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-10 verbose lifecycle x-songtao@0.0.1~start: CWD: /Users/xiangsongtao/我的ST项目/My Blog/x-songtao
+9 verbose lifecycle x-songtao@0.0.1~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/xiangsongtao/我的ST项目/My Blog/X-SONGTAO/node_modules/.bin:/usr/local/bin:/Users/xiangsongtao/.node/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+10 verbose lifecycle x-songtao@0.0.1~start: CWD: /Users/xiangsongtao/我的ST项目/My Blog/X-SONGTAO
 11 silly lifecycle x-songtao@0.0.1~start: Args: [ '-c', 'supervisor ./bin/www' ]
 12 silly lifecycle x-songtao@0.0.1~start: Returned: code: 1  signal: null
 13 info lifecycle x-songtao@0.0.1~start: Failed to exec start script
@@ -26,7 +26,7 @@
 14 verbose stack     at maybeClose (internal/child_process.js:850:16)
 14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:215:5)
 15 verbose pkgid x-songtao@0.0.1
-16 verbose cwd /Users/xiangsongtao/我的ST项目/My Blog/x-songtao
+16 verbose cwd /Users/xiangsongtao/我的ST项目/My Blog/X-SONGTAO
 17 error Darwin 15.5.0
 18 error argv "/usr/local/bin/node" "/usr/local/lib/node_modules/npm/bin/npm-cli.js" "run-script" "start"
 19 error node v6.2.0

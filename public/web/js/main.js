@@ -501,53 +501,6 @@ angular.module('xstApp')
 //
 
 /**
- * Created by xiangsongtao on 16/2/10.
- */
-angular.module('xstApp').service("dataServ", ['$rootScope', function ($rootScope) {
-    //var result = {
-    //  status:200,
-    //  statusText: "OK",
-    //  data:{
-    //    frontEndBlogIndex:"",
-    //    balabalaBlogIndex:"",
-    //    articleLists:"",
-    //    historyLists:"",
-    //    labelLists:""
-    //  }
-    //}
-    //return result;
-}]);
-
-/**
- * Created by xiangsongtao on 16/2/9.
- */
-angular.module('xstApp').filter("pageSelect", ['$rootScope', function ($rootScope) {
-    return function (inputArray, pageNow) {
-        var array = [];
-        if (pageNow == null || pageNow == '') {
-            pageNow = 1;
-        }
-        //总共文章数
-        var totalArticlesNum = $rootScope.totalArticlesNum;
-        //每页的文章数
-        var onePageArticlesNum = $rootScope.onePageArticlesNum;
-        for (var i = (pageNow - 1) * onePageArticlesNum; onePageArticlesNum * pageNow > i && totalArticlesNum > i; i++) {
-            array.push(inputArray[i]);
-        }
-        return array;
-    };
-}]);
-
-/**
- * Created by xiangsongtao on 16/2/9.
- */
-angular.module('xstApp').filter("toTrusted", ['$sce', function ($sce) {
-    return function (text) {
-        return $sce.trustAsHtml(text);
-    };
-}]);
-
-/**
  * Created by xiangsongtao on 15/12/24.
  */
 angular.module('xstApp')
@@ -655,3 +608,50 @@ angular.module('xstApp')
         }
     };
 });
+
+/**
+ * Created by xiangsongtao on 16/2/9.
+ */
+angular.module('xstApp').filter("pageSelect", ['$rootScope', function ($rootScope) {
+    return function (inputArray, pageNow) {
+        var array = [];
+        if (pageNow == null || pageNow == '') {
+            pageNow = 1;
+        }
+        //总共文章数
+        var totalArticlesNum = $rootScope.totalArticlesNum;
+        //每页的文章数
+        var onePageArticlesNum = $rootScope.onePageArticlesNum;
+        for (var i = (pageNow - 1) * onePageArticlesNum; onePageArticlesNum * pageNow > i && totalArticlesNum > i; i++) {
+            array.push(inputArray[i]);
+        }
+        return array;
+    };
+}]);
+
+/**
+ * Created by xiangsongtao on 16/2/9.
+ */
+angular.module('xstApp').filter("toTrusted", ['$sce', function ($sce) {
+    return function (text) {
+        return $sce.trustAsHtml(text);
+    };
+}]);
+
+/**
+ * Created by xiangsongtao on 16/2/10.
+ */
+angular.module('xstApp').service("dataServ", ['$rootScope', function ($rootScope) {
+    //var result = {
+    //  status:200,
+    //  statusText: "OK",
+    //  data:{
+    //    frontEndBlogIndex:"",
+    //    balabalaBlogIndex:"",
+    //    articleLists:"",
+    //    historyLists:"",
+    //    labelLists:""
+    //  }
+    //}
+    //return result;
+}]);
