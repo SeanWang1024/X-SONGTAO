@@ -1,11 +1,11 @@
 /**
  * 数据库配置及模型建立
  * */
-var mongoose = require('mongoose');
-var config = require('./config.js');
+let mongoose = require('mongoose');
+let config = require('./config.js');
 
 module.exports = function () {
-    var db = mongoose.connect(config.mongodb);
+    let db = mongoose.connect(config.mongodb);
 
     /**
      * id由数据库自己生成,名字为_id
@@ -67,17 +67,6 @@ module.exports = function () {
         ip: String,//对方ip
         state:Boolean,//是否审核通过 0, 未审核通过 1 审核通过
     }));
-
-
-    //我的个人信息数据模型
-    // mongoose.model('MyInfo', new mongoose.Schema({
-    //     name: String,//名字
-    //     position: String,//职位
-    //     address: String,//地址
-    //     motto: String,//座右铭
-    //     personal_state: String,//我的称述
-    //     img_url: String//头像imgurl
-    // }));
 
     return db;
 };

@@ -64,7 +64,7 @@ module.exports = {
                     catalogue_name: catalogue_name,
                     used_num: 0
                 };
-                var tag = new Tags(tagData);
+                let tag = new Tags(tagData);
                 tag.save();
                 tagData._id = tag._id;
                 res.status(200);

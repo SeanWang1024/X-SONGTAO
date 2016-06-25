@@ -1,17 +1,16 @@
 /**
  * Created by xiangsongtao on 16/3/4.
  */
-var mongoose = require('mongoose');
-var basicData = require('../services/basicData.server.js');
+let mongoose = require('mongoose');
 
 //MyInfo的数据模型
-var Tags = mongoose.model('Tags');
-var Article = mongoose.model('Articles');
+let Tags = mongoose.model('Tags');
+let Article = mongoose.model('Articles');
 
 module.exports = {
     getHistoryList: function (req, res, next) {
-        var historyList = [];
-        var dataEach = {
+        let historyList = [];
+        let dataEach = {
             yearAndMonth: '',
             articles: []
         };
@@ -21,7 +20,7 @@ module.exports = {
          *
          * */
         function SeparateISOTime(ISOTime) {
-            var resultDate = {};
+            let resultDate = {};
             resultDate.year = ISOTime.getFullYear();
             if (ISOTime.getMonth() + 1 < 10) {
                 resultDate.month = "0" + (ISOTime.getMonth() + 1)
@@ -35,9 +34,9 @@ module.exports = {
                 res.end("error");
                 return next();
             }
-            var docsTpl = docs;
-            var recordYear = '';
-            var recordMonth = '';
+            let docsTpl = docs;
+            let recordYear = '';
+            let recordMonth = '';
             while (docsTpl.length) {
                 //查找转移完毕,清空record
                 recordYear = '';
@@ -47,9 +46,9 @@ module.exports = {
                     articles: []
                 };
                 //取出第一项
-                var dataFirst = docsTpl.shift();
+                let dataFirst = docsTpl.shift();
                 //记录信息
-                var dataFirstTpl = SeparateISOTime(dataFirst.time);
+                let dataFirstTpl = SeparateISOTime(dataFirst.time);
                 recordYear = dataFirstTpl.year;
                 recordMonth = dataFirstTpl.month;
                 //创建盒子
@@ -57,10 +56,10 @@ module.exports = {
                 //取出来的第一个保存
                 dataEach.articles.push(dataFirst);
                 //查找剩余的
-                for (var i = 0; docsTpl.length > i; i++) {
-                    var docTplTime = SeparateISOTime(docsTpl[i].time);
-                    var tplYear = docTplTime.year;
-                    var tplMonth = docTplTime.month;
+                for (let i = 0; docsTpl.length > i; i++) {
+                    let docTplTime = SeparateISOTime(docsTpl[i].time);
+                    let tplYear = docTplTime.year;
+                    let tplMonth = docTplTime.month;
                     //如果找到同年同月的article,则取出来保存
                     if (recordYear == tplYear && recordMonth == tplMonth) {
                         //数据转移

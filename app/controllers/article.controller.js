@@ -1,18 +1,13 @@
 /**
  * Created by xiangsongtao on 16/3/4.
  */
-var mongoose = require('mongoose');
-var basicData = require('../services/basicData.server.js');
+let mongoose = require('mongoose');
 
 //MyInfo的数据模型
-var Tags = mongoose.model('Tags');
-var Articles = mongoose.model('Articles');
-var Comments = mongoose.model('Comments');
+let Tags = mongoose.model('Tags');
+let Articles = mongoose.model('Articles');
+let Comments = mongoose.model('Comments');
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
-
-//加载工具类
-var utils = require('../utils/common.js');
-
 
 //获取所有tags的array
 function findAllTags() {
@@ -40,7 +35,7 @@ function findTagNameById(tags, id) {
 module.exports = {
     add: function (req, res, next) {
         let {title, publish_time, author, tags, state, content} =  req.body;
-        var article = new Articles({
+        let article = new Articles({
             title,
             publish_time,
             author,
@@ -52,14 +47,6 @@ module.exports = {
             content
         });
         article.save();
-        // //创建评论数据
-        // var comment = new Comments({
-        //     article_id: article._id,
-        //     comments_arr: []
-        // });
-        // comment.save();
-        // article.comment_id = comment._id;
-        // article.save();
         res.status(200);
         res.send({
             "code": "1",
@@ -74,7 +61,7 @@ module.exports = {
                 return next();
             }
             if (!!article) {
-                var {title, publish_time, author, tags, state, content} = req.body;
+                let {title, publish_time, author, tags, state, content} = req.body;
                 //数据写入并保存
                 article.title = title;
                 article.publish_time = publish_time;
@@ -138,6 +125,40 @@ module.exports = {
             });
         })
     },
+    getAllWithPages:function (req, res, next) {
+        //查找文章
+        let from = parseInt(req.params[0]);
+        let limit = parseInt(req.params[1]);
+        Articles.find({}).sort('publish_time').skip(from).limit(limit).exec(function (err, docs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            //docs不为空,最少为[]
+            let articles = docs;
+            findAllTags().then(function (tags) {
+                for (let i = 0, art_len = articles.length; art_len > i; i++) {
+                    for (let j = 0; articles[i].tags.length > j; j++) {
+                        //tag id => tag name
+                        let name = findTagNameById(tags, articles[i].tags[j]);
+                        if (!name) {
+                            //对于未找到tagid的则去除此位置
+                            articles[i].tags.splice(j, 1);
+                            j--;
+                        } else {
+                            articles[i].tags[j] = name;
+                        }
+                    }
+                }
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "article list get success!",
+                    "data": articles
+                });
+            });
+        });
+    },
     getById: function (req, res, next) {
         //需要处理,因为单个文章是文章的全文,并且含有文章的评论信息
         Articles.findOne({_id: req.params.id}, function (err, doc) {
@@ -146,6 +167,9 @@ module.exports = {
                 return next();
             }
             if (!!doc) {
+                //阅读数++
+                doc.read_num ++;
+                doc.save();
                 let article = doc;
                 findAllTags().then(function (tags) {
                     for (let j = 0; article.tags.length > j; j++) {
@@ -160,28 +184,12 @@ module.exports = {
                         }
                     }
 
-                    Comments.findOne({_id: article.comment_id}, function (err, comment) {
-                        if (err) {
-                            DO_ERROR_RES(res);
-                            return next();
-                        }
-                        if (!!comment) {
-                            res.status(200);
-                            res.send({
-                                "code": "1",
-                                "msg": `get aurticle ${req.params.id} success with comment!`,
-                                "data": {
-                                    article,
-                                    comment
-                                }
-                            });
-                        } else {
-                            res.status(200);
-                            res.send({
-                                "code": "1",
-                                "msg": `get aurticle ${req.params.id} success! but no comment`,
-                                "data": article
-                            });
+                    res.status(200);
+                    res.send({
+                        "code": "1",
+                        "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
+                        "data": {
+                            article
                         }
                     });
                 });
@@ -194,7 +202,7 @@ module.exports = {
             }
         });
     },
-    deleteById: function (req, res, next) {
+    delete: function (req, res, next) {
         //删除文章还要删除和文章一起的评论
         Articles.findOne({_id: req.params.id}, function (err, article) {
             if (err) {
@@ -224,6 +232,79 @@ module.exports = {
             }
 
         });
+    },
+    //获取文章历史记录,需要根据【年】->【月】->【文章arr】划分组合
+    getHistory: function (req, res, next) {
+        Articles.find({}, {'title': 1, 'publish_time': 1, 'author': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            let historyArr = [];
+            let yearObj = {};
+            let monthObj = {};
+            let articleArr = [];
+
+            function toDate(timestamp) {
+                let timestampInt = parseInt(timestamp);
+                if(timestampInt.toString().length === 13){
+                    //正确的时间戳
+                    return new Date(timestampInt);
+                }else{
+                    //错误的时间戳返回现在时间
+                    return new Date();
+                }
+            }
+
+            //new Date().getDate()
+            //new Date().getMonth()
+            //new Date().getFullYear()
+            // while(docs.length){
+                // if(){
+                //
+                // }
+            // }
+
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": `article history find success!`,
+                "data": docs
+            });
+
+        })
+    },
+    getByTagId: function (req, res, next) {
+        //根据tag查找文章,不限制文章数量
+        Articles.find({tags:{"$in":[req.params.id]}}, function (err, docs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            //docs不为空,最少为[]
+            let articles = docs;
+            findAllTags().then(function (tags) {
+                for (let i = 0, art_len = articles.length; art_len > i; i++) {
+                    for (let j = 0; articles[i].tags.length > j; j++) {
+                        //tag id => tag name
+                        let name = findTagNameById(tags, articles[i].tags[j]);
+                        if (!name) {
+                            //对于未找到tagid的则去除此位置
+                            articles[i].tags.splice(j, 1);
+                            j--;
+                        } else {
+                            articles[i].tags[j] = name;
+                        }
+                    }
+                }
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "find article by tag_id success!",
+                    "data": articles
+                });
+            });
+        })
     }
 }
 ;
