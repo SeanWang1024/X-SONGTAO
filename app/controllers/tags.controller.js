@@ -4,6 +4,8 @@
  */
 let mongoose = require('mongoose');
 
+//数据库查询同一错误处理
+let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 //MyInfo的数据模型
 let Tags = mongoose.model('Tags');
 
@@ -20,7 +22,50 @@ module.exports = {
             })
         })
     },
-    getById:function (req, res, next) {
+    getAllWithStructure: function (req, res, next) {
+        Tags.find({}).sort('catalogue_name').exec(function (err, docs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            let tagsArr = [];
+            let cataObj = {};
+
+            let nowCata = '';
+            for (let i = 0, docLen = docs.length; docLen > i; i++) {
+                let tplCata = docs[i].catalogue_name.toString();
+                if (nowCata !== tplCata) {
+                    if(nowCata !== ''){
+                        tagsArr.push(cataObj);
+                    }
+
+                    nowCata = tplCata;
+                    cataObj = {
+                        "name": nowCata,
+                        "data": []
+                    };
+                    cataObj.data.push(docs[i]);
+                    if (docLen == i + 1) {
+                        tagsArr.push(cataObj);
+                    }
+                }else{
+                    cataObj.data.push(docs[i]);
+                    if (docLen == i + 1) {
+                        tagsArr.push(cataObj);
+                    }
+                }
+
+
+            }
+
+
+            res.status(200);
+            res.send({
+                tagLists: tagsArr
+            })
+        });
+    },
+    getById: function (req, res, next) {
         Tags.findOne({_id: req.params.id}, function (err, doc) {
             if (err) {
                 DO_ERROR_RES(res);
@@ -76,7 +121,7 @@ module.exports = {
             }
         })
     },
-    edit:  function (req, res, next) {
+    edit: function (req, res, next) {
         Tags.findOne({_id: req.body._id}, function (err, doc) {
             if (err) {
                 DO_ERROR_RES(res);
@@ -101,7 +146,7 @@ module.exports = {
             }
         });
     },
-    delete:function (req, res, next) {
+    delete: function (req, res, next) {
         Tags.remove({_id: req.params.id}, function (err) {
             if (err) {
                 DO_ERROR_RES(res);

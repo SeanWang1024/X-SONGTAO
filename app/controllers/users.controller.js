@@ -2,7 +2,7 @@
  * Created by xiangsongtao on 16/3/3.
  */
 let mongoose = require('mongoose');
-let $base64 = require('../utils/base64.module.js');
+let $base64 = require('../utils/base64.utils.js');
 let fs = require('fs');
 //MyInfo的数据模型
 let Users = mongoose.model('Users');
@@ -12,13 +12,13 @@ let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 module.exports = {
     register: function (req, res, next) {
         let user_ip = req.ip.split(":")[3];
-        Users.findOne({username: req.body.username}, function (err, doc) {
+        Users.findOne({username: req.body.username}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
             //如果没有数据,则增加
-            if (!doc) {
+            if (!user) {
                 let {username, password, full_name, position, address, motto, personal_state, img_url} = req.body;
                 let login = new Users({
                     username,
@@ -59,30 +59,28 @@ module.exports = {
     login: function (req, res, next) {
         let username = req.body.username;
         let password = req.body.password;
-        let user_ip = req.ip.split(":")[3];
+        let user_ip = req.ip;
         console.log("------用户当前请求的ip------");
         console.log(user_ip);
-        Users.findOne({username: username}, function (err, doc) {
+        Users.findOne({username: username}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
-            //如果没有数据,则增加
-            if (!!doc && (doc.password === password)) {
-                let {_id, username, full_name, position, address, motto, personal_state, img_url} = doc;
-                doc.login_info.push({
+            //有用户数据且密码正确
+            if (!!user && (user.password === password)) {
+                user.login_info.push({
                     login_time: new Date().getTime(),
                     login_ip: user_ip
                 });
-                //define user info
-                let UserInfo = {_id, username, full_name, position, address, motto, personal_state, img_url};
-                doc.save();
+                user.save();
                 res.status(200);
+                res.cookie('rememberme', '1', { maxAge: 900000})
                 res.send({
                     "code": "1",
                     "msg": "login success!",
                     "token": $base64.encode(`${username}|${password}|${new Date().getTime()}`),
-                    "user_info": UserInfo
+                    "user_info": user
                 });
             } else {
                 res.status(200);
@@ -94,7 +92,7 @@ module.exports = {
         });
     },
     getAll: function (req, res, next) {
-        Users.find({}, function (err, docs) {
+        Users.find({}, function (err, users) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -102,22 +100,22 @@ module.exports = {
             res.send({
                 "code": "1",
                 "msg": "user list",
-                "data": docs
+                "data": users
             })
         })
     },
     getById: function (req, res, next) {
-        Users.findOne({_id: req.params.id}, function (err, doc) {
+        Users.findOne({_id: req.params.id}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
-            if (!!doc) {
+            if (!!user) {
                 res.status(200);
                 res.send({
                     "code": "1",
                     "msg": "user list",
-                    "data": doc
+                    "data": user
                 })
             } else {
                 res.status(200);
@@ -130,13 +128,13 @@ module.exports = {
         })
     },
     edit:function (req, res, next) {
-        Users.findOne({_id: req.body._id}, function (err, doc) {
+        Users.findOne({_id: req.body._id}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
             //如果没有数据,则增加
-            if (!doc) {
+            if (!user) {
                 //发送
                 res.status(200);
                 res.send({
@@ -145,14 +143,14 @@ module.exports = {
                 });
             } else {
                 ({
-                    full_name: doc.full_name,
-                    position: doc.position,
-                    address: doc.address,
-                    motto: doc.motto,
-                    personal_state: doc.personal_state,
-                    img_url: doc.img_url
+                    full_name: user.full_name,
+                    position: user.position,
+                    address: user.address,
+                    motto: user.motto,
+                    personal_state: user.personal_state,
+                    img_url: user.img_url
                 } = req.body);
-                doc.save();
+                user.save();
                 res.status(200);
                 res.send({
                     "code": "1",

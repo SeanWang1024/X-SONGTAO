@@ -8,9 +8,8 @@ let multipartMiddleware = multipart();
 let fs = require('fs');
 
 let mongoose = require('mongoose');
-let $base64 = require('../utils/base64.module.js');
+let $checkToken = require('../utils/checkToken.utils.js');
 //数据模型
-// let Authorize = mongoose.model('Authorize');
 let Users = mongoose.model('Users');
 let Tags = mongoose.model('Tags');
 let Comments = mongoose.model('Comments');
@@ -41,7 +40,8 @@ router.all('*', function (req, res, next) {
 
         if (!!authorization) {
             let token = authorization.split(" ")[1];
-            checkToken(token).then(function () {
+            $checkToken(token).then(function () {
+                console.log("*********token check success!**********")
                 return next();
             }, function (errObj) {
                 res.status(200);
@@ -54,38 +54,6 @@ router.all('*', function (req, res, next) {
                 "msg": "need token!"
             });
         }
-    }
-
-    // 验证token
-    // 将header中的token解码得到用户名和mm,对此进行数据库验证
-    function checkToken(token) {
-        let [username,password,time] = $base64.decode(token).split("|");
-        let timeNow = new Date().getTime();
-        return new Promise(function (resolve, reject) {
-            //2 hours authorize
-            if ((timeNow - time) > 1000 * 60 * 60 * 2) {
-                reject({
-                    "code": "10",
-                    "msg": "token time out!"
-                });
-            } else {
-                Users.findOne({username: username, password: password}, function (err, doc) {
-                    if (err) {
-                        DO_ERROR_RES(res);
-                        reject();
-                        return next();
-                    }
-                    if (!!doc) {
-                        resolve(true);
-                    } else {
-                        reject({
-                            "code": "10",
-                            "msg": "token format error!"
-                        });
-                    }
-                });
-            }
-        });
     }
 });
 
@@ -152,8 +120,10 @@ router.post('/imgupload', multipartMiddleware, function (req, res, next) {
 /**
  * Tags 相关
  * */
-//查找
+//查找all
 router.get('/tags', TagsController.get);
+//
+router.get('/tags_with_structure', TagsController.getAllWithStructure);
 //查找某个tag
 router.get('/tag/:id', TagsController.getById);
 //增加
@@ -167,7 +137,7 @@ router.delete('/tag/:id', TagsController.delete);
 /**
  * Article 相关
  * */
-//增加
+//增加,增加的同时对标签使用num++
 router.post('/article', ArticleController.add);
 //根据id修改
 router.put('/article', ArticleController.editById);

@@ -1,0 +1,39 @@
+/**
+ * Created by xiangsongtao on 16/6/26.
+ */
+let $base64 = require('../utils/base64.utils.js');
+let mongoose = require('mongoose');
+let Users = mongoose.model('Users');
+//数据库查询同一错误处理
+let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
+
+function checkToken(token) {
+    let [username,password,time] = $base64.decode(token).split("|");
+    let timeNow = new Date().getTime();
+    return new Promise(function (resolve, reject) {
+        //2 hours authorize
+        if ((timeNow - time) > 1000 * 60 * 60 * 2) {
+            reject({
+                "code": "10",
+                "msg": "token time out!"
+            });
+        } else {
+            Users.findOne({username: username, password: password}, function (err, doc) {
+                if (err) {
+                    DO_ERROR_RES(res);
+                    reject();
+                    return next();
+                }
+                if (!!doc) {
+                    resolve(true);
+                } else {
+                    reject({
+                        "code": "10",
+                        "msg": "token format error!"
+                    });
+                }
+            });
+        }
+    });
+}
+module.exports = checkToken;
