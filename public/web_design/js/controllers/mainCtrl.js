@@ -3,8 +3,11 @@
  */
 angular.module('xstApp')
 
-    //登陆控制器
-    .controller('loginController', ['$scope', '$http', function ($scope, $http) {
+//登陆控制器
+    .controller('loginController', ['$scope', '$http', '$api', function ($scope, $http, $api) {
+        console.log($api.login);
+
+
         $("#login").click(function () {
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
@@ -12,83 +15,108 @@ angular.module('xstApp')
             var data = {
                 username: username,
                 password: password
-            }
+            };
             if (username == '' || password == '') {
                 alert("用户名/密码不能为空")
-                alert(username)
-                alert(password)
+                // alert(username)
+                // alert(password)
                 return
             }
-            $http.post('/dologin', data)
+            $http.post($api.login, data)
                 .success(function (response) {
-                    if (response) {
-                        window.location.href = "/admin"
+                    if (parseInt(response.code) === 1) {
+                        //login success
+                        window.location.href = `/admin/${response.token}`
+                    } else {
+                        //login error
+                        alert("用户名/密码错误")
                     }
                 });
         })
     }])
-    //LifeStyleBlog控制器
-    .controller('LifeStyleController', ['$scope', 'response', function ($scope, response) {
-        $scope.myInfo = response.data.myInfo;
-        $scope.blogPage = response.data.LifeStyleIndex;
-        //背景图片的替换函数
-        $scope.getBackgroundStyle = function (imagepath) {
-            return {
-                'background-image': 'url(' + imagepath + ')'
+    //blogPageController控制器
+    .controller('blogPageController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $http.get(API.getMyInfo).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.myInfo = response.data;
             }
-        };
 
-        $('[data-toggle="popover"]').popover({
-            //trigger: 'focus'
-        })
-    }])
-    //FrontEndBlog控制器
-    .controller('blogPageController', ['$scope', 'response', function ($scope, response) {
-        $scope.myInfo = response.data.myInfo;
-        $scope.blogPage = response.data.FrontEndIndex;
-        //背景图片的替换函数
-        $scope.getBackgroundStyle = function (imagepath) {
-            return {
-                'background-image': 'url(' + imagepath + ')'
-            }
-        };
-
-        $('[data-toggle="popover"]').popover({
-            //trigger: 'focus'
-        })
+        }).error(function (erroInfo, status) {
+            // $(".blackShade.error").addClass("show");
+            // $(".blackShade.error h3").text("哎呦,好像出错了!");
+            // $(".blackShade.error span").html(erroInfo);
+            // $(".blackShade.error small").text("状态码:" + status);
+        });
+        $('[data-toggle="popover"]').popover()
     }])
     //ArticleList控制器
-    .controller('ArticleListController', ['$scope', '$http','response','$rootScope', function ($scope, $http,response,$rootScope) {
-        console.log(response)
-        $scope.articleLists = response.data.articleLists;
-        //总共文章数
-        var totalArticlesNum = response.data.articleLists.length;
-        $rootScope.totalArticlesNum = totalArticlesNum;
-        //每页多少
-        var onePageArticlesNum = pagesize;
-        $rootScope.onePageArticlesNum = onePageArticlesNum;
-        //分几页
-        var pageNum = parseInt(totalArticlesNum / onePageArticlesNum);
-        $rootScope.pageNum = pageNum;
-        //存放分页数量的数组,用于ng-repeat
-        var pagePagination = [];
-        for (var i = 0; pageNum > i; i++) {
-            pagePagination.push(i + 1);
-        }
-        $scope.pagePagination = pagePagination;
+    .controller('ArticleListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        let url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
+        $http.get(url).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.articleLists = response.data;
+            }
+        }).error(function (erroInfo, status) {
+            // $(".blackShade.error").addClass("show");
+            // $(".blackShade.error h3").text("哎呦,好像出错了!");
+            // $(".blackShade.error span").html(erroInfo);
+            // $(".blackShade.error small").text("状态码:" + status);
+        });
 
     }])
     //HistoryList控制器
-    .controller('HistoryListController', ['$scope','response', function ($scope,response) {
-        $scope.historyLists = response.data;
+    .controller('HistoryListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $http.get(API.getArticleHistoryWithStructure).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.historyLists = response.data;
+            }
+        }).error(function (erroInfo, status) {
+        });
     }])
     //TagList控制器
-    .controller('TagListController', ['$scope','response', function ($scope,response) {
-        $scope.tagLists = response.data;
+    .controller('TagListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $http.get(API.getTagsListWithStructure).success(function (response) {
+            console.log("TagListController response");
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.tagLists = response.data;
+            }
+        }).error(function (erroInfo, status) {
+        });
     }])
     //Detail控制器-catalogueName-type-id
-    .controller('DetailController', ['$scope','response', function ($scope,response) {
-        $scope.detail = response.data;
+    .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
+        var url = API.getArticleById.replace('id', $stateParams.id);
+        $http.get(url).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.article = response.data;
+                //获取评论
+                var url =  API.getArticlesComments.replace('article_id', $scope.article._id);
+                $http.get(url).success(function (response) {
+                    console.log('-----response------')
+                    console.log(response)
+                    if (parseInt(response.code) === 1) {
+                        $scope.comment = response.data;
+                    }
+                });
+            }
+        }).error(function (erroInfo, status) {
+        });
+    }])
+
+    .controller('findArticlesByTagController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
+        let url = API.getArticlesWithTagId.replace('id', $stateParams.id);
+        $http.get(url).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.articleLists = response.data;
+            }
+        }).error(function (erroInfo, status) {
+        });
     }])
 
 

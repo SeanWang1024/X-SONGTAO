@@ -222,9 +222,7 @@ module.exports = {
                     res.send({
                         "code": "1",
                         "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
-                        "data": {
-                            article
-                        }
+                        "data": article
                     });
                 });
             } else {
@@ -317,7 +315,7 @@ module.exports = {
                     yearNow = tplYear;
                     monthNow = tplMonth;
                     yearObj = {
-                        "name": yearNow,
+                        "year": yearNow,
                         "data": []
                     };
                     monthObj = {

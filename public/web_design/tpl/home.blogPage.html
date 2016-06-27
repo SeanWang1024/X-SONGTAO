@@ -3,24 +3,24 @@
         <div class="bg-right-innerBlock text-center clearfix">
             <!--img-->
             <div class="bg-right-innerBlock-myImg">
-                <img class="myInfo-box-shadow img-circle aboutme" width="100%" ng-src="{{myInfo.imgurl}}" alt="我的头像好像没加载出来诶..">
-
-
+                <img class="myInfo-box-shadow img-circle aboutme" width="100%" ng-src="{{myInfo.img_url}}" alt="我的头像好像没加载出来诶..">
             </div>
             <!--info-->
             <div class="bg-right-innerBlock-myInfo">
                 <!--name-->
-                <h2 class="myInfo_name myInfo-shadow" ng-bind="myInfo.name"></h2>
+                <h2 class="myInfo_name myInfo-shadow" ng-bind="myInfo.full_name"></h2>
                 <!--Web Developer & Full Stack-->
                 <h4 class="myInfo_position myInfo-shadow" ng-bind="myInfo.position"></h4>
                 <!--location: Suzhou, China-->
                 <h5 class="myInfo_address myInfo-shadow">
                     <span class="fa fa-map-marker"></span> {{myInfo.address}}
                 </h5>
-                <h5 class="myInfo_mood myInfo-shadow"><i class="fa fa-coffee"></i> {{myInfo.mood}}</h5>
+                <h5 class="myInfo_mood myInfo-shadow"><i class="fa fa-coffee"></i> {{myInfo.motto}}</h5>
                 <section class="bg-right-innerBlock-myInfo-nav myInfo-shadow">
                     <h5>
-                        <span ng-repeat="item in blogPage.column" ui-sref="{{item.uiUrl}}" ui-sref-active="active" ng-bind="item.name"></span>
+                        <span ui-sref="blog.articleList" ui-sref-active="active">最近更新</span>
+                        <span ui-sref="blog.historyList" ui-sref-active="active">时光机</span>
+                        <span ui-sref="blog.tagList" ui-sref-active="active">标签库</span>
 
                     </h5>
                 </section>
@@ -47,20 +47,11 @@
         </div>
         <!--saySomething-->
         <div class="saySomething myInfo-shadow">
-
             <div class="saySomething-inner">
-                <div class="saySomething-inner-word" ng-bind-html="myInfo.personalStateHTML | toTrusted">
-                    <!--我的陈述-->
+                <div class="saySomething-inner-word" ng-bind-html="myInfo.personal_state | toTrusted">
                 </div>
-                <!--<div class="center-block text-center">-->
-                <!--<div class="btn-back"><i class="fa fa-reply"></i> 返回</div>-->
-                <!--</div>-->
             </div>
         </div>
-
-        <!--source: git qq weixin csr-->
-
-
     </div>
     <div class="col-lg-8 col-md-12  bg-right-content noPadding">
         <div class="bg-right-contentInner">
@@ -87,6 +78,6 @@
             </div>
         </div>
         <!--footer-->
-        <div ng-include="'/web/views/home.footer.html'"></div>
+        <div ng-include="'web/tpl/home.footer.html'"></div>
     </div>
 </div>

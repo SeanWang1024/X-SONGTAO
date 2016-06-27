@@ -57,12 +57,12 @@ module.exports = {
 
 
             }
-
-
             res.status(200);
             res.send({
-                tagLists: tagsArr
-            })
+                "code": "1",
+                "msg": `find tag all with structure success!`,
+                "data":tagsArr
+            });
         });
     },
     getById: function (req, res, next) {

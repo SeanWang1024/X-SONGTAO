@@ -1,17 +1,51 @@
 'use strict';
 
-angular.module('xstApp', [
-//'ngAnimate',
-'ui.router']);
+(function () {
+    angular.module('xstApp', ['ui.router'])
+    /**
+     * 配置文件
+     * */
+    .factory('API', function () {
+        var url = "http://localhost:8088";
+        var MY_INFO_ID = '576b95155fce2dfd3874e738';
+        return {
+            /**
+             * 用户、登录相关
+             * */
+            MY_INFO_ID: MY_INFO_ID,
+            //登录
+            login: url + '/api/login',
+            //获取我的信息
+            getMyInfo: url + '/api/user/' + MY_INFO_ID,
 
-'use strict';
+            /**
+             * 文章相关
+             * */
+            //获取最新的十条文章
+            ArticleFrom: "0",
+            ArticleTo: "10",
+            newUpdateArticle: url + '/api/articles/from_to',
+            //由文章id获取文章详情
+            getArticleById: url + '/api/article/id',
+            //获取文章历史记录
+            getArticleHistoryWithStructure: url + '/api/article_history',
 
-angular.module('xstApp').factory("$api", [function () {
-    var url = "http://localhost:8088";
-    return {
-        getUserInfo: url + '/api/user_info'
-    };
-}]);
+            /**
+             * 标签相关
+             * */
+            //获取标签列表(带有结构的)
+            getTagsListWithStructure: url + '/api/tags_with_structure',
+            //由标签id获取文章列表
+            getArticlesWithTagId: url + '/api/article_tag/id',
+
+            /**
+             * 获取评论
+             * */
+            getArticlesComments: url + '/api/article/comments/article_id'
+
+        };
+    });
+})();
 
 console.log('你好!你这是在.....想看源码?联系我吧!');
 (function () {
@@ -76,210 +110,63 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
     });
 })();
 
+'use strict';
 /**
  * Created by xiangsongtao on 16/2/8.
  */
-var prefix = '/web/';
-var pagesize = 20;
-angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', '$api', function ($stateProvider, $urlRouterProvider, $api) {
-    $urlRouterProvider.when("/blog", "/blog/articleList").otherwise("/");
 
-    $stateProvider
-    //  首页
-    .state('home', {
-        url: "/",
-        templateUrl: prefix + 'tpl/home.index.html'
-    })
-    //  登陆
-    .state('login', {
-        url: "/login",
-        templateUrl: prefix + 'tpl/home.login.html',
-        controller: 'loginController'
-    }).state('blog', {
-        resolve: {
-            response: function response($http) {
-                return $http.get('/admin/api/myinfo', {
-                    cache: true
-                }).success(function (response) {
-                    return response;
-                }).error(function (erroInfo, status) {
-                    $(".blackShade.error").addClass("show");
-                    $(".blackShade.error h3").text("哎呦,好像出错了!");
-                    $(".blackShade.error span").html(erroInfo);
-                    $(".blackShade.error small").text("状态码:" + status);
-                });
-            }
-        },
-        controller: 'blogPageController',
-        url: "/blog",
-        templateUrl: prefix + 'tpl/home.blogPage.html'
-    }).state('blog.articleList', {
-        resolve: {
-            response: function response($http) {
-                return $http.get('/api/blog/articles', {
-                    cache: true
-                }).success(function (response) {
-                    return response;
-                }).error(function (erroInfo, status) {
-                    $(".blackShade.error").addClass("show");
-                    $(".blackShade.error h3").text("哎呦,好像出错了!");
-                    $(".blackShade.error span").html(erroInfo);
-                    $(".blackShade.error small").text("状态码:" + status);
-                });
-            }
-        },
-        controller: 'ArticleListController',
-        url: "/articleList",
-        templateUrl: prefix + 'tpl/home.blogPage.articleList.html'
-    }).state('blog.historyList', {
-        resolve: {
-            response: function response($http) {
-                return $http.get('/api/LifeStyle/historys', {
-                    cache: true
-                }).success(function (response) {
-                    return response;
-                }).error(function (erroInfo, status) {
-                    $(".blackShade.error").addClass("show");
-                    $(".blackShade.error h3").text("哎呦,好像出错了!");
-                    $(".blackShade.error span").html(erroInfo);
-                    $(".blackShade.error small").text("状态码:" + status);
-                });
-            }
-        },
-        controller: 'HistoryListController',
-        url: "/historyList",
-        templateUrl: prefix + 'tpl/home.blogPage.historyList.html'
-    }).state('blog.tagList', {
-        resolve: {
-            response: function response($http) {
-                return $http.get('/api/LifeStyle/tags', {
-                    cache: true
-                }).success(function (response) {
-                    return response;
-                }).error(function (erroInfo, status) {
-                    $(".blackShade.error").addClass("show");
-                    $(".blackShade.error h3").text("哎呦,好像出错了!");
-                    $(".blackShade.error span").html(erroInfo);
-                    $(".blackShade.error small").text("状态码:" + status);
-                });
-            }
-        },
-        //controller:'',
-        controller: 'TagListController',
-        url: "/tagList",
-        templateUrl: prefix + 'tpl/home.blogPage.tagList.html'
-    })
-    // .state('blog',{
-    //
-    // })
+// var pagesize = 20;
+(function () {
+    var prefix = '/web/';
+    angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.when("/blog", "/blog/articleList").otherwise("/");
 
-    //技术博客
-    //
-    // .state('blog.FrontEnd-articleList', {
-    //     resolve: {
-    //         response: function ($http) {
-    //             return $http.get('/api/FrontEnd/articles', {
-    //                 cache: true
-    //             })
-    //                 .success(function (response) {
-    //                     return response;
-    //                 })
-    //                 .error(function (erroInfo, status) {
-    //                     $(".blackShade.error").addClass("show");
-    //                     $(".blackShade.error h3").text("哎呦,好像出错了!");
-    //                     $(".blackShade.error span").html(erroInfo);
-    //                     $(".blackShade.error small").text("状态码:" + status);
-    //                 });
-    //         }
-    //     },
-    //     controller: 'ArticleListController',
-    //     url: "/frontEndArticleList",
-    //     templateUrl: prefix + 'tpl/home.blogPage.articleList.html'
-    // })
-    // .state('blog.FrontEnd-historyList', {
-    //     resolve: {
-    //         response: function ($http) {
-    //             return $http.get('/api/FrontEnd/historys', {
-    //                 cache: true
-    //             })
-    //                 .success(function (response) {
-    //                     return response;
-    //                 })
-    //                 .error(function (erroInfo, status) {
-    //                     $(".blackShade.error").addClass("show");
-    //                     $(".blackShade.error h3").text("哎呦,好像出错了!");
-    //                     $(".blackShade.error span").html(erroInfo);
-    //                     $(".blackShade.error small").text("状态码:" + status);
-    //                 });
-    //         }
-    //     },
-    //     controller: 'HistoryListController',
-    //     url: "/frontEndHistoryList",
-    //     templateUrl: prefix + 'tpl/home.blogPage.historyList.html'
-    // })
-    // .state('blog.FrontEnd-tagList', {
-    //     resolve: {
-    //         response: function ($http) {
-    //             return $http.get('/api/FrontEnd/tags', {
-    //                 cache: true
-    //             })
-    //                 .success(function (response) {
-    //
-    //                     return response;
-    //                 })
-    //                 .error(function (erroInfo, status) {
-    //                     $(".blackShade.error").addClass("show");
-    //                     $(".blackShade.error h3").text("哎呦,好像出错了!");
-    //                     $(".blackShade.error span").html(erroInfo);
-    //                     $(".blackShade.error small").text("状态码:" + status);
-    //                 });
-    //         }
-    //     },
-    //     //controller:'',
-    //     controller: 'TagListController',
-    //     url: "/frontEndTagList",
-    //     templateUrl: prefix + 'tpl/home.blogPage.tagList.html'
-    // })
-    //详细内容页,公用模板
-    .state('detail', {
-        params: {
-            'catalogueName': '',
-            'type': '',
-            'id': ''
-        },
-        url: "/:catalogueName/:type/:id",
-        resolve: {
-            response: function response($http, $stateParams) {
-                var catalogueName = $stateParams.catalogueName;
-                var type = $stateParams.type;
-                var id = $stateParams.id;
-                return $http.get('api/' + catalogueName + '/' + type + '/' + id, {
-                    cache: true
-                }).success(function (response) {
-                    return response;
-                }).error(function (erroInfo, status) {
-                    $(".blackShade.error").addClass("show");
-                    $(".blackShade.error h3").text("哎呦,好像出错了!");
-                    $(".blackShade.error span").html(erroInfo);
-                    $(".blackShade.error small").text("状态码:" + status);
-                });
-            }
-        },
-        controller: 'DetailController',
-        templateUrl: function templateUrl(urlParams) {
-            switch (urlParams.type) {
-                case 'article':
-                    return prefix + 'tpl/home.blogPage.article.html';
-                    break;
-                case 'tag':
-                    return prefix + 'tpl/home.blogPage.tag.html';
-                    break;
-                default:
-                    alert("404");
-            }
-        }
-    });
-}]);
+        $stateProvider
+        //  首页
+        .state('home', {
+            url: "/",
+            templateUrl: prefix + 'tpl/home.index.html'
+        })
+        //  登陆
+        .state('login', {
+            url: "/login",
+            templateUrl: prefix + 'tpl/home.login.html',
+            controller: 'loginController'
+        }).state('blog', {
+            controller: 'blogPageController',
+            url: "/blog",
+            templateUrl: prefix + 'tpl/home.blogPage.html'
+        }).state('blog.articleList', {
+            controller: 'ArticleListController',
+            url: "/articleList",
+            templateUrl: prefix + 'tpl/home.blogPage.articleList.html'
+        }).state('blog.historyList', {
+            controller: 'HistoryListController',
+            url: "/historyList",
+            templateUrl: prefix + 'tpl/home.blogPage.historyList.html'
+        }).state('blog.tagList', {
+            controller: 'TagListController',
+            url: "/tagList",
+            templateUrl: prefix + 'tpl/home.blogPage.tagList.html'
+        })
+        //根据tagid查找文章列表
+        .state('blog.findArticlesByTag', {
+            params: {
+                'id': ''
+            },
+            controller: 'findArticlesByTagController',
+            url: "/articleList/tag/:id",
+            templateUrl: prefix + 'tpl/home.blogPage.articleList.html'
+        }).state('blog.detail', {
+            params: {
+                'id': ''
+            },
+            url: "/article/:id",
+            controller: 'DetailController',
+            templateUrl: prefix + 'tpl/home.blogPage.article.html'
+        });
+    }]);
+})();
 
 /**
  * Created by xiangsongtao on 16/2/8.
@@ -287,7 +174,9 @@ angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', '$api',
 angular.module('xstApp')
 
 //登陆控制器
-.controller('loginController', ['$scope', '$http', function ($scope, $http) {
+.controller('loginController', ['$scope', '$http', '$api', function ($scope, $http, $api) {
+    console.log($api.login);
+
     $("#login").click(function () {
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
@@ -298,78 +187,96 @@ angular.module('xstApp')
         };
         if (username == '' || password == '') {
             alert("用户名/密码不能为空");
-            alert(username);
-            alert(password);
+            // alert(username)
+            // alert(password)
             return;
         }
-        $http.post('/dologin', data).success(function (response) {
-            if (response) {
-                window.location.href = "/admin";
+        $http.post($api.login, data).success(function (response) {
+            if (parseInt(response.code) === 1) {
+                //login success
+                window.location.href = '/admin/' + response.token;
+            } else {
+                //login error
+                alert("用户名/密码错误");
             }
         });
     });
 }])
-//LifeStyleBlog控制器
-.controller('LifeStyleController', ['$scope', 'response', function ($scope, response) {
-    $scope.myInfo = response.data.myInfo;
-    $scope.blogPage = response.data.LifeStyleIndex;
-    //背景图片的替换函数
-    $scope.getBackgroundStyle = function (imagepath) {
-        return {
-            'background-image': 'url(' + imagepath + ')'
-        };
-    };
-
-    $('[data-toggle="popover"]').popover({
-        //trigger: 'focus'
+//blogPageController控制器
+.controller('blogPageController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+    $http.get(API.getMyInfo).success(function (response) {
+        console.log(response);
+        if (parseInt(response.code) === 1) {
+            $scope.myInfo = response.data;
+        }
+    }).error(function (erroInfo, status) {
+        // $(".blackShade.error").addClass("show");
+        // $(".blackShade.error h3").text("哎呦,好像出错了!");
+        // $(".blackShade.error span").html(erroInfo);
+        // $(".blackShade.error small").text("状态码:" + status);
     });
-}])
-//FrontEndBlog控制器
-.controller('blogPageController', ['$scope', 'response', function ($scope, response) {
-    $scope.myInfo = response.data.myInfo;
-    $scope.blogPage = response.data.FrontEndIndex;
-    //背景图片的替换函数
-    $scope.getBackgroundStyle = function (imagepath) {
-        return {
-            'background-image': 'url(' + imagepath + ')'
-        };
-    };
-
-    $('[data-toggle="popover"]').popover({
-        //trigger: 'focus'
-    });
+    $('[data-toggle="popover"]').popover();
 }])
 //ArticleList控制器
-.controller('ArticleListController', ['$scope', '$http', 'response', '$rootScope', function ($scope, $http, response, $rootScope) {
-    console.log(response);
-    $scope.articleLists = response.data.articleLists;
-    //总共文章数
-    var totalArticlesNum = response.data.articleLists.length;
-    $rootScope.totalArticlesNum = totalArticlesNum;
-    //每页多少
-    var onePageArticlesNum = pagesize;
-    $rootScope.onePageArticlesNum = onePageArticlesNum;
-    //分几页
-    var pageNum = parseInt(totalArticlesNum / onePageArticlesNum);
-    $rootScope.pageNum = pageNum;
-    //存放分页数量的数组,用于ng-repeat
-    var pagePagination = [];
-    for (var i = 0; pageNum > i; i++) {
-        pagePagination.push(i + 1);
-    }
-    $scope.pagePagination = pagePagination;
+.controller('ArticleListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+    var url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
+    $http.get(url).success(function (response) {
+        console.log(response);
+        if (parseInt(response.code) === 1) {
+            $scope.articleLists = response.data;
+        }
+    }).error(function (erroInfo, status) {
+        // $(".blackShade.error").addClass("show");
+        // $(".blackShade.error h3").text("哎呦,好像出错了!");
+        // $(".blackShade.error span").html(erroInfo);
+        // $(".blackShade.error small").text("状态码:" + status);
+    });
 }])
 //HistoryList控制器
-.controller('HistoryListController', ['$scope', 'response', function ($scope, response) {
-    $scope.historyLists = response.data;
+.controller('HistoryListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+    $http.get(API.getArticleHistoryWithStructure).success(function (response) {
+        console.log(response);
+        if (parseInt(response.code) === 1) {
+            $scope.historyLists = response.data;
+        }
+    }).error(function (erroInfo, status) {});
 }])
 //TagList控制器
-.controller('TagListController', ['$scope', 'response', function ($scope, response) {
-    $scope.tagLists = response.data;
+.controller('TagListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+    $http.get(API.getTagsListWithStructure).success(function (response) {
+        console.log("TagListController response");
+        console.log(response);
+        if (parseInt(response.code) === 1) {
+            $scope.tagLists = response.data;
+        }
+    }).error(function (erroInfo, status) {});
 }])
 //Detail控制器-catalogueName-type-id
-.controller('DetailController', ['$scope', 'response', function ($scope, response) {
-    $scope.detail = response.data;
+.controller('DetailController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
+    var url = API.getArticleById.replace('id', $stateParams.id);
+    $http.get(url).success(function (response) {
+        console.log(response);
+        if (parseInt(response.code) === 1) {
+            $scope.article = response.data;
+            //获取评论
+            var url = API.getArticlesComments.replace('article_id', $scope.article._id);
+            $http.get(url).success(function (response) {
+                console.log('-----response------');
+                console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.comment = response.data;
+                }
+            });
+        }
+    }).error(function (erroInfo, status) {});
+}]).controller('findArticlesByTagController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
+    var url = API.getArticlesWithTagId.replace('id', $stateParams.id);
+    $http.get(url).success(function (response) {
+        console.log(response);
+        if (parseInt(response.code) === 1) {
+            $scope.articleLists = response.data;
+        }
+    }).error(function (erroInfo, status) {});
 }]);
 
 /**
@@ -610,24 +517,86 @@ angular.module('xstApp')
 });
 
 /**
- * Created by xiangsongtao on 16/2/9.
+ * Created by xiangsongtao on 16/6/26.
  */
-angular.module('xstApp').filter("pageSelect", ['$rootScope', function ($rootScope) {
-    return function (inputArray, pageNow) {
-        var array = [];
-        if (pageNow == null || pageNow == '') {
-            pageNow = 1;
-        }
-        //总共文章数
-        var totalArticlesNum = $rootScope.totalArticlesNum;
-        //每页的文章数
-        var onePageArticlesNum = $rootScope.onePageArticlesNum;
-        for (var i = (pageNow - 1) * onePageArticlesNum; onePageArticlesNum * pageNow > i && totalArticlesNum > i; i++) {
-            array.push(inputArray[i]);
-        }
-        return array;
-    };
-}]);
+(function () {
+    angular.module('xstApp').factory("timestampToDate", function () {
+        return function (timestamp) {
+            var timestampInt = parseInt(timestamp);
+            if (timestampInt.toString().length === 13) {
+                //正确的时间戳
+                return new Date(timestampInt);
+            } else {
+                //错误的时间戳返回现在时间
+                return new Date();
+            }
+        };
+    }).filter("toEnMonth", ['timestampToDate', function (timestampToDate) {
+        return function (value) {
+            // var date = timestampToDate(value);
+            // let month = parseInt(value);
+            switch (parseInt(value)) {
+                case 1:
+                    return "Jan";
+                    break;
+                case 2:
+                    return "Feb";
+                    break;
+                case 3:
+                    return "Mar";
+                    break;
+                case 4:
+                    return "Apr";
+                    break;
+                case 5:
+                    return "May";
+                    break;
+                case 6:
+                    return "Jun";
+                    break;
+                case 7:
+                    return "Jul";
+                    break;
+                case 8:
+                    return "Aug";
+                    break;
+                case 9:
+                    return "Sept";
+                    break;
+                case 10:
+                    return "Oct";
+                    break;
+                case 11:
+                    return "Nov";
+                    break;
+                case 12:
+                    return "Dec";
+                    break;
+
+            }
+        };
+    }]);
+})();
+// /**
+//  * Created by xiangsongtao on 16/2/9.
+//  */
+// angular.module('xstApp')
+// .filter("pageSelect",['$rootScope', function ($rootScope) {
+//   return function (inputArray,pageNow) {
+//     var array = [];
+//     if(pageNow == null || pageNow == ''){
+//       pageNow = 1;
+//     }
+//     //总共文章数
+//     var totalArticlesNum = $rootScope.totalArticlesNum;
+//     //每页的文章数
+//     var onePageArticlesNum = $rootScope.onePageArticlesNum;
+//     for(var i = (pageNow-1)*onePageArticlesNum;onePageArticlesNum*pageNow>i && totalArticlesNum>i;i++){
+//       array.push(inputArray[i])
+//     }
+//     return array;
+//   }
+// }])
 
 /**
  * Created by xiangsongtao on 16/2/9.

@@ -120,7 +120,7 @@ gulp.task('css:main', ()=> {
 gulp.task('js:common', function () {
     var stream = gulp.src([
         `${PATH.SRC}/lib/jquery.min.js`,
-        `${PATH.SRC}/lib/angular.min.js`,
+        `${PATH.SRC}/lib/angular.js`,
         `${PATH.SRC}/lib/angular-ui-router.min.js`,
         `${PATH.SRC}/lib/bootstrap.min.js`,
     ]).pipe($.concat('common.js')).pipe($.babel());

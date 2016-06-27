@@ -46,7 +46,7 @@ router.all('*', function (req, res, next) {
             }, function (errObj) {
                 res.status(200);
                 res.send(errObj);
-            })
+            });
         } else {
             res.status(200);
             res.send({

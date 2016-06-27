@@ -432,93 +432,8 @@ body {
 
 
 
-/*图片集的box*/
-.article-index-body-imgSilder {
-  height: 310px;
-  width: 100%;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.swiper-container {
-  height: 100%;
-}
-
-.swiper-slide-innerimg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  position: relative;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-
-/*搜索框*/
-.searchBox {
-  float: right;
-  position: relative;
-  font-weight: 400;
-  font-style: normal;
-  display: inline-flex;
-  color: rgba(0, 0, 0, .87);
-  font-size: 1em;
-}
-
-.searchBox input {
-  padding: 6px 7px;
-  margin: 0;
-  width: 200px;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 0 auto;
-  -ms-flex: 1 0 auto;
-  flex: 1 0 auto;
-  outline: 0;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  text-align: left;
-  line-height: 1.2142em;
-  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background: #FFF;
-  border: 1px solid rgba(34, 36, 38, .15);
-  color: rgba(0, 0, 0, .87);
-  border-radius: .28571429rem;
-  -webkit-transition: box-shadow .1s ease, border-color .1s ease;
-  transition: box-shadow .1s ease, border-color .1s ease;
-  box-shadow: none;
-
-  -webkit-appearance: none;
-}
-
-.searchBox i {
-  top: 12px;
-  right: 4px;
-  cursor: pointer;
-  position: absolute;
-  text-align: center;
-  margin: 0;
-  opacity: .5;
-  transition: all .3s ease;
-  border-radius: 500em !important;
-  /* line-height: 0; */
-  padding: 3px 4px 4px 4px;
-  box-shadow: 0 0 0 .1em rgba(0, 0, 0, .1) inset;
-  width: 22px;
-  height: 22px;
-  background-color: #FFF;
-  color: #1B1C1D;
-}
-
-.searchBox i:hover {
-
-  background-color: #1B1C1D;
-  color: #FFF;
-}
 
 
-/*分页按钮*/
-.pagination li {
-  cursor: pointer;
-}
 
 /*黑色遮罩*/
 .blackShade {
@@ -669,22 +584,22 @@ body {
   background: rgba(0, 0, 0, 0.9) url(../img/pleasehole-img.png) no-repeat center center/30px auto;
 }
 
-/*分页按钮*/
-/*38b7ea*/
-.pagination .active a {
-  background-color: $base-theme-color;
-  border-color: $base-theme-color;
-}
-
-.pagination .active a:hover {
-  background-color: #49C8FC;
-  border-color: #49C8FC;
-}
-
-.pagination > li > a, .pagination > li > span {
-  color: #333;
-}
-
-.pagination > li > a:hover, .pagination > li > span:hover {
-  color: #49C8FC;
-}
+///*分页按钮*/
+///*38b7ea*/
+//.pagination .active a {
+//  background-color: $base-theme-color;
+//  border-color: $base-theme-color;
+//}
+//
+//.pagination .active a:hover {
+//  background-color: #49C8FC;
+//  border-color: #49C8FC;
+//}
+//
+//.pagination > li > a, .pagination > li > span {
+//  color: #333;
+//}
+//
+//.pagination > li > a:hover, .pagination > li > span:hover {
+//  color: #49C8FC;
+//}

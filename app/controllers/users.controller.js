@@ -78,7 +78,7 @@ module.exports = {
                 res.cookie('rememberme', '1', { maxAge: 900000})
                 res.send({
                     "code": "1",
-                    "msg": "login success!",
+                    "msg": "login success! please use token to access!",
                     "token": $base64.encode(`${username}|${password}|${new Date().getTime()}`),
                     "user_info": user
                 });
