@@ -348,6 +348,33 @@ module.exports = {
                 "msg": "article non-exist, so comment create failure!"
             });
         });
+    },
+    check:function (req,res,next) {
+        Comments.findOne({_id: req.body._id}, function (err, comment) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            if (!!comment) {
+                let {state} = req.body;
+                //数据写入并保存
+                comment.state = !!state;
+                //保存
+                comment.save();
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "comment check success!",
+                    "data": comment
+                });
+            } else {
+                res.status(200);
+                res.send({
+                    "code": "2",
+                    "msg": "comment check failure, comment non-exist!"
+                });
+            }
+        });
     }
 };
 

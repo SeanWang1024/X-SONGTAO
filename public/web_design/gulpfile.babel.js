@@ -42,6 +42,10 @@ gulp.task('move:index', function () {
     }
 });
 
+// gulp.task('sdfe',function () {
+//     return gulp.src(`sdfe.html`).pipe($.htmlmin({collapseWhitespace: true})).pipe(gulp.dest('css'))
+// })
+
 gulp.task('move:tpl', ()=> {
     var stream = gulp.src(`${PATH.SRC}/tpl/*.html`);
     switch (ENV) {
@@ -100,7 +104,7 @@ gulp.task('css:main', ()=> {
         .pipe($.autoprefixer({
             browsers: ['IE 8'],
             cascade: false
-        }))
+        }));
     switch (ENV) {
         case 'DEV':
             return stream.pipe(gulp.dest(`${PATH.DIST}/css`));

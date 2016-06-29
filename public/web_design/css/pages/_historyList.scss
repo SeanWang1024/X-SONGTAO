@@ -1,14 +1,12 @@
 .yearBox {
   background-color: #fff;
-  padding: 30px 35px 30px;
+  //padding: 30px 35px 30px;
   margin-bottom:20px;
   .yearBox__title {
-    padding:3px 0 3px 20px;
-    color: $base-word-color;
-    //background-color: $base-theme-color;
-    border-bottom: 1px solid #ddd;
-    //border-radius: 44px;
-
+    padding: 26px 0 4px 43px;
+    color: #fff;
+    background: #464646;
+    //border-bottom: 1px solid #ddd;
   }
   .yearBox__content {
     width: 100%;
@@ -36,6 +34,7 @@
         text-align: center;
         h3 {
           color: $base-word-color;
+          text-shadow: 1px 1px 0px #ffffff;
         }
 
       }
@@ -45,8 +44,8 @@
         height: 100%;
         border-left: 1px solid #ddd;
         .monthBox__content__item {
-          height:24px;
-          line-height:24px;
+          height:28px;
+          line-height:28px;
           font-size:16px;
           color: $base-word-color;
           cursor: pointer;

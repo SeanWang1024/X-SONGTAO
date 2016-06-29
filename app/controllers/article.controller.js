@@ -9,6 +9,9 @@ let Articles = mongoose.model('Articles');
 let Comments = mongoose.model('Comments');
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 
+let marked = require('marked');
+let hljs = require('highlight.js');
+
 //获取所有tags的array
 function findAllTags() {
     return new Promise(function (resolve) {
@@ -35,11 +38,10 @@ function findTagNameById(tags, id) {
 module.exports = {
     //增加,增加的同时对标签使用num++
     add: function (req, res, next) {
-        let {title, publish_time, author, tags, state, content} =  req.body;
+        let {title, publish_time, tags, state, content} =  req.body;
         let article = new Articles({
             title,
             publish_time,
-            author,
             read_num: 0,
             comment_num: 0,
             comment_id: "",
@@ -51,7 +53,7 @@ module.exports = {
         //tag used_num ++
         for (let tag_id of article.tags) {
             Tags.findOne({_id: tag_id}, function (err, tag) {
-                if(!!tag){
+                if (!!tag) {
                     tag.used_num++;
                     tag.save();
                 }
@@ -73,7 +75,10 @@ module.exports = {
                 return next();
             }
             if (!!article) {
-                let {title, publish_time, author, tags, state, content} = req.body;
+                let {title, publish_time, tags, state, content} = req.body;
+                /**
+                 * tag判断操作
+                 * */
                 let oldTags = article.tags;
                 //找新增的
                 for (let new_tag of tags) {
@@ -86,7 +91,6 @@ module.exports = {
                         });
                     }
                 }
-
                 //找去除的
                 for (let old_tag of oldTags) {
                     if (tags.indexOf(old_tag) === -1) {
@@ -98,13 +102,33 @@ module.exports = {
                         });
                     }
                 }
+
+                /**
+                 * markdown转html
+                 **/
+                marked.setOptions({
+                    renderer: new marked.Renderer(),
+                    gfm: true,
+                    tables: true,
+                    breaks: true,
+                    pedantic: false,
+                    sanitize: false,
+                    smartLists: true,
+                    smartypants: false,
+                    highlight: function (code) {
+                        return hljs.highlightAuto(code).value;
+                    }
+                });
+                article.content = marked(content);
+
+
+
                 //数据写入并保存
                 article.title = title;
                 article.publish_time = publish_time;
-                article.author = author;
                 article.tags = tags;
                 article.state = state;
-                article.content = content;
+                // article.content = content;
                 //保存
                 article.save();
                 res.status(200);
@@ -277,7 +301,7 @@ module.exports = {
     },
     //获取文章历史记录,需要根据【年】->【月】->【文章arr】划分组合
     getHistory: function (req, res, next) {
-        Articles.find({}, {'title': 1, 'publish_time': 1, 'author': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
+        Articles.find({}, {'title': 1, 'publish_time': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();

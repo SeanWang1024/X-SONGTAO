@@ -42,7 +42,6 @@ module.exports = function () {
     mongoose.model('Articles', new mongoose.Schema({
         title: String,                          //文章标题
         publish_time: Number,                   //文章发表时间
-        author: String,//作者
         read_num: Number,                        //阅读数
         comment_num: Number,                     //评论数,当评论新增的时候进行++操作
         // comment_id: String,                     //评论的id,当文章创建时,创建一个comment

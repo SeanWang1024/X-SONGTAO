@@ -171,6 +171,7 @@ router.put('/comment', CommentController.edit);
 router.get('/article/comments/:article_id',CommentController.getByArticleId);
 //delete
 router.delete('/comment/:id', CommentController.delete);
-
+//checkComments
+router.post('/changeCommentState', CommentController.check);
 
 module.exports = router;

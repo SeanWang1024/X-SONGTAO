@@ -1,23 +1,26 @@
 
   .tagBox {
     margin-bottom: 20px;
-    padding: 30px 35px 30px;
+    //padding-bottom: 20px;
+    //padding: 30px 35px 30px;
     background-color: #fff;
     .tagBox__header {
       border-bottom: 1px solid #ddd;
-      padding: 3px 0 3px 20px;
-      color: $base-word-color;
+      padding: 26px 0 4px 43px;
+      color: #fff;
+      background:#464646;
+      margin:0;
     }
     .tagBox__content {
       @include display-flex;
       @include justify-content(flex-start);
       @include align-items(center);
-      margin: 10px;
-      padding:10px;
+      //margin: 10px;
+      padding:15px;
 
 
       .tagBox__content__item {
-        margin: 0 10px;
+        margin: 10px;
         padding: 0 15px;
         line-height: 24px;
         font-size: 16px;
