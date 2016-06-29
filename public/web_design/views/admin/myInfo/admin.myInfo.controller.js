@@ -2,60 +2,44 @@
  * Created by xiangsongtao on 16/6/29.
  */
 (function () {
-    angular.module('xSongtaoAdminApp')
-    //路由
-        .config(['$stateProvider', function ($stateProvider) {
-            //$urlRouterProvider
-            //.when("/", "/")
-            //.otherwise("");
-            $stateProvider
-                .state('myInfo', {
-                    params: {
-                        id: ''
-                    },
-                    url: "/myInfo",
-                    resolve: {
-                        response: function ($http) {
-                            //var id = $stateParams.id;
-                            return $http.get('/admin/api/myinfo/', {
-                                cache: false
-                            })
-                                .success(function (response) {
-                                    console.log('我的信息返回 结果:');
-                                    console.log(response);
-                                    return response;
-                                });
-                        }
-                    },
-                    controller: 'myInfoCtrl',
-                    templateUrl: './views/myInfo/myInfo.tpl.html'
-                })
-        }])
-        //myInfo的控制器
-        .controller('myInfoCtrl', function ($scope, response, $http) {
-            if (!response.data.myInfo.personalStateHTML) {
-                response.data.myInfo.personalStateHTML = '';
-            }
-            //页面中数据写入
-            $scope.myinfo = response.data.myInfo;
-            //文本输入
-            var toolbar = ['bold', 'italic', 'underline', 'color', '|', 'ol', 'ul', '|', 'indent', 'outdent', 'alignment'];
-            var editor = new Simditor({
-                textarea: $('#editor'),
-                toolbar: toolbar
-                //optional options
+    angular.module('xstApp')
+    //myInfo的控制器
+        .controller('myInfoCtrl', ['$scope', '$http', 'API', function ($scope, $http, API) {
+
+            $http.get(API.getMyInfo).success(function (response) {
+                console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.myinfo = response.data;
+                    console.log( $scope.myinfo)
+                }
             });
 
-            //文本数据写入
-            editor.setValue(response.data.myInfo.personalStateHTML);
+
+            // if (!response.data.myInfo.personalStateHTML) {
+            //     response.data.myInfo.personalStateHTML = '';
+
+            // }
+            //页面中数据写入
+            // $scope.myinfo = response.data.myInfo;
+            //文本输入
+            // var toolbar = ['bold', 'italic', 'underline', 'color', '|', 'ol', 'ul', '|', 'indent', 'outdent', 'alignment'];
+            // var editor = new Simditor({
+            //     textarea: $('#editor'),
+            //     toolbar: toolbar
+            //     //optional options
+            // });
+            //
+            // //文本数据写入
+            // editor.setValue(response.data.myInfo.personalStateHTML);
 
             //初始化图片上传插件
-            $("#imgUpload").dropzone({
-                url: "admin/api/myinfo/imgupload"
-            });
+            // $("#imgUpload").dropzone({
+            //     url: "admin/api/myinfo/imgupload"
+            // });
 
             //点击显示input内容进行修改
             $(".inputContentStatic").click(function () {
+                alert("sdfs")
                 var $this = $(this);
                 $this.css("display", "none").siblings(".inputContent").css("display", "block").focus();
                 $this.siblings(".form-control-feedback").addClass("hidden");
@@ -97,7 +81,7 @@
                         }, 1000);
                     });
             })
-        });
+        }]);
 
 
 })();

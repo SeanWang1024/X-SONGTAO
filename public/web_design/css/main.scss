@@ -19,17 +19,24 @@
 //bootscrip的栅格系统及媒体查询规则
 @import "basic/grid";
 
-//左侧的主导航
+//首页Home的样式
 //@import "pages/_framework.scss";
-@import "pages/_pages.scss";
-@import "pages/_index.scss";
-@import "pages/_articleList.scss";
-@import "pages/_historyList.scss";
-@import "pages/_tagList.scss";
+@import "home/_pages.scss";
+@import "home/_index.scss";
+@import "home/_articleList.scss";
+@import "home/_historyList.scss";
+@import "home/_tagList.scss";
 //微信图片的modal样式
-@import "pages/_socialContact.modal.scss";
-@import "pages/_login.scss";
-@import "pages/_article.scss";
+@import "home/_socialContact.modal.scss";
+@import "home/_login.scss";
+@import "home/_article.scss";
+
+//后台的样式
+@import "admin/_base.scss";
+@import "admin/_article.scss";
+@import "admin/_myinfo.scss";
+@import "admin/_tag.scss";
+
 
 //响应式
 @import "mediaQuery/_768_991.scss";

@@ -4,9 +4,7 @@
 (function () {
     angular.module('xstApp')
 
-        .config(['$stateProvider', function ($stateProvider) {
 
-        }])
         //Detail控制器-catalogueName-type-id
         .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
             var url = API.getArticleById.replace('id', $stateParams.id);

@@ -10,6 +10,7 @@
                 if (parseInt(response.code) === 1) {
                     $scope.myInfo = response.data;
                 }
+   
 
             }).error(function (erroInfo, status) {
                 // $(".blackShade.error").addClass("show");

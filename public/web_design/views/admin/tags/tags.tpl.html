@@ -1,0 +1,114 @@
+<div class="tags text-center animated fadeIn">
+    <!--column title-->
+    <h3 class="title">
+        <i class="fa fa-fw fa-lg fa-tag"></i> 标签管理 / <span class="blue">TAGS</span>
+    </h3>
+    <!--增加-->
+    <div style="text-align: right;color:#449d44; cursor: pointer;">
+        <h4 data-toggle="modal" data-target="#addTags"><i class="fa fa-plus-square"></i> 增加</h4>
+    </div>
+    <div class="tableScrollBox">
+        <!--修改,启用禁用,查看-->
+        <div class="table-head">
+            <table class="table table-condensed" style="margin:0;">
+                <thead>
+                <tr class="text-center">
+                    <th style="display: none;">TagID</th>
+                    <th>TagName</th>
+                    <th>Cat.Name</th>
+                    <th>MarkClass</th>
+                    <th>HotNum</th>
+                    <th>State</th>
+                    <th></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table class="table table-condensed" id="table">
+                <thead style="display: none;">
+                <tr class="text-center">
+                    <th style="display: none;">TagID</th>
+                <th>TagName</th>
+                <th>Cat.Name</th>
+                <th>MarkClass</th>
+                <th>HotNum</th>
+                <th>State</th>
+                <th></th>
+                </tr>
+                </thead>
+                <colgroup></colgroup>
+                <tbody>
+                <tr ng-repeat="tag in tagLists | orderBy:['-catalogueName']" repeat-done="inlineTableEdit()">
+                    <td ng-bind="tag._id" style="display: none;"></td>
+                    <td ng-bind="tag.name"></td>
+                    <td ng-bind="tag.catalogueName"></td>
+                    <td ng-switch="tag.markClass">
+                        <span ng-switch-when="0">normal</span>
+                        <span ng-switch-when="1">big</span>
+                        <span ng-switch-when="2">large</span>
+                    </td>
+                    <td ng-bind="tag.hot"></td>
+                    <td ng-switch="tag.state">
+                        <span ng-switch-when="true">启用</span>
+                        <span ng-switch-when="false">禁用</span>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!--弹出层-增加-->
+<div class="modal fade" id="addTags" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus-square"></i> 增加标签/ADDTAGS</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="tagname" class="control-label">标签名/TagName:</label>
+                        <input type="text" class="form-control" id="tagname" name="tagname">
+                    </div>
+                    <div class="form-group">
+                        <label for="catname" class="control-label">分类名/Cat.Name:</label>
+                        <select name="catname" id="catname" class="form-control">
+                            <option value="FrontEnd">FrontEnd</option>
+                            <option value="LifeStyle">LifeStyle</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="markclass" class="control-label">标记类名/MarkClass:</label>
+                        <select name="markclass" id="markclass" class="form-control">
+                            <option value="0">normal</option>
+                            <option value="1">big</option>
+                            <option value="2">large</option>
+                        </select>
+                    </div>
+                    <div class="状态">
+                        <label for="state" class="control-label">状态/state:</label>
+                        <select name="state" id="state" class="form-control">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="saveTags" type="button" class="btn btn-primary btn-info">
+                    保存
+                    <span class="sending" style="display: none;"><i class="fa fa-spin fa-spinner"></i></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

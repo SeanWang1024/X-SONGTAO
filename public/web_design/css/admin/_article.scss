@@ -1,0 +1,73 @@
+
+.article {
+  height: calc(100% - 30px)
+}
+
+/* line 271, ../../app/styles/_layout.scss */
+.article .title {
+  width: 100%;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+/* line 277, ../../app/styles/_layout.scss */
+.article .cudaBtnBox #deleteArticle {
+  color: #c7c7c7;
+  transition: color ease 200ms;
+}
+
+/* line 281, ../../app/styles/_layout.scss */
+.article .cudaBtnBox #deleteArticle:hover {
+  color: #449d44;
+}
+
+/* line 284, ../../app/styles/_layout.scss */
+.article .cudaBtnBox #editArticle {
+  color: #c7c7c7;
+  transition: color ease 200ms;
+}
+
+/* line 288, ../../app/styles/_layout.scss */
+.article .cudaBtnBox #editArticle:hover {
+  color: #449d44;
+}
+
+/* line 291, ../../app/styles/_layout.scss */
+.article .cudaBtnBox #addArticle {
+  color: #c7c7c7;
+  transition: color ease 200ms;
+}
+
+/* line 295, ../../app/styles/_layout.scss */
+.article .cudaBtnBox #addArticle:hover {
+  color: #449d44;
+}
+
+/* line 304, ../../app/styles/_layout.scss */
+.article table {
+  text-align: center;
+  color: #fff;
+}
+
+/* line 307, ../../app/styles/_layout.scss */
+.article table th {
+  text-align: center;
+  color: #00b2e2;
+}
+
+/* line 314, ../../app/styles/_layout.scss */
+.article table tbody .active td {
+  color: #449d44;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* line 322, ../../app/styles/_layout.scss */
+.article table .danger td {
+  background-color: rgba(88, 0, 0, 0.35) !important;
+}
+
+/* line 326, ../../app/styles/_layout.scss */
+.article table td {
+  vertical-align: middle !important;
+  cursor: pointer;
+}
