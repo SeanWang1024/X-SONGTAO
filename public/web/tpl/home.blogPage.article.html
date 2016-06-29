@@ -1,0 +1,189 @@
+<article class="main-article animated fadeIn">
+    <section class="main-article-body">
+
+        <div class="paper">
+            <section class="paper__header">
+                <h1 ng-bind="article.title"></h1>
+            </section>
+            <section class="paper__info">
+                <div class="paper__info--span">
+                    <i class="fa fa-calendar"></i>
+                    <span ng-bind="article.publish_time | date: 'yyyy-MM-dd'"></span>
+                </div>
+                <div class="paper__info--span">
+                    <i class="fa fa-book"></i>
+                    阅读数
+                    <span ng-bind="article.read_num"></span>
+                </div>
+                <div class="paper__info--span">
+                    <i class="fa fa-comments"></i>
+                    评论数
+                    <span ng-bind="article.comment_num"></span>
+                </div>
+                <div class="paper__info--span" ng-repeat="tag in article.tags">
+                    <i class="fa fa-tag"></i> <span ng-bind="tag"></span>
+                </div>
+            </section>
+            <section class="paper__content">
+                <div class="paper__content--inner" ng-bind-html="article.content | toTrusted"></div>
+                <!--page-->
+            </section>
+            <!--上一篇 下一篇-->
+            <section class="paper__navBox">
+                <div class="paper__navBox__inner">
+                    <div class="pager-prev">
+                        <span>上一篇</span>
+                    </div>
+                    <div class="pager-next">
+                        <span>下一篇</span>
+                    </div>
+                </div>
+            </section>
+            <!--评论-->
+
+
+        </div>
+
+        <section class="commentbox">
+
+            <!--标题-->
+            <div class="commentbox__header">
+                <h3>Comments <span>16</span></h3>
+            </div>
+
+            <!--提问题-->
+            <div class="commentBox__question active">
+                <!--问题盒子-->
+                <div class="commentBox__questionBox">
+                    <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
+                    <div class="commentBox__questionBox--reply">
+                        <span>评论</span>
+                    </div>
+                </div>
+                <!--个人信息-->
+                <div class="commentBox__info">
+                    <div class="commentBox__info--input">
+                        <label>昵称:</label>
+                        <input type="text" placeholder="请输入昵称!">
+                    </div>
+                    <div class="commentBox__info--input ">
+                        <label>邮箱: </label>
+                        <input type="text" placeholder="请输入邮箱!">
+                    </div>
+                </div>
+            </div>
+
+            <!--问题盒子-->
+            <div class="commentbox__inner">
+                <div class="comments">
+                    <div class="comments__ask">
+                        <div class="comments__ask__header">
+                            <span class="name">清如水</span> · <span>三天前</span> · <span class="reply">回复</span>
+                        </div>
+                        <div class="comments__ask__content">
+                            <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+                        </div>
+                    </div>
+                    <div class="comments__reply">
+                        <!--提问题-->
+                        <div class="commentBox__question active">
+                            <!--问题盒子-->
+                            <div class="commentBox__questionBox">
+                                <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
+                                <div class="commentBox__questionBox--reply">
+                                    <span>评论</span>
+                                </div>
+                            </div>
+                            <!--个人信息-->
+                            <div class="commentBox__info">
+                                <div class="commentBox__info--input">
+                                    <label>昵称:</label>
+                                    <input type="text" placeholder="请输入昵称!">
+                                </div>
+                                <div class="commentBox__info--input ">
+                                    <label>邮箱: </label>
+                                    <input type="text" placeholder="请输入邮箱!">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comments__reply__each">
+                            <div class="comments__reply__header">
+                                <span class="name">清如水</span> · <span>三天前</span>
+                            </div>
+                            <div class="comments__reply__content">
+                                <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗!</span>
+                            </div>
+                        </div>
+                        <div class="comments__reply__each">
+                            <div class="comments__reply__header">
+                                <span class="name">清如水</span> · <span>三天前</span>
+                            </div>
+                            <div class="comments__reply__content">
+                                <span>好的,同意!</span>
+                            </div>
+                        </div>
+                        <div class="comments__reply__each">
+                            <div class="comments__reply__header">
+                                <span class="name">清如水</span> · <span>三天前</span>
+                            </div>
+                            <div class="comments__reply__content">
+                                <span>好的,同意!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="comments">
+                    <div class="comments__ask">
+                        <div class="comments__ask__header">
+                            <span class="name">清如水</span> · <span>三天前</span> · <span class="reply">回复</span>
+                        </div>
+                        <div class="comments__ask__content">
+                            <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+                        </div>
+                    </div>
+                    <div class="comments__reply">
+                    </div>
+                </div>
+                <div class="comments">
+                    <div class="comments__ask">
+                        <div class="comments__ask__header">
+                            <span class="name">清如水</span> · <span>三天前</span> · <span class="reply">回复</span>
+                        </div>
+                        <div class="comments__ask__content">
+                            <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+                        </div>
+                    </div>
+                    <div class="comments__reply">
+                        <div class="comments__reply__each">
+                            <div class="comments__reply__header">
+                                <span class="name">清如水</span> · <span>三天前</span>
+                            </div>
+                            <div class="comments__reply__content">
+                                <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗!</span>
+                            </div>
+                        </div>
+                        <div class="comments__reply__each">
+                            <div class="comments__reply__header">
+                                <span class="name">清如水</span> · <span>三天前</span>
+                            </div>
+                            <div class="comments__reply__content">
+                                <span>好的,同意!</span>
+                            </div>
+                        </div>
+                        <div class="comments__reply__each">
+                            <div class="comments__reply__header">
+                                <span class="name">清如水</span> · <span>三天前</span>
+                            </div>
+                            <div class="comments__reply__content">
+                                <span>好的,同意!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </section>
+</article>
