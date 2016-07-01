@@ -17,6 +17,8 @@
                 login: `${url}/api/login`,
                 //获取我的信息
                 getMyInfo: `${url}/api/user/${MY_INFO_ID}`,
+                postMyInfo:`${url}/api/user`,
+                changePassword:`${url}/api/change_password`,
 
                 /**
                  * 文章相关

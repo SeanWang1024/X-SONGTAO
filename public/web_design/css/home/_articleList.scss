@@ -38,7 +38,7 @@
     @include justify-content(space-between);
     @include align-items(center);
     background:$base-background-color;
-    padding: 17px 35px;
+    padding: 14px 35px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8) inset;
     transition: all ease 200ms;
     .article__info {
@@ -48,7 +48,7 @@
       .article__info--each {
         color: #eee;
         margin-right: 20px;
-        font-size: 16px;
+        font-size: 14px;
       }
     }
     //阅读更多
@@ -58,7 +58,7 @@
         transition: all ease 200ms;
         border-radius:34px;
         color: #eee;
-        padding: 5px 22px;
+        padding: 4px 22px;
         font-size: 16px;
       }
 

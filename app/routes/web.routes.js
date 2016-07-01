@@ -4,7 +4,9 @@ let $checkToken = require('../utils/checkToken.utils.js');
 
 /* GET 前端显示-blog home page. */
 router.get('/', function (req, res, next) {
-    res.render('home.client.view.hbs');
+    res.set('Content-Type', 'text/html');
+    res.sendfile('public/web/index.html');
+    // res.render('home.client.view.hbs');
 });
 /* GET home page. */
 router.get('/admin/:token', function (req, res, next) {

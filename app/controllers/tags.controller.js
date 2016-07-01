@@ -122,26 +122,23 @@ module.exports = {
         })
     },
     edit: function (req, res, next) {
-        Tags.findOne({_id: req.body._id}, function (err, doc) {
-            if (err) {
-                DO_ERROR_RES(res);
-                return next();
+        Tags.update({_id: req.body._id},{
+            $set:{
+                name:req.body.name,
+                catalogue_name:req.body.catalogue_name
             }
-            if (!!doc) {
-                doc.name = req.body.name;
-                doc.markClass = req.body.markClass;
-                doc.state = req.body.state;
-                doc.save();
+        }, function (err) {
+            if (err) {
+                res.status(200);
+                res.send({
+                    "code": "2",
+                    "msg": "tag non-exist or params error!"
+                });
+            }else{
                 res.status(200);
                 res.send({
                     "code": "1",
                     "msg": "tag edit success!"
-                });
-            } else {
-                res.status(200);
-                res.send({
-                    "code": "2",
-                    "msg": "tag not exist!"
                 });
             }
         });

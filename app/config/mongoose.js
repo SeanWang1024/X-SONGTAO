@@ -8,7 +8,7 @@ module.exports = function () {
     let db = mongoose.connect(config.mongodb);
 
     /**
-     * id由数据库自己生成,名字为_id
+     * id由数据库自己生成,名字为_id,
      * */
     //我的个人信息数据模型
     mongoose.model('Users', new mongoose.Schema({

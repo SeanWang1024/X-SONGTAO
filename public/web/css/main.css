@@ -1104,7 +1104,7 @@ body {
     -moz-align-items: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
-    padding: 17px 35px;
+    padding: 14px 35px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8) inset;
     transition: all ease 200ms; }
     .article .article__infobox .article__info {
@@ -1117,13 +1117,13 @@ body {
       .article .article__infobox .article__info .article__info--each {
         color: #eee;
         margin-right: 20px;
-        font-size: 16px; }
+        font-size: 14px; }
     .article .article__infobox .arrticle__readmore span {
       border: 1px solid #38b7ea;
       transition: all ease 200ms;
       border-radius: 34px;
       color: #eee;
-      padding: 5px 22px;
+      padding: 4px 22px;
       font-size: 16px; }
 
 .readMoreTo {
@@ -1307,7 +1307,7 @@ body {
     -moz-align-items: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
-    padding: 10px 35px;
+    padding: 14px 35px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8) inset;
     transition: all ease 200ms; }
     .paper .paper__info .paper__info--span {
@@ -1505,103 +1505,9 @@ body {
             padding: 3px 0;
             color: #fff; }
 
-/* line 16, ../../app/styles/_layout.scss */
-.admin {
-  height: 100%;
-  width: 100%;
-  background: transparent radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%); }
-
-/* line 22, ../../app/styles/_layout.scss */
-.adminBox {
-  width: 940px;
-  /*height: calc(100% - 42px);*/
-  height: 100%;
-  padding-bottom: 50px;
-  padding-top: 40px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  transition: all ease 200ms; }
-
-/* line 33, ../../app/styles/_layout.scss */
-.adminBox-nav {
-  width: 160px;
-  height: 180px;
-  display: inline-block;
-  /*float: left;*/
-  background-color: rgba(0, 0, 0, 0.5);
-  margin-top: 100px;
-  border-bottom-left-radius: 5px;
-  border-top-left-radius: 5px;
-  transition: all ease 200ms;
-  overflow: hidden; }
-
-@media (max-width: 991px) {
-  .adminBox {
-    width: 825px; }
-  .adminBox-nav {
-    width: 45px; }
-  .adminBox-nav ul li .word {
-    opacity: 0;
-    display: none;
-    overflow: hidden;
-    /*position: absolute;*/ }
-  .adminBottomInner {
-    padding-left: 45px !important; } }
-
-.adminBox-nav ul li .word {
-  opacity: 1; }
-
-.adminBox-nav ul li a {
-  color: inherit; }
-
-.adminBox-nav ul li a:hover {
-  color: #00b2e2;
-  background-color: rgba(0, 0, 0, 0.7);
-  text-decoration: none; }
-
-/* line 40, ../../app/styles/_layout.scss */
-.adminBox-nav .headerImg {
-  width: 100%;
-  height: 45px; }
-
-/* line 43, ../../app/styles/_layout.scss */
-.adminBox-nav ul {
-  padding: 0;
-  margin: 0;
-  color: #fff;
-  list-style: none; }
-
-/* line 48, ../../app/styles/_layout.scss */
-.adminBox-nav ul .active {
-  color: #00b2e2;
-  background-color: rgba(0, 0, 0, 0.7); }
-
-/* line 51, ../../app/styles/_layout.scss */
-.adminBox-nav ul li {
-  height: 45px;
-  line-height: 45px;
-  text-align: right;
-  width: 100%;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all ease 300ms; }
-
-.adminBox-nav ul li:hover {
-  color: #00b2e2; }
-
-/* line 58, ../../app/styles/_layout.scss */
-.adminBox-nav ul li .icon {
-  width: 45px;
-  height: 45px;
-  display: inline-block;
-  text-align: center; }
-
-/* line 68, ../../app/styles/_layout.scss */
 .adminBox-content {
   width: 780px;
   padding: 0 30px;
-  /*float: right;*/
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.5);
   position: relative;
@@ -1609,60 +1515,42 @@ body {
   border-bottom: 2px solid #00b2e2;
   margin-top: 30px;
   margin-left: auto;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   margin-right: auto; }
+  .adminBox-content .adminBox-content-header h1 {
+    font-family: "Dosis", arial, tahoma, verdana;
+    display: inline-block;
+    float: right;
+    padding: 20px 30px 10px 0;
+    margin: 0;
+    border-top: 2px solid #00b2e2;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-top-right-radius: 3px; }
+  .adminBox-content .adminBox-content-innerBox {
+    width: 100%;
+    padding-top: 50px;
+    height: 100%; }
 
-/* line 82, ../../app/styles/_layout.scss */
-.admin-bottom {
+.adminBox-footer {
   position: absolute;
-  bottom: 8px;
   width: 100%;
+  bottom: 1%;
+  left: 50%;
   color: #eee;
-  /*padding-left: 150px;*/
-  box-sizing: border-box; }
+  font-size: 12px;
+  transform: translate3d(-50%, 0, 0); }
 
-.adminBottomInner {
-  width: 780px;
-  margin: 0 auto;
-  padding-left: 160px;
-  transition: all ease 200ms; }
-
-/* line 89, ../../app/styles/_layout.scss */
 .blue {
-  color: #00b2e2; }
+  color: #38b7ea; }
 
-/* line 93, ../../app/styles/_layout.scss */
 .textItem {
   color: #fff; }
-
-/* line 98, ../../app/styles/_layout.scss */
-.adminBox-content-header h1 {
-  font-family: "Dosis", arial, tahoma, verdana;
-  display: inline-block;
-  float: right;
-  padding: 20px 30px 10px 0;
-  margin: 0;
-  border-top: 2px solid #00b2e2;
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-top-right-radius: 3px; }
-
-/* line 112, ../../app/styles/_layout.scss */
-.adminBox-content-innerBox {
-  width: 100%;
-  padding-top: 50px;
-  height: 100%;
-  /*overflow: visible;*/ }
-
-/* line 353, ../../app/styles/_layout.scss */
-.inputContent {
-  display: none; }
 
 .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
   border-top: 1px solid rgba(132, 132, 132, 0.37); }
 
-/*border-top: 1px solid rgba(132, 132, 132, 0.37)*/
 .tags table tbody tr {
   height: 41px; }
 
@@ -1756,157 +1644,147 @@ body {
   vertical-align: middle !important;
   cursor: pointer; }
 
-/* line 119, ../../app/styles/_layout.scss */
 .myInfo {
   overflow: hidden;
   height: 100%; }
-
-.myInfoInner {
-  display: block;
-  padding-bottom: 30px;
-  height: calc(100% - 77px);
-  overflow: scroll; }
-
-.myInfoInnerFlexBox {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap; }
-
-/* line 123, ../../app/styles/_layout.scss */
-.myInfo .title {
-  width: 100%;
-  color: #fff;
-  margin-bottom: 30px; }
-
-.imgBox {
-  width: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center; }
-
-/* line 128, ../../app/styles/_layout.scss */
-.imgBoxInner {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  box-shadow: 0px 3px 12px #000;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative; }
-
-.myInfo #imgUpload {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  opacity: 1;
-  padding: 0;
-  border: 0;
-  background-color: transparent; }
-
-.myInfo .dropzone .dz-preview {
-  width: 180px;
-  height: 180px;
-  padding: 0;
-  margin: 0; }
-
-.myInfo .dropzone .dz-preview .dz-image {
-  width: 180px;
-  height: 180px;
-  padding: 0;
-  margin: 0; }
-
-.myInfo .dropzone .dz-preview .dz-image img {
-  width: 100%; }
-
-/* line 138, ../../app/styles/_layout.scss */
-.myInfo .infoDetail {
-  width: 50%;
-  /*padding: 0 10px;*/
-  color: #fff; }
-
-/* line 142, ../../app/styles/_layout.scss */
-.myInfo .infoDetail label {
-  color: #00b2e2;
-  margin-bottom: 0; }
-
-/* line 146, ../../app/styles/_layout.scss */
-.myInfo .infoDetail .form-group {
-  margin-bottom: 10px; }
-
-/* line 149, ../../app/styles/_layout.scss */
-.myInfo .infoDetail .inputContentStatic {
-  font-size: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden; }
-
-/* line 156, ../../app/styles/_layout.scss */
-.myInfo .infoDetail .inputContent {
-  font-size: 16px;
-  height: 36px;
-  background-color: transparent;
-  color: #fff;
-  margin-left: -11px; }
-
-/* line 165, ../../app/styles/_layout.scss */
-.myInfo .myMood {
-  width: 100%;
-  color: #fff; }
-
-/* line 168, ../../app/styles/_layout.scss */
-.myInfo .myMood label {
-  color: #00b2e2;
-  margin-bottom: 0;
-  /*padding: 0;*/ }
-
-/* line 173, ../../app/styles/_layout.scss */
-.myInfo .myMood .myMoodInputBox {
-  /*padding: 0;*/ }
-
-/* line 176, ../../app/styles/_layout.scss */
-.myInfo .myMood .form-group {
-  margin-bottom: 10px; }
-
-/* line 179, ../../app/styles/_layout.scss */
-.myInfo .myMood .inputContentStatic {
-  font-size: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden; }
-
-/* line 186, ../../app/styles/_layout.scss */
-.myInfo .myMood .inputContent {
-  font-size: 16px;
-  height: 36px;
-  background-color: transparent;
-  color: #fff;
-  margin-left: -11px; }
-
-.myInfo .personalState {
-  width: 100%;
-  height: 400px; }
-  .myInfo .personalState label {
-    font-size: 16px;
-    color: #00b2e2;
-    font-weight: bold;
-    margin-bottom: 10px;
-    padding: 0 15px; }
-  .myInfo .personalState .personalState__textarea {
+  .myInfo .title {
     width: 100%;
-    padding: 0 15px; }
-    .myInfo .personalState .personalState__textarea textarea {
-      background-color: transparent;
-      color: #fff;
-      border-radius: 3px;
-      border: 1px solid #38b7ea;
-      padding: 10px;
-      line-height: 150%;
-      font-size: 16px;
-      margin: 0px;
-      height: 380px;
-      width: 690px;
-      max-height: 380px;
-      max-width: 690px; }
+    color: #fff;
+    margin-bottom: 30px; }
+  .myInfo .myInfoInner {
+    display: block;
+    padding-bottom: 30px;
+    height: calc(100% - 77px);
+    overflow: scroll; }
+    .myInfo .myInfoInner .myInfoInnerFlexBox {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner {
+          width: 180px;
+          height: 180px;
+          border-radius: 50%;
+          box-shadow: 0px 3px 12px #000;
+          overflow: hidden;
+          cursor: pointer;
+          position: relative; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner #imgUpload {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            opacity: 1;
+            padding: 0;
+            border: 0;
+            background-color: transparent; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner .dropzone .dz-preview {
+            width: 180px;
+            height: 180px;
+            padding: 0;
+            margin: 0; }
+            .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner .dropzone .dz-preview .dz-image {
+              width: 180px;
+              height: 180px;
+              padding: 0;
+              margin: 0; }
+              .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner .dropzone .dz-preview .dz-image img {
+                width: 100%; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .inputGroup label {
+        color: #00b2e2;
+        margin-bottom: 5px; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .inputGroup .infoDetail__inputGroup {
+        height: 34px;
+        margin-bottom: 10px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .inputGroup .infoDetail__inputGroup .inputContent {
+          font-size: 16px;
+          height: 34px;
+          background-color: transparent;
+          color: #fff;
+          margin: 0 0 0 -11px;
+          border: 1px solid #38b7ea; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .infoDetail {
+        width: 50%;
+        color: #fff; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .myMotto {
+        width: 100%;
+        color: #fff; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .personalState {
+        width: 100%;
+        margin-bottom: 30px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .personalState label {
+          font-size: 16px;
+          color: #00b2e2;
+          font-weight: bold;
+          margin-bottom: 10px;
+          padding: 0 15px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .personalState .personalState__textarea {
+          width: 100%;
+          padding: 0 5px; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .personalState .personalState__textarea textarea {
+            background-color: transparent;
+            color: #fff;
+            border-radius: 3px;
+            border: 1px solid #38b7ea;
+            padding: 11px;
+            line-height: 150%;
+            font-size: 16px;
+            margin: 0;
+            width: 100%;
+            height: 200px;
+            overflow-x: hidden;
+            resize: none; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox {
+        width: 100%;
+        margin-bottom: 30px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox .inputBox {
+          padding-top: 10px;
+          width: 100%;
+          position: relative;
+          padding-right: 60px;
+          display: -moz-flex;
+          display: flex;
+          -moz-justify-content: center;
+          justify-content: center;
+          -moz-align-items: center;
+          align-items: center; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox .inputBox div {
+            flex: 1; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox .inputBox label {
+            margin-top: 5px;
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-align: right;
+            width: 100%; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox .inputBox .buttonBox {
+            width: 60px;
+            position: absolute;
+            right: 0; }
+            .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox .inputBox .buttonBox button {
+              width: 100%;
+              height: 30px;
+              font-size: 14px;
+              color: #fff;
+              padding: 4px 12px; }
+      .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord {
+        width: 100%;
+        margin-bottom: 30px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord label {
+          font-size: 16px;
+          color: #00b2e2;
+          font-weight: bold;
+          margin-bottom: 10px;
+          padding: 0 15px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord table {
+          text-align: center;
+          color: #fff; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord table th {
+            text-align: center;
+            color: #fff; }
 
 /* line 242, ../../app/styles/_layout.scss */
 .tags {

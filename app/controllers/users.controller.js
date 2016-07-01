@@ -59,7 +59,7 @@ module.exports = {
     login: function (req, res, next) {
         let username = req.body.username;
         let password = req.body.password;
-        let user_ip = req.ip;
+        let user_ip = req.headers.host;
         console.log("------用户当前请求的ip------");
         console.log(user_ip);
         Users.findOne({username: username}, function (err, user) {
@@ -75,18 +75,56 @@ module.exports = {
                 });
                 user.save();
                 res.status(200);
-                res.cookie('rememberme', '1', { maxAge: 900000})
+                // res.cookie('rememberme', '1', { maxAge: 900000})
                 res.send({
                     "code": "1",
                     "msg": "login success! please use token to access!",
                     "token": $base64.encode(`${username}|${password}|${new Date().getTime()}`),
-                    "user_info": user
+                    "data": user
                 });
             } else {
                 res.status(200);
                 res.send({
                     "code": "2",
                     "msg": "username or password error, please check out!"
+                });
+            }
+        });
+    },
+    changePassword: function (req, res, next) {
+        let {_id, username, password, new_password} = req.body;
+
+        Users.findOne({_id: _id}, function (err, user) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            //有用户数据且密码正确
+            if (!!user) {
+                if (user.password === password) {
+                    user.username = username;
+                    user.password = new_password;
+                    user.save();
+                    res.status(200);
+                    res.send({
+                        "code": "1",
+                        "msg": "user password change success, you should re-login!",
+                        "data": user
+                    });
+                    // res.redirect('/#/login');
+                } else {
+                    res.status(200);
+                    res.send({
+                        "code": "2",
+                        "msg": "user password not right!"
+                    });
+                }
+
+            } else {
+                res.status(200);
+                res.send({
+                    "code": "3",
+                    "msg": "user non-exist, please check out!"
                 });
             }
         });
@@ -127,7 +165,7 @@ module.exports = {
 
         })
     },
-    edit:function (req, res, next) {
+    edit: function (req, res, next) {
         Users.findOne({_id: req.body._id}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
@@ -161,7 +199,7 @@ module.exports = {
 
 
     },
-    delete:function (req, res, next) {
+    delete: function (req, res, next) {
         Users.remove({_id: req.params.id}, function (err) {
             if (err) {
                 DO_ERROR_RES(res);

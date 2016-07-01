@@ -28,16 +28,17 @@ gulp.task('clean:dist', function () {
 });
 
 gulp.task('move:index', function () {
-    var stream = gulp.src(`${PATH.SRC}/index.html`).pipe($.rename("home.client.view.hbs"));
+    // var stream = gulp.src(`${PATH.SRC}/index.html`).pipe($.rename("home.client.view.hbs"));
+    var stream = gulp.src(`${PATH.SRC}/index.html`);
     switch (ENV) {
         case 'DEV':
-            return stream.pipe(gulp.dest(APP_VIEWS));
+            return stream.pipe(gulp.dest(`${PATH.DIST}`));
             break;
         case 'TES':
-            return stream.pipe(gulp.dest(APP_VIEWS));
+            return stream.pipe(gulp.dest(`${PATH.DIST}`));
             break;
         case 'PRO':
-            return stream.pipe($.htmlmin({collapseWhitespace: true})).pipe(gulp.dest(APP_VIEWS));
+            return stream.pipe($.htmlmin({collapseWhitespace: true})).pipe(gulp.dest(`${PATH.DIST}`));
             break;
     }
 });
@@ -127,6 +128,7 @@ gulp.task('js:common', function () {
         `${PATH.SRC}/lib/angular.js`,
         `${PATH.SRC}/lib/angular-ui-router.min.js`,
         `${PATH.SRC}/lib/bootstrap.min.js`,
+        `${PATH.SRC}/lib/admin/*.js`,
     ]).pipe($.concat('common.js')).pipe($.babel());
     switch (ENV) {
         case 'DEV':

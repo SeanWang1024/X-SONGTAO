@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "pm2 start ./bin/www --watch",
-    "restart": "pm2 restart ./bin/www --watch",
+    "supervisor": "supervisor ./bin/www",
+    "start": "pm2 start ./bin/www --watch; pm2 logs",
+    "restart": "pm2 restart ./bin/www --watch; pm2 logs",
     "stop": "pm2 stop all",
     "delete": "pm2 delete all",
     "monit": "pm2 monit"

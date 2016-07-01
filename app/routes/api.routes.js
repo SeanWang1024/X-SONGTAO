@@ -64,6 +64,8 @@ router.all('*', function (req, res, next) {
 router.post('/register', UsersController.register);
 //login
 router.post('/login', UsersController.login);
+//change_password
+router.post('/change_password', UsersController.changePassword);
 //all user list
 router.get('/users', UsersController.getAll);
 //find user by id
@@ -141,7 +143,7 @@ router.delete('/tag/:id', TagsController.delete);
 router.post('/article', ArticleController.add);
 //根据id修改
 router.put('/article', ArticleController.editById);
-//查找全部,进行分页设置
+//查找全部,进行分页设置(api测试)
 router.get('/articles', ArticleController.getAll);
 //分页查找文章,进行分页设置/^\/commits\/(\w+)(?:\.\.(\w+))?$/
 router.get(/^\/articles\/(\d+)_(\d+)/, ArticleController.getAllWithPages);

@@ -11,19 +11,36 @@
             /**
              * 修改我的信息 
              * */
-                .state('myInfo', {
+                .state('admin', {
+                    url: "/admin",
+                    templateUrl: 'web/tpl/admin.html'
+                })
+                .state('admin.myInfo', {
                     url: "/myInfo",
                     controller: 'myInfoCtrl',
-                    templateUrl: 'web/tpl/admin.myinfo.html'
+                    templateUrl: 'web/tpl/admin.myinfo.tpl.html'
                 })
-                .state('article', {
+                .state('admin.articleManager', {
+                    url: "/articleManager",
+                    templateUrl: 'web/tpl/admin.articleManager.tpl.html'
+                    // controller: 'paperCtrl'
+                })
+                
+
+
+                .state('admin.articleManager.articleList', {
+                    url: "/articleList",
+                    templateUrl: 'web/tpl/admin.articleList.tpl.html',
+                    controller: 'articleListCtrl'
+                })
+                .state('admin.articleManager.article', {
                     url: "/article",
-                    templateUrl: './views/article/article.tpl.html',
+                    templateUrl: 'web/tpl/admin.article.tpl.html',
                     controller: 'articleCtrl'
                 })
-                .state('tags', {
+                .state('admin.tags', {
                     url: "/tags",
-                    templateUrl: './views/tags/tags.tpl.html',
+                    templateUrl: 'web/tpl/admin.tags.tpl.html',
                     controller: 'tagsCtrl'
                 })
 
