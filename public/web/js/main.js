@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    angular.module('xstApp', ['ui.router'])
+    angular.module('xstApp', ['ui.router', 'hc.marked'])
     /**
      * 配置文件
      * */
@@ -17,8 +17,11 @@
             login: url + '/api/login',
             //获取我的信息
             getMyInfo: url + '/api/user/' + MY_INFO_ID,
+            getMyInfoWithOriginal: url + '/api/user/original/' + MY_INFO_ID,
             postMyInfo: url + '/api/user',
             changePassword: url + '/api/change_password',
+            imgUpload: url + '/api/imgupload',
+            imgResource: url + '/uploads/',
 
             /**
              * 文章相关
@@ -32,6 +35,12 @@
             //获取文章历史记录
             getArticleHistoryWithStructure: url + '/api/article_history',
 
+            //获取文章列表
+            getArticleList: url + '/api/articles',
+
+            //由文章id获取文章详情(原始markdown版本)
+            getRawArticleById: url + '/api/article/raw/id',
+
             /**
              * 标签相关
              * */
@@ -40,6 +49,15 @@
             //由标签id获取文章列表
             getArticlesWithTagId: url + '/api/article_tag/id',
 
+            //获取标签列表(原始)
+            getTagsList: url + '/api/tags',
+            //增加 post
+            addTag: url + '/api/tag',
+            //修改 put
+            editTag: url + '/api/tag',
+            //删除 delete
+            deleteTag: url + '/api/tag/id',
+
             /**
              * 获取评论
              * */
@@ -47,7 +65,30 @@
             changeCommentState: url + '/api/changeCommentState'
 
         };
-    });
+    }).config(['markedProvider', function (markedProvider) {
+        // hljs.initHighlightingOnLoad();
+        markedProvider.setOptions({
+            renderer: new marked.Renderer(),
+            gfm: true,
+            tables: true,
+            breaks: false,
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            smartypants: false,
+            highlight: function highlight(code) {
+                console.log(code);
+                console.log(hljs.highlightAuto(code).value);
+                return hljs.highlightAuto(code).value;
+            }
+        });
+    }]);
+    // .config(function (hljsServiceProvider) {
+    //     hljsServiceProvider.setOptions({
+    //         // replace tab with 4 spaces
+    //         tabReplace: '    '
+    //     });
+    // });
 })();
 
 console.log('你好!你这是在.....想看源码?联系我吧!');
@@ -71,7 +112,7 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
 
     //  激活工具提示js
     if (document.documentElement.clientWidth < 991) {
-        //  激活工具提示js
+        // 激活工具提示js
         $('[data-toggle="tooltip"]').tooltip('destroy').tooltip({
             trigger: 'hover',
             placement: 'bottom'
@@ -190,6 +231,16 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
 
             }
         };
+    }]).filter("imgURl", ['API', function (API) {
+        return function (imgName) {
+            if (!!imgName && imgName.indexOf('http') === -1) {
+                //正确的时间戳
+                return '' + API.imgResource + imgName;
+            } else {
+                //错误的时间戳返回现在时间
+                return imgName;
+            }
+        };
     }]);
 })();
 /**
@@ -235,6 +286,9 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
             return $http(params).then(
             //success
             function (response) {
+                if (parseInt(response.data.code) == 10) {
+                    alert("token问题,请重新登录!");
+                }
                 httpParams.success && httpParams.success(response.data);
             },
             //error
@@ -329,358 +383,417 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
  */
 angular.module('xstApp')
 //myInfo的控制器
-.controller('articleCtrl', function ($http, $scope, $timeout, response) {
-    //页面中数据写入
-    $scope.articleLists = response.data.articleLists;
 
-    //页面载入完毕后,激活选中状态
-    $scope.initTr = function () {
-        $("#table tbody tr").click(function () {
-            $(this).toggleClass("active").siblings().removeClass("active");
+.controller('articleCtrl', ['$http', '$scope', '$timeout', '$stateParams', 'marked', function ($http, $scope, $timeout, $stateParams, marked) {
+    // console.log($stateParams._id)
+    if (!$stateParams._id) {
+        console.log("新增文章");
+    } else {
+        console.log("修改文章");
+
+        AJAX({
+            method: 'get',
+            url: API.getRawArticleById,
+            success: function success(response) {
+                console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.article = response.data;
+                    console.log($scope.article);
+                }
+            }
         });
+    }
+
+    $scope.article = {
+        content: ""
+    };
+    $scope.refreshContent = function ($event) {
+        $scope.article.content_marked = marked($event.currentTarget.innerText);
     };
 
-    /*
-     * 数据更新时,查找所有内容,之后自动刷新列表
-     * */
-    function refreshArticleList() {
-        $http.get('/admin/api/article').success(function (response) {
-            console.log('article,refreshArticleList');
-            console.log(response);
-            $scope.articleLists = response.articleLists;
-        });
-    }
+    $scope.previewBtn = function () {};
 
-    /*
-    * 模态框弹出
-    * */
-    $('#articleModal').modal({
-        //需要点击才能弹出
-        show: false,
-        //背景变黑但是不弹出来
-        backdrop: 'static'
-    });
-
-    //文本输入
-    var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
-    var editor = new Simditor({
-        textarea: $('#articleContent'),
-        toolbar: toolbar
-    });
-
-    /*
-     * 请求后台更新tags的内容并写入,写入完毕后初始化#multTags->多选tags按钮
-     * */
-    $http.get("api/tags").success(function (res) {
-        //console.log(res)
-        //数据写入
-        $scope.tagLists = res.tagLists;
-
-        /*
-         * 初始化多选tags->标签
-         * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
-         * 当分类名变化是,刷新tags的选中状态
-         * */
-        $timeout(function () {
-            $('#multTags').multiselect({
-                onDropdownShow: function onDropdownShow(event) {
-                    var $catName = $("#catName");
-                    //$('#multTags option:selected').each(function () {
-                    //    $(this).prop('selected', false);
-                    //});
-                    //当前的值
-                    var value = $catName.val();
-                    var selectLi = $(".multiselect-container").find("li");
-                    var selectLiLength = $(".multiselect-container").find("li").length;
-                    var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
-                    var frontEndLength = $('#FrontEndOptGroup').find("option").length;
-                    if (value == 'FrontEnd') {
-                        //上面的是lifeStyle
-                        for (var i = 0; lifeStyleLength + 1 > i; i++) {
-                            selectLi.eq(i).css("display", "none");
-                        }
-                        //下面的是front-end
-                        for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-                            selectLi.eq(i).css("display", "block");
-                        }
-                    } //lifeStyleLength
-                    else if (value == 'LifeStyle') {
-                            //上面的是lifeStyle
-                            for (var i = 0; lifeStyleLength + 1 > i; i++) {
-                                selectLi.eq(i).css("display", "block");
-                            }
-                            //下面的是front-end
-                            for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-                                selectLi.eq(i).css("display", "none");
-                            }
-                        }
-                    //$('#multTags').multiselect('refresh');
-                }
-            });
-            //分类名改变时,刷新下面的标签
-            $("#catName").change(function () {
-                $('#multTags option:selected').each(function () {
-                    $(this).prop('selected', false);
-                });
-                $('#multTags').multiselect('refresh');
-            });
-        }, 0, false);
-    });
-
-    /*
-     * 获得今天的时间
-     * 当点击"今天",将今天的日期写入input内
-     * */
-    var dateNow = new Date();
-    var year = dateNow.getFullYear();
-    var month = dateNow.getMonth() + 1;
-    var date = dateNow.getDate();
-    if (month < 10) {
-        month = '0' + month;
-    }
-    if (date < 10) {
-        date = '0' + date;
-    }
-    //2016-02-27
-    var dateNowFormat = year + "-" + month + "-" + date;
-    console.log(dateNowFormat);
-    $("#setToday").click(function () {
-        $("#time").val(dateNowFormat);
-    });
-
-    /*
-     * ISO时间转化为input-date能识别的时间 -> 2016-02-28
-     * */
-    function ISODate2Input(iso) {
-        return iso.substr(0, 10);
-    }
-
-    /*
-     * 数据提取 草稿--发布
-     * */
-    $(".submit").click(function () {
-        //为空判断
-        var title = document.getElementById('title').value;
-        var time = document.getElementById('time').value;
-        if (title == '' || time == '') {
-            alert("标题和时间是必填选项");
-            return;
-        }
-
-        var state;
-        //判断是草稿还是发表
-        if (this.id == 'publish') {
-            state = true;
-        } else if (this.id == 'draft') {
-            state = false;
-        }
-        var data = {
-            title: title,
-            time: time,
-            catalogueName: document.getElementById('catName').value,
-            articleType: document.getElementById('artType').value,
-            tags: $("#multTags").val(),
-            state: state,
-            content: editor.getValue()
-        };
-
-        //判断是"修改"还是"新增"
-        var articleId = document.getElementById('articleId').value;
-        if (!articleId) {
-            //无id值,则是"新增"
-            $http.post("admin/api/article/add", data).success(function (res) {
-                //alert("新增成功")
-                $('#articleModal').modal('hide');
-                //刷新articleList
-                refreshArticleList();
-            });
-        } else {
-            //有id值,则是"修改"
-            $http.post("admin/api/article/" + articleId, data).success(function (res) {
-                //alert("修改成功")
-                $('#articleModal').modal('hide');
-                //刷新articleList
-                refreshArticleList();
-            });
-        }
-    });
-
-    /*
-     * 修改按钮
-     * */
-    $("#editArticle").click(function () {
-        //清除modal之前的残留
-        cleanModal();
-        //得到当前点击的row id
-        var id = $("#table").find(".active").children().eq(0).text();
-        if (!id) {
-            alert("修改请先选择");
-            return;
-        }
-        //显示之后将数据写入modal中,只进行当前这次
-        $('#articleModal').one('show.bs.modal', function (e) {
-            $http.get("admin/api/article/" + id).success(function (res) {
-                //console.log('//显示之后将数据写入modal中')
-                //console.log(res)
-                //数据写入modal中
-                document.getElementById('articleId').value = res._id;
-                document.getElementById('title').value = res.title;
-                //input的输入框需要2016-02-02这样的数据
-                document.getElementById('time').value = ISODate2Input(res.time);
-                document.getElementById('catName').value = res.catalogueName;
-                document.getElementById('artType').value = res.articleType;
-                $('#multTags').multiselect('select', res.tags);
-                editor.setValue(res.content);
-            });
-        });
-        //显示modal
-        $('#articleModal').modal('show');
-    });
-
-    /*
-     * 添加按钮
-     * */
-    $("#addArticle").click(function () {
-        //清除modal之前的残留
-        cleanModal();
-        $('#articleModal').modal('show');
-    });
-
-    /*
-     * 删除按钮
-     * */
-    $("#deleteArticle").click(function () {
-        var id = $("#table").find(".active").children().eq(0).text();
-        if (id == '' || id == null) {
-            alert("删除前请选择");
-            return;
-        }
-        $http.delete("admin/api/article/" + id).success(function (res) {
-            //刷新列表
-            refreshArticleList();
-        });
-    });
-
-    /*
-     * modal内容清除
-     * */
-    function cleanModal() {
-        document.getElementById('articleId').value = '';
-        document.getElementById('title').value = '';
-        document.getElementById('time').value = '';
-        document.getElementById('catName').value = 'LifeStyle';
-        document.getElementById('artType').value = undefined;
-        //清空tag的选项
-        $('#multTags option:selected').each(function () {
-            $(this).prop('selected', false);
-        });
-        $('#multTags').multiselect('refresh');
-        editor.setValue('');
-    }
-});
+    // //页面中数据写入
+    // $scope.articleLists = response.data.articleLists;
+    //
+    // //页面载入完毕后,激活选中状态
+    // $scope.initTr = function () {
+    //     $("#table tbody tr").click(function () {
+    //         $(this).toggleClass("active").siblings().removeClass("active");
+    //     });
+    // };
+    //
+    // /*
+    //  * 数据更新时,查找所有内容,之后自动刷新列表
+    //  * */
+    // function refreshArticleList() {
+    //     $http.get('/admin/api/article')
+    //         .success(function (response) {
+    //             console.log('article,refreshArticleList');
+    //             console.log(response);
+    //             $scope.articleLists = response.articleLists;
+    //         });
+    // }
+    //
+    //
+    // /*
+    // * 模态框弹出
+    // * */
+    // $('#articleModal').modal({
+    //     //需要点击才能弹出
+    //     show: false,
+    //     //背景变黑但是不弹出来
+    //     backdrop: 'static'
+    // });
+    //
+    //
+    // //文本输入
+    // var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
+    // var editor = new Simditor({
+    //     textarea: $('#articleContent'),
+    //     toolbar: toolbar
+    // });
+    //
+    //
+    // /*
+    //  * 请求后台更新tags的内容并写入,写入完毕后初始化#multTags->多选tags按钮
+    //  * */
+    // $http.get("api/tags")
+    //     .success(function (res) {
+    //         //console.log(res)
+    //         //数据写入
+    //         $scope.tagLists = res.tagLists;
+    //
+    //         /*
+    //          * 初始化多选tags->标签
+    //          * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
+    //          * 当分类名变化是,刷新tags的选中状态
+    //          * */
+    //         $timeout(function () {
+    //             $('#multTags').multiselect({
+    //                 onDropdownShow: function (event) {
+    //                     var $catName = $("#catName");
+    //                     //$('#multTags option:selected').each(function () {
+    //                     //    $(this).prop('selected', false);
+    //                     //});
+    //                     //当前的值
+    //                     var value = $catName.val();
+    //                     var selectLi = $(".multiselect-container").find("li");
+    //                     var selectLiLength = $(".multiselect-container").find("li").length;
+    //                     var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
+    //                     var frontEndLength = $('#FrontEndOptGroup').find("option").length;
+    //                     if (value == 'FrontEnd') {
+    //                         //上面的是lifeStyle
+    //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
+    //                             selectLi.eq(i).css("display", "none");
+    //                         }
+    //                         //下面的是front-end
+    //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
+    //                             selectLi.eq(i).css("display", "block");
+    //                         }
+    //                     }//lifeStyleLength
+    //                     else if (value == 'LifeStyle') {
+    //                         //上面的是lifeStyle
+    //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
+    //                             selectLi.eq(i).css("display", "block");
+    //                         }
+    //                         //下面的是front-end
+    //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
+    //                             selectLi.eq(i).css("display", "none");
+    //                         }
+    //                     }
+    //                     //$('#multTags').multiselect('refresh');
+    //                 }
+    //             });
+    //             //分类名改变时,刷新下面的标签
+    //             $("#catName").change(function () {
+    //                 $('#multTags option:selected').each(function () {
+    //                     $(this).prop('selected', false);
+    //                 });
+    //                 $('#multTags').multiselect('refresh');
+    //             });
+    //         }, 0, false);
+    //     });
+    //
+    //
+    // /*
+    //  * 获得今天的时间
+    //  * 当点击"今天",将今天的日期写入input内
+    //  * */
+    // var dateNow = new Date();
+    // var year = dateNow.getFullYear();
+    // var month = dateNow.getMonth() + 1;
+    // var date = dateNow.getDate();
+    // if (month < 10) {
+    //     month = '0' + month;
+    // }
+    // if(date<10){
+    //     date = '0' + date;
+    // }
+    // //2016-02-27
+    // var dateNowFormat = year + "-" + month + "-" + date;
+    // console.log(dateNowFormat);
+    // $("#setToday").click(function () {
+    //     $("#time").val(dateNowFormat);
+    // });
+    //
+    // /*
+    //  * ISO时间转化为input-date能识别的时间 -> 2016-02-28
+    //  * */
+    // function ISODate2Input(iso) {
+    //     return iso.substr(0, 10);
+    // }
+    //
+    //
+    // /*
+    //  * 数据提取 草稿--发布
+    //  * */
+    // $(".submit").click(function () {
+    //     //为空判断
+    //     var title = document.getElementById('title').value;
+    //     var time = document.getElementById('time').value;
+    //     if(title == '' || time == ''){
+    //         alert("标题和时间是必填选项");
+    //         return
+    //     }
+    //
+    //     var state;
+    //     //判断是草稿还是发表
+    //     if (this.id == 'publish') {
+    //         state = true;
+    //     } else if (this.id == 'draft') {
+    //         state = false;
+    //     }
+    //     var data = {
+    //         title: title,
+    //         time: time,
+    //         catalogueName: document.getElementById('catName').value,
+    //         articleType: document.getElementById('artType').value,
+    //         tags: $("#multTags").val(),
+    //         state: state,
+    //         content: editor.getValue()
+    //     };
+    //
+    //     //判断是"修改"还是"新增"
+    //     var articleId = document.getElementById('articleId').value;
+    //     if (!articleId) {
+    //         //无id值,则是"新增"
+    //         $http.post("admin/api/article/add", data)
+    //             .success(function (res) {
+    //                 //alert("新增成功")
+    //                 $('#articleModal').modal('hide')
+    //                 //刷新articleList
+    //                 refreshArticleList();
+    //             });
+    //     } else {
+    //         //有id值,则是"修改"
+    //         $http.post("admin/api/article/" + articleId, data)
+    //             .success(function (res) {
+    //                 //alert("修改成功")
+    //                 $('#articleModal').modal('hide');
+    //                 //刷新articleList
+    //                 refreshArticleList();
+    //             });
+    //     }
+    // });
+    //
+    // /*
+    //  * 修改按钮
+    //  * */
+    // $("#editArticle").click(function () {
+    //     //清除modal之前的残留
+    //     cleanModal();
+    //     //得到当前点击的row id
+    //     var id = $("#table").find(".active").children().eq(0).text();
+    //     if (!id) {
+    //         alert("修改请先选择");
+    //         return
+    //     }
+    //     //显示之后将数据写入modal中,只进行当前这次
+    //     $('#articleModal').one('show.bs.modal', function (e) {
+    //         $http.get("admin/api/article/" + id)
+    //             .success(function (res) {
+    //                 //console.log('//显示之后将数据写入modal中')
+    //                 //console.log(res)
+    //                 //数据写入modal中
+    //                 document.getElementById('articleId').value = res._id;
+    //                 document.getElementById('title').value = res.title;
+    //                 //input的输入框需要2016-02-02这样的数据
+    //                 document.getElementById('time').value = ISODate2Input(res.time);
+    //                 document.getElementById('catName').value = res.catalogueName;
+    //                 document.getElementById('artType').value = res.articleType;
+    //                 $('#multTags').multiselect('select', res.tags);
+    //                 editor.setValue(res.content);
+    //             });
+    //     })
+    //     //显示modal
+    //     $('#articleModal').modal('show');
+    // })
+    //
+    // /*
+    //  * 添加按钮
+    //  * */
+    // $("#addArticle").click(function () {
+    //     //清除modal之前的残留
+    //     cleanModal();
+    //     $('#articleModal').modal('show')
+    // });
+    //
+    // /*
+    //  * 删除按钮
+    //  * */
+    // $("#deleteArticle").click(function () {
+    //     var id = $("#table").find(".active").children().eq(0).text();
+    //     if (id == '' || id == null) {
+    //         alert("删除前请选择");
+    //         return
+    //     }
+    //     $http.delete("admin/api/article/" + id)
+    //         .success(function (res) {
+    //             //刷新列表
+    //             refreshArticleList();
+    //         });
+    // });
+    //
+    //
+    // /*
+    //  * modal内容清除
+    //  * */
+    // function cleanModal() {
+    //     document.getElementById('articleId').value = '';
+    //     document.getElementById('title').value = '';
+    //     document.getElementById('time').value = '';
+    //     document.getElementById('catName').value = 'LifeStyle';
+    //     document.getElementById('artType').value = undefined;
+    //     //清空tag的选项
+    //     $('#multTags option:selected').each(function () {
+    //         $(this).prop('selected', false);
+    //     });
+    //     $('#multTags').multiselect('refresh');
+    //     editor.setValue('');
+    // }
+}]);
 
 /**
  * Created by xiangsongtao on 16/2/22.
  */
 angular.module('xstApp')
 //myInfo的控制器
-.controller('articleCtrl', function ($http, $scope, $timeout) {
+.controller('articleListCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
+
+    getArticles();
+    function getArticles() {
+        return AJAX({
+            method: 'get',
+            url: API.getArticleList,
+            success: function success(response) {
+                console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.articleLists = response.data;
+                    console.log($scope.articleLists);
+                }
+            }
+        });
+    }
+
     //页面中数据写入
     // $scope.articleLists = response.data.articleLists;
 
     //页面载入完毕后,激活选中状态
-    $scope.initTr = function () {
-        $("#table tbody tr").click(function () {
-            $(this).toggleClass("active").siblings().removeClass("active");
-        });
-    };
+    // $scope.initTr = function () {
+    //     $("#table tbody tr").click(function () {
+    //         $(this).toggleClass("active").siblings().removeClass("active");
+    //     });
+    // };
 
     /*
      * 数据更新时,查找所有内容,之后自动刷新列表
      * */
-    function refreshArticleList() {
-        $http.get('/admin/api/article').success(function (response) {
-            console.log('article,refreshArticleList');
-            console.log(response);
-            $scope.articleLists = response.articleLists;
-        });
-    }
+    // function refreshArticleList() {
+    //     $http.get('/admin/api/article')
+    //         .success(function (response) {
+    //             console.log('article,refreshArticleList');
+    //             console.log(response);
+    //             $scope.articleLists = response.articleLists;
+    //         });
+    // }
 
     /*
-    * 模态框弹出
-    * */
-    $('#articleModal').modal({
-        //需要点击才能弹出
-        show: false,
-        //背景变黑但是不弹出来
-        backdrop: 'static'
-    });
+     * 模态框弹出
+     * */
+    // $('#articleModal').modal({
+    //     //需要点击才能弹出
+    //     show: false,
+    //     //背景变黑但是不弹出来
+    //     backdrop: 'static'
+    // });
 
     //文本输入
-    var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
-    var editor = new Simditor({
-        textarea: $('#articleContent'),
-        toolbar: toolbar
-    });
+    // var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
+    // var editor = new Simditor({
+    //     textarea: $('#articleContent'),
+    //     toolbar: toolbar
+    // });
 
     /*
      * 请求后台更新tags的内容并写入,写入完毕后初始化#multTags->多选tags按钮
      * */
-    $http.get("api/tags").success(function (res) {
-        //console.log(res)
-        //数据写入
-        $scope.tagLists = res.tagLists;
-
-        /*
-         * 初始化多选tags->标签
-         * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
-         * 当分类名变化是,刷新tags的选中状态
-         * */
-        $timeout(function () {
-            $('#multTags').multiselect({
-                onDropdownShow: function onDropdownShow(event) {
-                    var $catName = $("#catName");
-                    //$('#multTags option:selected').each(function () {
-                    //    $(this).prop('selected', false);
-                    //});
-                    //当前的值
-                    var value = $catName.val();
-                    var selectLi = $(".multiselect-container").find("li");
-                    var selectLiLength = $(".multiselect-container").find("li").length;
-                    var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
-                    var frontEndLength = $('#FrontEndOptGroup').find("option").length;
-                    if (value == 'FrontEnd') {
-                        //上面的是lifeStyle
-                        for (var i = 0; lifeStyleLength + 1 > i; i++) {
-                            selectLi.eq(i).css("display", "none");
-                        }
-                        //下面的是front-end
-                        for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-                            selectLi.eq(i).css("display", "block");
-                        }
-                    } //lifeStyleLength
-                    else if (value == 'LifeStyle') {
-                            //上面的是lifeStyle
-                            for (var i = 0; lifeStyleLength + 1 > i; i++) {
-                                selectLi.eq(i).css("display", "block");
-                            }
-                            //下面的是front-end
-                            for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-                                selectLi.eq(i).css("display", "none");
-                            }
-                        }
-                    //$('#multTags').multiselect('refresh');
-                }
-            });
-            //分类名改变时,刷新下面的标签
-            $("#catName").change(function () {
-                $('#multTags option:selected').each(function () {
-                    $(this).prop('selected', false);
-                });
-                $('#multTags').multiselect('refresh');
-            });
-        }, 0, false);
-    });
+    // $http.get("api/tags")
+    //     .success(function (res) {
+    //         //console.log(res)
+    //         //数据写入
+    //         $scope.tagLists = res.tagLists;
+    //
+    //         /*
+    //          * 初始化多选tags->标签
+    //          * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
+    //          * 当分类名变化是,刷新tags的选中状态
+    //          * */
+    //         $timeout(function () {
+    //             $('#multTags').multiselect({
+    //                 onDropdownShow: function (event) {
+    //                     var $catName = $("#catName");
+    //                     //$('#multTags option:selected').each(function () {
+    //                     //    $(this).prop('selected', false);
+    //                     //});
+    //                     //当前的值
+    //                     var value = $catName.val();
+    //                     var selectLi = $(".multiselect-container").find("li");
+    //                     var selectLiLength = $(".multiselect-container").find("li").length;
+    //                     var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
+    //                     var frontEndLength = $('#FrontEndOptGroup').find("option").length;
+    //                     if (value == 'FrontEnd') {
+    //                         //上面的是lifeStyle
+    //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
+    //                             selectLi.eq(i).css("display", "none");
+    //                         }
+    //                         //下面的是front-end
+    //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
+    //                             selectLi.eq(i).css("display", "block");
+    //                         }
+    //                     }//lifeStyleLength
+    //                     else if (value == 'LifeStyle') {
+    //                         //上面的是lifeStyle
+    //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
+    //                             selectLi.eq(i).css("display", "block");
+    //                         }
+    //                         //下面的是front-end
+    //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
+    //                             selectLi.eq(i).css("display", "none");
+    //                         }
+    //                     }
+    //                     //$('#multTags').multiselect('refresh');
+    //                 }
+    //             });
+    //             //分类名改变时,刷新下面的标签
+    //             $("#catName").change(function () {
+    //                 $('#multTags option:selected').each(function () {
+    //                     $(this).prop('selected', false);
+    //                 });
+    //                 $('#multTags').multiselect('refresh');
+    //             });
+    //         }, 0, false);
+    //     });
 
     /*
      * 获得今天的时间
@@ -735,11 +848,11 @@ angular.module('xstApp')
             catalogueName: document.getElementById('catName').value,
             articleType: document.getElementById('artType').value,
             tags: $("#multTags").val(),
-            state: state,
-            content: editor.getValue()
+            state: state
         };
 
         //判断是"修改"还是"新增"
+        // content: editor.getValue()
         var articleId = document.getElementById('articleId').value;
         if (!articleId) {
             //无id值,则是"新增"
@@ -784,8 +897,8 @@ angular.module('xstApp')
                 document.getElementById('time').value = ISODate2Input(res.time);
                 document.getElementById('catName').value = res.catalogueName;
                 document.getElementById('artType').value = res.articleType;
-                $('#multTags').multiselect('select', res.tags);
-                editor.setValue(res.content);
+                // $('#multTags').multiselect('select', res.tags);
+                // editor.setValue(res.content);
             });
         });
         //显示modal
@@ -829,24 +942,22 @@ angular.module('xstApp')
         $('#multTags option:selected').each(function () {
             $(this).prop('selected', false);
         });
-        $('#multTags').multiselect('refresh');
-        editor.setValue('');
+        // $('#multTags').multiselect('refresh');
+        // editor.setValue('');
     }
-});
+}]);
 
 /**
  * Created by xiangsongtao on 16/6/29.
  */
 (function () {
-    angular.module('xstApp').controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', function ($scope, AJAX, API, $log, $verification) {
+    angular.module('xstApp').controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', function ($scope, AJAX, API, $log, $verification, $timeout) {
 
         //获取我的信息
         AJAX({
             method: 'get',
-            url: API.getMyInfo,
+            url: API.getMyInfoWithOriginal,
             success: function success(response) {
-                console.log('AJAX response');
-                console.log(response);
                 if (parseInt(response.code) === 1) {
                     $scope.myinfo = response.data;
                     console.log($scope.myinfo);
@@ -854,18 +965,16 @@ angular.module('xstApp')
             }
         });
 
-        $("#imgUpload").dropzone({
-            url: "admin/api/myinfo/imgupload"
-        });
-
-        //监听input元素
-        var isChanged = false;
-        $scope.$watchGroup(["myinfo.full_name", "myinfo.position", "myinfo.address", "myinfo.motto", "myinfo.personal_state"], function () {
-            isChanged = true;
-        });
+        //取值
+        var changedValue = void 0;
+        $scope.setThis = function (value) {
+            changedValue = value;
+        };
         //保存操作
-        $scope.save = function () {
-            if (isChanged) {
+        $scope.save = function (value) {
+            // console.log(changedValue)
+            // console.log(value)
+            if (changedValue !== value) {
                 AJAX({
                     method: 'put',
                     url: API.postMyInfo,
@@ -880,14 +989,11 @@ angular.module('xstApp')
                     },
                     success: function success(response) {
                         if (parseInt(response.code) === 1) {
-                            // alert(response.msg)
                             $log.debug(response.msg);
                         } else {
+                            alert("我的信息修改失败: " + response.msg);
                             $log.error(response.msg);
                         }
-                    },
-                    complete: function complete() {
-                        isChanged = false;
                     }
                 });
             }
@@ -895,7 +1001,6 @@ angular.module('xstApp')
 
         //修改登录信息
         $scope.changeAuthorizationInfo = function () {
-
             if (!$verification.isUsername($scope.myinfo.username)) {
                 alert('用户名无效');
                 return false;
@@ -908,7 +1013,6 @@ angular.module('xstApp')
                 alert('新密码无效');
                 return false;
             }
-
             AJAX({
                 method: 'post',
                 url: API.changePassword,
@@ -920,13 +1024,42 @@ angular.module('xstApp')
                 },
                 success: function success(response) {
                     if (parseInt(response.code) === 1) {
+                        $scope.textState = '成功!';
                         $log.debug(response.msg);
                     } else {
+                        $scope.textState = '失败!';
                         $log.error(response.msg);
                     }
+                },
+                complete: function complete() {
+                    $timeout(function () {
+                        $scope.myinfo.new_password = null;
+                        $scope.textState = 'Submit';
+                    }, 2000, true);
                 }
             });
         };
+
+        /**
+         * imgUpload 配置
+         * */
+        var config = {
+            url: API.imgUpload,
+            maxFilesize: 1000,
+            paramName: "uploadImg",
+            maxThumbnailFilesize: 10,
+            parallelUploads: 1,
+            //自动上传
+            autoProcessQueue: true
+        };
+        var dropzone = new Dropzone(document.getElementById('imgUpload'), config);
+        dropzone.on('success', function (file, response) {
+            if (parseInt(response.code) === 1) {
+                $scope.myinfo.img_url = response.data;
+                isChanged = true;
+                $scope.save();
+            }
+        });
     }]);
 })();
 
@@ -935,100 +1068,151 @@ angular.module('xstApp')
  */
 angular.module('xstApp')
 //myInfo的控制器
-.controller('tagsCtrl', function ($scope, $http, response, $timeout) {
+.controller('tagsCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
 
     /*
      * 写入页面信息
      */
-    $scope.tagLists = response.data.tagLists;
-    //console.log('response.data');
-    //console.log(response.data);
-
-    /*
-     * 数据更新时,查找所有内容,之后自动刷新列表
-     * */
-    function refreshTagsList() {
-        $http.get('api/tags').success(function (response) {
-            console.log('tagLists,refreshtagLists');
-            console.log(response);
-            $scope.tagLists = response.tagLists;
+    getTags();
+    function getTags() {
+        return AJAX({
+            method: 'get',
+            url: API.getTagsList,
+            success: function success(response) {
+                console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.tagLists = response.data;
+                    console.log($scope.tagLists);
+                }
+            }
         });
     }
 
-    //执行行内修改的函数
-    $scope.inlineTableEdit = function () {
-        $timeout(function () {
-            $('#table').Tabledit({
-                url: 'api/tags/edit',
-                deleteButton: false,
-                saveButton: false,
-                buttons: {
-                    edit: {
-                        class: 'btn btn-sm btn-default',
-                        html: '<span class="glyphicon glyphicon-pencil"></span>',
-                        action: 'edit'
-                    }
-                },
-                columns: {
-                    identifier: [0, 'id'],
-                    editable: [[1, 'name'], [3, 'markClass', '{"0":"normal","1":"big","2":"huge"}'], [5, 'state', '{"true":"启用","false":"禁用"}']]
+    //模态框弹出(新增)
+    $scope.addNewTagBtn = function () {
+        //init
+        $scope.newTag = {
+            name: null,
+            catalogue_name: null
+        };
+    };
+    $scope.confirmSaveNewTagBtn = function () {
+        var data = {
+            name: $scope.newTag.name,
+            catalogue_name: $scope.newTag.catalogue_name
+        };
+        $scope.submitText = '正在提交...';
+        AJAX({
+            method: 'post',
+            url: API.addTag,
+            data: data,
+            success: function success(response) {
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $log.debug(response.msg);
+                    // 刷新列表
+                    getTags();
+                    //操作提示
+                    $scope.submitText = '新增成功!';
+                    $timeout(function () {
+                        angular.element(document.getElementById('addTag')).modal('hide');
+                        $scope.submitText = null;
+                    }, 1500, true);
+                } else {
+                    //操作提示
+                    $scope.submitText = '新增失败, 标签名称已存在!';
+                    $timeout(function () {
+                        $scope.submitText = null;
+                    }, 1500, true);
+                    $log.error(response.msg);
                 }
-            });
-        }, 0, false);
+            }
+        });
     };
 
-    //模态框弹出
-    $('#addTags').modal({
-        //需要点击才能弹出
-        show: false,
-        //背景变黑但是点击不消失
-        backdrop: 'static'
-    });
-
-    //保存按钮
-    $("#saveTags").click(function () {
-        var $tagname = $('#tagname');
-        var tagname = $tagname.val();
-        if (tagname == '' || tagname == null) {
-            $tagname.focus();
-            //has-error
-            $tagname.parent().addClass('has-error');
-            $tagname.click(function () {
-                $tagname.parent().removeClass('has-error');
-            });
-            $tagname.keydown(function () {
-                $tagname.parent().removeClass('has-error');
-            });
-
-            return;
-        }
-        var data = {
-            name: tagname,
-            catalogueName: $('#catname').val(),
-            markClass: $('#markclass').val(),
-            state: $('#state').val()
+    //模态框弹出(修改)
+    $scope.editTagBtn = function (tagInfo) {
+        $scope.editTag = {
+            _id: tagInfo._id,
+            name: tagInfo.name,
+            catalogue_name: tagInfo.catalogue_name
         };
-        console.log('data');
-        console.log(data);
-
-        var $sendingIcon = $(this).find(".sending");
-        $sendingIcon.css("display", "inline-block");
-        //发送数据
-
-        $http.post("api/tags/add", data).success(function (res) {
-
-            $sendingIcon.css("display", "none");
-            //清空数据
-            $('#tagname').val('');
-            $('#addTags').modal('hide');
-
-            //数据刷新
-            refreshTagsList();
+    };
+    $scope.confirmEditTagBtn = function () {
+        $scope.submitText = '正在提交...';
+        AJAX({
+            method: 'put',
+            url: API.editTag,
+            data: $scope.editTag,
+            success: function success(response) {
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $log.debug(response.msg);
+                    // 刷新列表
+                    getTags();
+                    //操作提示
+                    $scope.submitText = '修改成功!';
+                    $timeout(function () {
+                        angular.element(document.getElementById('editTag')).modal('hide');
+                        $scope.submitText = null;
+                    }, 1500, true);
+                } else {
+                    //操作提示
+                    switch (parseInt(response.code)) {
+                        case 2:
+                            $scope.submitText = '修改失败, 此标签不存在!';
+                            break;
+                        case 3:
+                            $scope.submitText = '修改失败, 标签名称重复!';
+                            break;
+                        default:
+                            $scope.submitText = '修改失败!';
+                            break;
+                    }
+                    $timeout(function () {
+                        $scope.submitText = null;
+                    }, 1500, true);
+                    $log.error(response.msg);
+                }
+            }
         });
+    };
 
-        //success
-    });
-});
+    //模态框弹出(删除)
+    $scope.delTagBtn = function (id) {
+        $scope.delTag = {
+            _id: id
+        };
+    };
+    $scope.confirmDelTagBtn = function () {
+        $scope.submitText = '正在删除...';
+        AJAX({
+            method: 'delete',
+            url: API.deleteTag.replace('id', $scope.delTag._id),
+            success: function success(response) {
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $log.debug(response.msg);
+                    // 刷新列表
+                    getTags();
+                    //操作提示
+                    $scope.submitText = '删除成功!';
+                    $timeout(function () {
+                        angular.element(document.getElementById('delTag')).modal('hide');
+                        $scope.submitText = null;
+                    }, 1500, true);
+                } else {
+                    //操作提示
+                    $scope.submitText = '删除失败!';
+                    $timeout(function () {
+                        $scope.submitText = null;
+                    }, 1500, true);
+                    $log.error(response.msg);
+                }
+            }
+        });
+    };
+}]);
 
 /**
  * Created by xiangsongtao on 16/6/29.
@@ -1206,10 +1390,12 @@ angular.module('xstApp')
  */
 
 (function () {
-    angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider) {
+    angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.when("/admin/articleManager", "/admin/articleManager/articleList");
+        // .otherwise("/");
         $stateProvider
         /**
-         * 修改我的信息 
+         * 修改我的信息
          * */
         .state('admin', {
             url: "/admin",
@@ -1227,7 +1413,10 @@ angular.module('xstApp')
             templateUrl: 'web/tpl/admin.articleList.tpl.html',
             controller: 'articleListCtrl'
         }).state('admin.articleManager.article', {
-            url: "/article",
+            params: {
+                _id: null
+            },
+            url: "/article/:_id",
             templateUrl: 'web/tpl/admin.article.tpl.html',
             controller: 'articleCtrl'
         }).state('admin.tags', {

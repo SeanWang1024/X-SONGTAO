@@ -14,6 +14,7 @@
 @import "basic/util";
 //动画
 @import "basic/animations";
+@import "basic/_codeHighLight.scss";
 
 
 //bootscrip的栅格系统及媒体查询规则
@@ -39,6 +40,7 @@
 
 
 //响应式
+@import "mediaQuery/_main.scss";
 @import "mediaQuery/_768_991.scss";
 @import "mediaQuery/_768_1199.scss";
 @import "mediaQuery/_768_larger.scss";

@@ -2,108 +2,159 @@
  * Created by xiangsongtao on 16/2/22.
  */
 angular.module('xstApp')
-    //myInfo的控制器
-    .controller('tagsCtrl', function ($scope, $http,response,$timeout) {
+//myInfo的控制器
+    .controller('tagsCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
 
         /*
          * 写入页面信息
          */
-        $scope.tagLists = response.data.tagLists;
-        //console.log('response.data');
-        //console.log(response.data);
-
-
-        /*
-         * 数据更新时,查找所有内容,之后自动刷新列表
-         * */
-        function refreshTagsList() {
-            $http.get('api/tags')
-                .success(function (response) {
-                    console.log('tagLists,refreshtagLists');
+        getTags();
+        function getTags() {
+            return AJAX({
+                method: 'get',
+                url: API.getTagsList,
+                success: function (response) {
                     console.log(response);
-                    $scope.tagLists = response.tagLists;
-                });
+                    if (parseInt(response.code) === 1) {
+                        $scope.tagLists = response.data;
+                        console.log($scope.tagLists);
+                    }
+                }
+            });
         }
 
 
-        //执行行内修改的函数
-        $scope.inlineTableEdit= function () {
-            $timeout(function(){
-                $('#table').Tabledit({
-                    url: 'api/tags/edit',
-                    deleteButton: false,
-                    saveButton: false,
-                    buttons: {
-                        edit: {
-                            class: 'btn btn-sm btn-default',
-                            html: '<span class="glyphicon glyphicon-pencil"></span>',
-                            action: 'edit'
-                        }
-                    },
-                    columns: {
-                        identifier: [0, 'id'],
-                        editable: [[1, 'name'], [3, 'markClass', '{"0":"normal","1":"big","2":"huge"}'], [5, 'state', '{"true":"启用","false":"禁用"}']]
+        //模态框弹出(新增)
+        $scope.addNewTagBtn = function () {
+            //init
+            $scope.newTag = {
+                name: null,
+                catalogue_name: null
+            };
+        };
+        $scope.confirmSaveNewTagBtn = function () {
+            let data = {
+                name: $scope.newTag.name,
+                catalogue_name: $scope.newTag.catalogue_name,
+            };
+            $scope.submitText = '正在提交...';
+            AJAX({
+                method: 'post',
+                url: API.addTag,
+                data: data,
+                success: function (response) {
+                    // console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        $log.debug(response.msg);
+                        // 刷新列表
+                        getTags();
+                        //操作提示
+                        $scope.submitText = '新增成功!';
+                        $timeout(function () {
+                            angular.element(document.getElementById('addTag')).modal('hide');
+                            $scope.submitText = null;
+                        }, 1500, true);
+                    } else {
+                        //操作提示
+                        $scope.submitText = '新增失败, 标签名称已存在!';
+                        $timeout(function () {
+                            $scope.submitText = null;
+                        }, 1500, true);
+                        $log.error(response.msg);
                     }
-                });
-            },0,false);
+                }
+            });
         };
 
-        //模态框弹出
-        $('#addTags').modal({
-            //需要点击才能弹出
-            show: false,
-            //背景变黑但是点击不消失
-            backdrop: 'static'
-        });
+        //模态框弹出(修改)
+        $scope.editTagBtn = function (tagInfo) {
+            $scope.editTag = {
+                _id: tagInfo._id,
+                name: tagInfo.name,
+                catalogue_name: tagInfo.catalogue_name,
+            };
+        };
+        $scope.confirmEditTagBtn = function () {
+            $scope.submitText = '正在提交...';
+            AJAX({
+                method: 'put',
+                url: API.editTag,
+                data: $scope.editTag,
+                success: function (response) {
+                    // console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        $log.debug(response.msg);
+                        // 刷新列表
+                        getTags();
+                        //操作提示
+                        $scope.submitText = '修改成功!';
+                        $timeout(function () {
+                            angular.element(document.getElementById('editTag')).modal('hide');
+                            $scope.submitText = null;
+                        }, 1500, true);
+                    } else {
+                        //操作提示
+                        switch (parseInt(response.code)) {
+                            case 2:
+                                $scope.submitText = '修改失败, 此标签不存在!';
+                                break;
+                            case 3:
+                                $scope.submitText = '修改失败, 标签名称重复!';
+                                break;
+                            default:
+                                $scope.submitText = '修改失败!';
+                                break;
+                        }
+                        $timeout(function () {
+                            $scope.submitText = null;
+                        }, 1500, true);
+                        $log.error(response.msg);
+                    }
+                }
+            });
+        };
 
-        //保存按钮
-        $("#saveTags").click(function () {
-            var $tagname = $('#tagname');
-            var tagname = $tagname.val();
-            if (tagname == '' || tagname == null) {
-                $tagname.focus();
-                //has-error
-                $tagname.parent().addClass('has-error');
-                $tagname.click(function () {
-                    $tagname.parent().removeClass('has-error');
-                });
-                $tagname.keydown(function () {
-                    $tagname.parent().removeClass('has-error');
-                });
-
-                return
-            }
-            var data = {
-                name: tagname,
-                catalogueName: $('#catname').val(),
-                markClass: $('#markclass').val(),
-                state: $('#state').val()
-            }
-            console.log('data')
-            console.log(data)
-
-
-            var $sendingIcon = $(this).find(".sending");
-            $sendingIcon.css("display", "inline-block");
-            //发送数据
-
-            $http.post("api/tags/add", data)
-                .success(function (res) {
-
-                    $sendingIcon.css("display", "none");
-                    //清空数据
-                    $('#tagname').val('')
-                    $('#addTags').modal('hide');
-
-                    //数据刷新
-                    refreshTagsList();
-                });
+        //模态框弹出(删除)
+        $scope.delTagBtn = function (id) {
+            $scope.delTag = {
+                _id: id
+            };
+        };
+        $scope.confirmDelTagBtn = function () {
+            $scope.submitText = '正在删除...';
+            AJAX({
+                method: 'delete',
+                url: API.deleteTag.replace('id', $scope.delTag._id),
+                success: function (response) {
+                    // console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        $log.debug(response.msg);
+                        // 刷新列表
+                        getTags();
+                        //操作提示
+                        $scope.submitText = '删除成功!';
+                        $timeout(function () {
+                            angular.element(document.getElementById('delTag')).modal('hide');
+                            $scope.submitText = null;
+                        }, 1500, true);
+                    } else {
+                        //操作提示
+                        $scope.submitText = '删除失败!';
+                        $timeout(function () {
+                            $scope.submitText = null;
+                        }, 1500, true);
+                        $log.error(response.msg);
+                    }
+                }
+            });
+        }
 
 
-            //success
 
-        })
-    });
+
+
+
+    }]);
 
 
 

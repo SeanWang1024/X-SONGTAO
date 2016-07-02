@@ -19,7 +19,7 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
 
   //  激活工具提示js
   if(document.documentElement.clientWidth<991){
-    //  激活工具提示js
+     // 激活工具提示js
     $('[data-toggle="tooltip"]').tooltip('destroy').tooltip({
       trigger: 'hover',
       placement:'bottom'

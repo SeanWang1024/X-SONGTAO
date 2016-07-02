@@ -9,7 +9,7 @@
   .myInfoInner {
     display: block;
     padding-bottom: 30px;
-    height: calc(100% - 77px);
+    //height: calc(100% - 77px);
     overflow: scroll;
     .myInfoInnerFlexBox {
       display: flex;
@@ -28,6 +28,12 @@
           overflow: hidden;
           cursor: pointer;
           position: relative;
+          img {
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: 100%;
+          }
           #imgUpload {
             position: absolute;
             height: 100%;
@@ -48,7 +54,10 @@
               padding: 0;
               margin: 0;
               img {
+                max-width: 100%;
+                max-height: 100%;
                 width: 100%;
+                height: 100%;
               }
             }
           }
@@ -64,15 +73,6 @@
         .infoDetail__inputGroup {
           height: 34px;
           margin-bottom: 10px;
-          //.inputContentStatic {
-          //  font-size: 16px;
-          //  text-overflow: ellipsis;
-          //  white-space: nowrap;
-          //  overflow: hidden;
-          //  display: block;
-          //  padding: 0;
-          //  line-height: 34px;
-          //}
           .inputContent {
             font-size: 16px;
             height: 34px;
@@ -118,7 +118,9 @@
             font-size: 16px;
             margin: 0;
             width: 100%;
-            height: 200px;overflow-x:hidden;resize:none;
+            height: 200px;
+            overflow-x: hidden;
+            resize: none;
           }
         }
       }
@@ -157,6 +159,21 @@
               padding: 4px 12px;
 
             }
+            .stateText {
+              color:#fff;
+              margin-top: 5px;
+              margin-bottom: 5px;
+              font-size: 12px;
+              text-align: right;
+              width: 100%;
+              display: inline-block;
+              max-width: 100%;
+              font-weight: 700;
+              padding: 0;
+              border: 0;
+              vertical-align: baseline;
+
+            }
           }
         }
       }
@@ -164,7 +181,7 @@
       .loginRecord {
         width: 100%;
         //height: 400px;
-        margin-bottom: 30px;
+        //margin-bottom: 30px;
         label {
           font-size: 16px;
           color: #00b2e2;
@@ -176,11 +193,17 @@
           th {
             text-align: center;
             color: #fff;
+            font-size: 16px;
+          }
+          td {
+            font-size: 14px;
           }
           text-align: center;
           color: #fff;
         }
-
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+          border-top: 1px solid rgba(132, 132, 132, 0.37)
+        }
       }
     }
   }

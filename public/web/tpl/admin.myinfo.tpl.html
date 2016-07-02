@@ -10,8 +10,8 @@
             <div class="infoDetail">
                 <div class="inputGroup clearfix">
                     <label class="col-sm-12" for="name">昵称/Nickname</label>
-                    <div class="col-sm-12 infoDetail__inputGroup" style="height: 34px;">
-                        <input type="text" ng-blur="save()" class="form-control input-sm col-sm-12 inputContent" id="name" name="name"
+                    <div class="col-sm-12 infoDetail__inputGroup">
+                        <input type="text" ng-click="setThis(myinfo.full_name)" ng-blur="save(myinfo.full_name)" class="form-control input-sm col-sm-12 inputContent" id="name" name="name"
                                placeholder="姓名/Name" ng-model="myinfo.full_name">
                         <!--<span class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>-->
                     </div>
@@ -20,7 +20,7 @@
                     <label class="col-sm-12 " for="position">职位/Position</label>
                     <div class="col-sm-12 infoDetail__inputGroup">
                         <!--<p class="form-control-static inputContentStatic" ng-click="setInput($event)" ng-bind="myinfo.position"></p>-->
-                        <input type="text"  ng-blur="save()" class="form-control input-sm col-sm-12 inputContent" id="position" name="position"
+                        <input type="text" ng-click="setThis(myinfo.position)" ng-blur="save(myinfo.position)" class="form-control input-sm col-sm-12 inputContent" id="position" name="position"
                                placeholder="职位/Position" ng-model="myinfo.position">
                         <!--<span class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>-->
                     </div>
@@ -29,7 +29,7 @@
                     <label class="col-sm-12 " for="address">地址/Address</label>
                     <div class="col-sm-12 infoDetail__inputGroup">
                         <!--<p class="form-control-static inputContentStatic" ng-click="setInput($event)" ng-bind="myinfo.address"></p>-->
-                        <input type="text" ng-blur="save()" class="form-control input-sm col-sm-12 inputContent" id="address" name="address"
+                        <input type="text" ng-click="setThis(myinfo.address)" ng-blur="save(myinfo.address)" class="form-control input-sm col-sm-12 inputContent" id="address" name="address"
                                placeholder="地址/Address" ng-model="myinfo.address">
                         <!--<span class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>-->
                     </div>
@@ -43,7 +43,7 @@
                     <form id="imgUpload" action="" class="dropzone" method="post" enctype="multipart/form-data">
                         <div class="dz-default dz-message"></div>
                     </form>
-                    <img width="100%" ng-src="../{{myinfo.img_url}}" alt="">
+                    <img width="100%" ng-src="{{myinfo.img_url | imgURl}}" alt="我的头像">
                 </div>
             </div>
             <!--我的心情-->
@@ -51,7 +51,8 @@
                 <div class="inputGroup clearfix">
                     <label class="col-sm-12" for="mood">心情/Motto</label>
                     <div class="col-sm-6 infoDetail__inputGroup">
-                        <input type="text" class="form-control input-sm col-sm-6 inputContent" id="mood" name="mood" ng-blur="save($event)"
+                        <input type="text" class="form-control input-sm col-sm-6 inputContent" id="mood" name="mood"
+                               ng-click="setThis(myinfo.motto)" ng-blur="save(myinfo.motto)"
                                placeholder="心情/Mood" ng-model="myinfo.motto">
                     </div>
                 </div>
@@ -59,9 +60,11 @@
 
             <!--我的陈述-->
             <div class="personalState">
-                <label>我的介绍/MyIntroduce</label>
+                <label>我的介绍/MyIntroduce(Markdown)</label>
                 <div class="personalState__textarea">
-                    <textarea ng-blur="save()" ng-model="myinfo.personal_state" placeholder="请填写我的介绍...." autofocus></textarea>
+                    <textarea
+                            ng-click="setThis(myinfo.personal_state)" ng-blur="save(myinfo.personal_state)"
+                            ng-model="myinfo.personal_state" placeholder="请填写我的介绍...."></textarea>
                 </div>
             </div>
 
@@ -69,28 +72,27 @@
             <div class="authorizationBox">
                 <div class="inputGroup clearfix">
                     <label class="col-sm-12" for="name">登录验证信息/Authorization</label>
-                    <section class="inputBox">
-                        <div class="col-sm-12">
+                    <form class="inputBox" name="auths">
+                        <div class="col-sm-12" ng-class="{true:'has-error',false:''}[auths.username.$error.required]">
                             <input type="text" class="form-control input-sm col-sm-12 inputContent"
-                                   placeholder="用户名/Username" ng-model="myinfo.username">
+                                   placeholder="用户名/Username" name="username" ng-model="myinfo.username" required>
                             <label>用户名/Username</label>
                         </div>
-                        <div class="col-sm-12">
-
+                        <div class="col-sm-12" ng-class="{true:'has-error',false:''}[auths.password.$error.required]">
                             <input type="text" class="form-control input-sm col-sm-12 inputContent"
-                                   placeholder="旧密码/Old Password" ng-model="myinfo.password">
+                                   placeholder="旧密码/Old Password" name="password" ng-model="myinfo.password" required>
                             <label>旧密码/Old Password</label>
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" ng-class="{true:'has-error',false:''}[auths.new_password.$error.required]">
                             <input type="text" class="form-control input-sm col-sm-12 inputContent"
-                                   placeholder="新密码/New Password" ng-model="myinfo.new_password">
+                                   placeholder="新密码/New Password" name="new_password" ng-model="myinfo.new_password" required>
                             <label>新密码/New Password</label>
                         </div>
-                        <div class="buttonBox">
-                            <button ng-click="changeAuthorizationInfo()" class="btn btn-danger">确认</button>
-                            <label>提交/OK</label>
+                        <div class="buttonBox" ng-init="textState = 'Submit'">
+                            <button ng-disabled="!auths.$valid || !!submitText" ng-click="changeAuthorizationInfo()" class="btn btn-danger">确认</button>
+                            <span class="stateText" ng-bind="textState">Submit</span>
                         </div>
-                    </section>
+                    </form>
                 </div>
             </div>
 
@@ -123,3 +125,6 @@
     </div>
 
 </div>
+
+
+

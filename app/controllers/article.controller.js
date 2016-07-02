@@ -103,23 +103,23 @@ module.exports = {
                     }
                 }
 
-                /**
-                 * markdown转html
-                 **/
-                marked.setOptions({
-                    renderer: new marked.Renderer(),
-                    gfm: true,
-                    tables: true,
-                    breaks: true,
-                    pedantic: false,
-                    sanitize: false,
-                    smartLists: true,
-                    smartypants: false,
-                    highlight: function (code) {
-                        return hljs.highlightAuto(code).value;
-                    }
-                });
-                article.content = marked(content);
+                // /**
+                //  * markdown转html
+                //  **/
+                // marked.setOptions({
+                //     renderer: new marked.Renderer(),
+                //     gfm: true,
+                //     tables: true,
+                //     breaks: true,
+                //     pedantic: false,
+                //     sanitize: false,
+                //     smartLists: true,
+                //     smartypants: false,
+                //     highlight: function (code) {
+                //         return hljs.highlightAuto(code).value;
+                //     }
+                // });
+                // article.content = marked(content);
 
 
 
@@ -218,6 +218,65 @@ module.exports = {
         });
     },
     getById: function (req, res, next) {
+        //需要处理,因为单个文章是文章的全文,并且含有文章的评论信息
+        Articles.findOne({_id: req.params.id}, function (err, doc) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            if (!!doc) {
+                //阅读数++
+                doc.read_num++;
+                doc.save();
+                let article = doc;
+                findAllTags().then(function (tags) {
+                    for (let j = 0; article.tags.length > j; j++) {
+                        //tag id => tag name
+                        let name = findTagNameById(tags, article.tags[j]);
+                        if (!name) {
+                            //对于未找到tagid的则去除此位置
+                            article.tags.splice(j, 1);
+                            j--;
+                        } else {
+                            article.tags[j] = name;
+                        }
+                    }
+
+                    /**
+                     * markdown转html
+                     **/
+                    marked.setOptions({
+                        renderer: new marked.Renderer(),
+                        gfm: true,
+                        tables: true,
+                        breaks: true,
+                        pedantic: false,
+                        sanitize: false,
+                        smartLists: true,
+                        smartypants: false,
+                        highlight: function (code) {
+                            return hljs.highlightAuto(code).value;
+                        }
+                    });
+                    article.content = marked(article.content);
+
+                    res.status(200);
+                    res.send({
+                        "code": "1",
+                        "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
+                        "data": article
+                    });
+                });
+            } else {
+                res.status(200);
+                res.send({
+                    "code": "2",
+                    "msg": `article non-exist!`
+                });
+            }
+        });
+    },
+    getRawById: function (req, res, next) {
         //需要处理,因为单个文章是文章的全文,并且含有文章的评论信息
         Articles.findOne({_id: req.params.id}, function (err, doc) {
             if (err) {

@@ -11,6 +11,9 @@
   margin-left: auto;
   margin-bottom: 50px;
   margin-right: auto;
+  &.preview{
+    width:1530px;
+  }
   .adminBox-content-header h1 {
     font-family: "Dosis", arial, tahoma, verdana;
     display: inline-block;
@@ -43,7 +46,9 @@
 .blue {
   color: $base-theme-color;
 }
-
+.textItem {
+  color: #fff;
+}
 //.admin-bottom {
 //  position: absolute;
 //  bottom: 8px;
@@ -63,50 +68,46 @@
 
 
 
-.textItem {
-  color: #fff;
-}
 
 
-.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-  border-top: 1px solid rgba(132, 132, 132, 0.37)
-}
 
 
-.tags table tbody tr {
-  height: 41px;
-}
 
-.tableScrollBox {
-  /*width:100%;*/
-  height: calc(100% - 106px);
-  /*background-color:red;*/
-  overflow: hidden;
-}
+
+//.tags table tbody tr {
+//  height: 41px;
+//}
+
+//.tableScrollBox {
+//  /*width:100%;*/
+//  height: calc(100% - 106px);
+//  /*background-color:red;*/
+//  overflow: hidden;
+//}
 
 /*定义表格每列的宽度*/
-.table-head tr th:nth-child(2),
-.table-head tr th:nth-child(3),
-.table-head tr th:nth-child(4),
-.table-head tr th:nth-child(5),
-.table-head tr th:nth-child(6) {
-  width: 19%;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.table-body tr td:nth-child(2),
-.table-body tr td:nth-child(3),
-.table-body tr td:nth-child(4),
-.table-body tr td:nth-child(5),
-.table-body tr td:nth-child(6) {
-  width: 20%;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.table-body {
-  height: 100%;
-  overflow-y: scroll;
-  padding: 0 0 15px 0;
-}
+//.table-head tr th:nth-child(2),
+//.table-head tr th:nth-child(3),
+//.table-head tr th:nth-child(4),
+//.table-head tr th:nth-child(5),
+//.table-head tr th:nth-child(6) {
+//  width: 19%;
+//  padding-left: 0;
+//  padding-right: 0;
+//}
+//
+//.table-body tr td:nth-child(2),
+//.table-body tr td:nth-child(3),
+//.table-body tr td:nth-child(4),
+//.table-body tr td:nth-child(5),
+//.table-body tr td:nth-child(6) {
+//  width: 20%;
+//  padding-left: 0;
+//  padding-right: 0;
+//}
+//
+//.table-body {
+//  height: 100%;
+//  overflow-y: scroll;
+//  padding: 0 0 15px 0;
+//}

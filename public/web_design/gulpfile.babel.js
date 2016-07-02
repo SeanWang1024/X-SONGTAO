@@ -78,7 +78,12 @@ gulp.task('move:fonts', ()=> {
 });
 
 gulp.task('css:common', ()=> {
-    var stream = gulp.src(`${PATH.SRC}/lib/**/*.css`)
+    // var stream = gulp.src(`${PATH.SRC}/lib/**/*.css`)
+    var stream = gulp.src([
+        `${PATH.SRC}/lib/reset.css`,
+        `${PATH.SRC}/lib/bootstrap.min.css`,
+        `${PATH.SRC}/lib/font-awesome.min.css`,
+    ])
         .pipe($.autoprefixer({
             browsers: ['IE 8'],
             cascade: false
@@ -128,8 +133,28 @@ gulp.task('js:common', function () {
         `${PATH.SRC}/lib/angular.js`,
         `${PATH.SRC}/lib/angular-ui-router.min.js`,
         `${PATH.SRC}/lib/bootstrap.min.js`,
-        `${PATH.SRC}/lib/admin/*.js`,
     ]).pipe($.concat('common.js')).pipe($.babel());
+    switch (ENV) {
+        case 'DEV':
+            return stream.pipe(gulp.dest(`${PATH.DIST}/js`));
+            break;
+        case 'TES':
+            return stream.pipe($.md5Plus(10, APP_VIEWS_WEB)).pipe(gulp.dest(`${PATH.DIST}/js`));
+            break;
+        case 'PRO':
+            return stream.pipe($.md5Plus(10, APP_VIEWS_WEB)).pipe($.uglify()).pipe(gulp.dest(`${PATH.DIST}/js`));
+            break;
+    }
+});
+
+gulp.task('js:common.admin', function () {
+    var stream = gulp.src([
+        `${PATH.SRC}/lib/admin/dropzone.js`,
+        `${PATH.SRC}/lib/admin/marked.js`,
+        `${PATH.SRC}/lib/admin/highlight.js`,
+        `${PATH.SRC}/lib/admin/angular-marked.min.js`,
+        `${PATH.SRC}/lib/admin/angular-highlightjs.js`
+    ]).pipe($.concat('common.admin.js')).pipe($.babel());
     switch (ENV) {
         case 'DEV':
             return stream.pipe(gulp.dest(`${PATH.DIST}/js`));
@@ -222,6 +247,7 @@ gulp.task('default', $.sequence(
         'css:common',
         'css:main',
         'js:common',
+        'js:common.admin',
         'js:main',
         'move:images',
     ]

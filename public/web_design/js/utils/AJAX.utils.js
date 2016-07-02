@@ -30,6 +30,9 @@
                 return $http(params).then(
                     //success
                     function (response) {
+                        if(parseInt(response.data.code) == 10){
+                            alert("token问题,请重新登录!");
+                        }
                         httpParams.success && httpParams.success(response.data)
                     },
                     //error

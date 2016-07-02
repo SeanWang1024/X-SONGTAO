@@ -33,8 +33,8 @@ module.exports = function () {
     mongoose.model('Tags', new mongoose.Schema({
         name: String,//标签名称 eg: css html
         catalogue_name: String,//分类名称 eg: FrontEnd
-        used_num: Number,//文章引用数
-        create_time: Number//创建时间 时间戳
+        used_num: {type: Number, default: 0},//文章引用数
+        create_time: Date,//创建时间 时间戳
     }));
 
 
@@ -51,20 +51,19 @@ module.exports = function () {
     }));
 
 
-
     //评论数据模型
     mongoose.model('Comments', new mongoose.Schema({
         //自动维护
-        article_id:String,//记录此评论所属的文章_id
-        pre_id:String,//钩子的id。即,上一条父记录id,如果没有则为根id->article_id(必须)
-        next_id:Array,//沟槽id,即,下一条记录的id,一般是子评论的id。
+        article_id: String,//记录此评论所属的文章_id
+        pre_id: String,//钩子的id。即,上一条父记录id,如果没有则为根id->article_id(必须)
+        next_id: Array,//沟槽id,即,下一条记录的id,一般是子评论的id。
         // 
         name: String,//评论人姓名、昵称
         email: String,//评论人邮箱
         time: Number,//评论时间,时间戳
         content: String,//评论内容
         ip: String,//对方ip
-        state:Boolean,//是否审核通过 0, 未审核通过 1 审核通过
+        state: Boolean,//是否审核通过 0, 未审核通过 1 审核通过
     }));
 
     return db;

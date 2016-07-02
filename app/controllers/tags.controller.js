@@ -18,8 +18,10 @@ module.exports = {
             }
             res.status(200);
             res.send({
-                tagLists: docs
-            })
+                "code": "1",
+                "msg": `find tag all success!`,
+                "data":docs
+            });
         })
     },
     getAllWithStructure: function (req, res, next) {
@@ -107,7 +109,9 @@ module.exports = {
                 let tagData = {
                     name: name,
                     catalogue_name: catalogue_name,
-                    used_num: 0
+                    used_num: 0,
+                    create_time: new Date()
+
                 };
                 let tag = new Tags(tagData);
                 tag.save();
@@ -122,26 +126,65 @@ module.exports = {
         })
     },
     edit: function (req, res, next) {
-        Tags.update({_id: req.body._id},{
-            $set:{
-                name:req.body.name,
-                catalogue_name:req.body.catalogue_name
-            }
-        }, function (err) {
+        Tags.findOne({_id: req.body._id}, function (err, tag_orig) {
             if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            if (!!tag_orig) {
+                Tags.findOne({name: req.body.name}, function (err, doc) {
+                    if (err) {
+                        DO_ERROR_RES(res);
+                        return next();
+                    }
+                    if (!!doc && (doc._id.toString() !== tag_orig._id.toString())) {
+                        res.status(200);
+                        res.send({
+                            "code": "3",
+                            "msg": "tag name exist, please use another one!"
+                        });
+                    }else{
+                        tag_orig.name = req.body.name;
+                        tag_orig.catalogue_name = req.body.catalogue_name;
+                        tag_orig.save();
+                        res.status(200);
+                        res.send({
+                            "code": "1",
+                            "msg": "tag edit success!",
+                            "data":tag_orig
+                        });
+                    }
+                })
+
+            } else {
                 res.status(200);
                 res.send({
                     "code": "2",
                     "msg": "tag non-exist or params error!"
                 });
-            }else{
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": "tag edit success!"
-                });
             }
-        });
+        })
+
+        // Tags.update({_id: req.body._id},{
+        //     $set:{
+        //         name:req.body.name,
+        //         catalogue_name:req.body.catalogue_name
+        //     }
+        // }, function (err) {
+        //     if (err) {
+        //         res.status(200);
+        //         res.send({
+        //             "code": "2",
+        //             "msg": "tag non-exist or params error!"
+        //         });
+        //     }else{
+        //         res.status(200);
+        //         res.send({
+        //             "code": "1",
+        //             "msg": "tag edit success!"
+        //         });
+        //     }
+        // });
     },
     delete: function (req, res, next) {
         Tags.remove({_id: req.params.id}, function (err) {

@@ -3,40 +3,30 @@
  */
 (function () {
     angular.module('xstApp')
-        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', function ($scope, AJAX, API, $log, $verification) {
+        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification','$timeout', function ($scope, AJAX, API, $log, $verification,$timeout) {
 
             //获取我的信息
             AJAX({
                 method: 'get',
-                url: API.getMyInfo,
+                url: API.getMyInfoWithOriginal,
                 success: function (response) {
-                    console.log('AJAX response');
-                    console.log(response);
                     if (parseInt(response.code) === 1) {
                         $scope.myinfo = response.data;
-                        console.log($scope.myinfo)
+                        console.log($scope.myinfo);
                     }
                 }
             });
 
-            $("#imgUpload").dropzone({
-                url: "admin/api/myinfo/imgupload"
-            });
-
-
-            //监听input元素
-            let isChanged = false;
-            $scope.$watchGroup([
-                "myinfo.full_name",
-                "myinfo.position",
-                "myinfo.address", "myinfo.motto",
-                "myinfo.personal_state"
-            ], function () {
-                isChanged = true;
-            });
+            //取值
+            let changedValue;
+            $scope.setThis =function (value) {
+                changedValue = value;
+            };
             //保存操作
-            $scope.save = function () {
-                if (isChanged) {
+            $scope.save = function (value) {
+                // console.log(changedValue)
+                // console.log(value)
+                if (changedValue !== value) {
                     AJAX({
                         method: 'put',
                         url: API.postMyInfo,
@@ -51,14 +41,11 @@
                         },
                         success: function (response) {
                             if (parseInt(response.code) === 1) {
-                                // alert(response.msg)
                                 $log.debug(response.msg);
                             } else {
+                                alert("我的信息修改失败: " + response.msg);
                                 $log.error(response.msg);
                             }
-                        },
-                        complete: function () {
-                            isChanged = false;
                         }
                     });
                 }
@@ -67,7 +54,6 @@
 
             //修改登录信息
             $scope.changeAuthorizationInfo = function () {
-
                 if (!$verification.isUsername($scope.myinfo.username)) {
                     alert('用户名无效');
                     return false;
@@ -80,7 +66,6 @@
                     alert('新密码无效');
                     return false;
                 }
-
                 AJAX({
                     method: 'post',
                     url: API.changePassword,
@@ -92,13 +77,43 @@
                     },
                     success: function (response) {
                         if (parseInt(response.code) === 1) {
+                            $scope.textState = '成功!';
                             $log.debug(response.msg);
                         } else {
+                            $scope.textState = '失败!';
                             $log.error(response.msg);
                         }
+                    },
+                    complete:function () {
+                        $timeout(function () {
+                            $scope.myinfo.new_password = null;
+                            $scope.textState = 'Submit';
+                        },2000,true)
                     }
                 });
             };
+
+
+            /**
+             * imgUpload 配置
+             * */
+            let config = {
+                url: API.imgUpload,
+                maxFilesize: 1000,
+                paramName: "uploadImg",
+                maxThumbnailFilesize: 10,
+                parallelUploads: 1,
+                //自动上传
+                autoProcessQueue: true
+            };
+            let dropzone = new Dropzone(document.getElementById('imgUpload'), config);
+            dropzone.on('success', function (file, response) {
+                if (parseInt(response.code) === 1) {
+                    $scope.myinfo.img_url = response.data;
+                    isChanged = true;
+                    $scope.save();
+                }
+            });
         }]);
 })();
 

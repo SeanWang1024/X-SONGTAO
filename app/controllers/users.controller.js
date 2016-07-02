@@ -8,7 +8,7 @@ let fs = require('fs');
 let Users = mongoose.model('Users');
 //数据库查询同一错误处理
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
-
+let marked = require('marked');
 module.exports = {
     register: function (req, res, next) {
         let user_ip = req.ip.split(":")[3];
@@ -142,12 +142,55 @@ module.exports = {
             })
         })
     },
+    //用于home显示
     getById: function (req, res, next) {
         Users.findOne({_id: req.params.id}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
+            //将我的介绍由markdown转化为html输出
+            // marked
+            /**
+             * markdown转html
+             **/
+            marked.setOptions({
+                renderer: new marked.Renderer(),
+                gfm: true,
+                tables: true,
+                breaks: true,
+                pedantic: false,
+                sanitize: false,
+                smartLists: true,
+                smartypants: false,
+            });
+            user.personal_state = marked(user.personal_state);
+
+            if (!!user) {
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "user list",
+                    "data": user
+                })
+            } else {
+                res.status(200);
+                res.send({
+                    "code": "2",
+                    "msg": "user non-exist"
+                })
+            }
+
+        })
+    },
+    //原始的个人信息,可以二次修改
+    getByIdWithOriginal: function (req, res, next) {
+        Users.findOne({_id: req.params.id}, function (err, user) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+
             if (!!user) {
                 res.status(200);
                 res.send({

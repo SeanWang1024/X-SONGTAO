@@ -2,109 +2,130 @@
  * Created by xiangsongtao on 16/2/22.
  */
 angular.module('xstApp')
-    //myInfo的控制器
-    .controller('articleCtrl', function ($http, $scope, $timeout) {
+//myInfo的控制器
+    .controller('articleListCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
+      
+        getArticles();
+        function getArticles() {
+            return AJAX({
+                method: 'get',
+                url: API.getArticleList,
+                success: function (response) {
+                    console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        $scope.articleLists = response.data;
+                        console.log($scope.articleLists);
+                    }
+                }
+            });
+        }
+
+
+
+
+
+
         //页面中数据写入
         // $scope.articleLists = response.data.articleLists;
 
         //页面载入完毕后,激活选中状态
-        $scope.initTr = function () {
-            $("#table tbody tr").click(function () {
-                $(this).toggleClass("active").siblings().removeClass("active");
-            });
-        };
+        // $scope.initTr = function () {
+        //     $("#table tbody tr").click(function () {
+        //         $(this).toggleClass("active").siblings().removeClass("active");
+        //     });
+        // };
 
         /*
          * 数据更新时,查找所有内容,之后自动刷新列表
          * */
-        function refreshArticleList() {
-            $http.get('/admin/api/article')
-                .success(function (response) {
-                    console.log('article,refreshArticleList');
-                    console.log(response);
-                    $scope.articleLists = response.articleLists;
-                });
-        }
+        // function refreshArticleList() {
+        //     $http.get('/admin/api/article')
+        //         .success(function (response) {
+        //             console.log('article,refreshArticleList');
+        //             console.log(response);
+        //             $scope.articleLists = response.articleLists;
+        //         });
+        // }
 
 
         /*
-        * 模态框弹出
-        * */
-        $('#articleModal').modal({
-            //需要点击才能弹出
-            show: false,
-            //背景变黑但是不弹出来
-            backdrop: 'static'
-        });
+         * 模态框弹出
+         * */
+        // $('#articleModal').modal({
+        //     //需要点击才能弹出
+        //     show: false,
+        //     //背景变黑但是不弹出来
+        //     backdrop: 'static'
+        // });
 
 
         //文本输入
-        var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
-        var editor = new Simditor({
-            textarea: $('#articleContent'),
-            toolbar: toolbar
-        });
+        // var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
+        // var editor = new Simditor({
+        //     textarea: $('#articleContent'),
+        //     toolbar: toolbar
+        // });
 
 
         /*
          * 请求后台更新tags的内容并写入,写入完毕后初始化#multTags->多选tags按钮
          * */
-        $http.get("api/tags")
-            .success(function (res) {
-                //console.log(res)
-                //数据写入
-                $scope.tagLists = res.tagLists;
-
-                /*
-                 * 初始化多选tags->标签
-                 * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
-                 * 当分类名变化是,刷新tags的选中状态
-                 * */
-                $timeout(function () {
-                    $('#multTags').multiselect({
-                        onDropdownShow: function (event) {
-                            var $catName = $("#catName");
-                            //$('#multTags option:selected').each(function () {
-                            //    $(this).prop('selected', false);
-                            //});
-                            //当前的值
-                            var value = $catName.val();
-                            var selectLi = $(".multiselect-container").find("li");
-                            var selectLiLength = $(".multiselect-container").find("li").length;
-                            var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
-                            var frontEndLength = $('#FrontEndOptGroup').find("option").length;
-                            if (value == 'FrontEnd') {
-                                //上面的是lifeStyle
-                                for (var i = 0; lifeStyleLength + 1 > i; i++) {
-                                    selectLi.eq(i).css("display", "none");
-                                }
-                                //下面的是front-end
-                                for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-                                    selectLi.eq(i).css("display", "block");
-                                }
-                            }//lifeStyleLength
-                            else if (value == 'LifeStyle') {
-                                //上面的是lifeStyle
-                                for (var i = 0; lifeStyleLength + 1 > i; i++) {
-                                    selectLi.eq(i).css("display", "block");
-                                }
-                                //下面的是front-end
-                                for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-                                    selectLi.eq(i).css("display", "none");
-                                }
-                            }
-                            //$('#multTags').multiselect('refresh');
-                        }
-                    });
-                    //分类名改变时,刷新下面的标签
-                    $("#catName").change(function () {
-                        $('#multTags option:selected').each(function () {
-                            $(this).prop('selected', false);
-                        });
-                        $('#multTags').multiselect('refresh');
-                    });
-                }, 0, false);
-            });
+        // $http.get("api/tags")
+        //     .success(function (res) {
+        //         //console.log(res)
+        //         //数据写入
+        //         $scope.tagLists = res.tagLists;
+        //
+        //         /*
+        //          * 初始化多选tags->标签
+        //          * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
+        //          * 当分类名变化是,刷新tags的选中状态
+        //          * */
+        //         $timeout(function () {
+        //             $('#multTags').multiselect({
+        //                 onDropdownShow: function (event) {
+        //                     var $catName = $("#catName");
+        //                     //$('#multTags option:selected').each(function () {
+        //                     //    $(this).prop('selected', false);
+        //                     //});
+        //                     //当前的值
+        //                     var value = $catName.val();
+        //                     var selectLi = $(".multiselect-container").find("li");
+        //                     var selectLiLength = $(".multiselect-container").find("li").length;
+        //                     var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
+        //                     var frontEndLength = $('#FrontEndOptGroup').find("option").length;
+        //                     if (value == 'FrontEnd') {
+        //                         //上面的是lifeStyle
+        //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
+        //                             selectLi.eq(i).css("display", "none");
+        //                         }
+        //                         //下面的是front-end
+        //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
+        //                             selectLi.eq(i).css("display", "block");
+        //                         }
+        //                     }//lifeStyleLength
+        //                     else if (value == 'LifeStyle') {
+        //                         //上面的是lifeStyle
+        //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
+        //                             selectLi.eq(i).css("display", "block");
+        //                         }
+        //                         //下面的是front-end
+        //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
+        //                             selectLi.eq(i).css("display", "none");
+        //                         }
+        //                     }
+        //                     //$('#multTags').multiselect('refresh');
+        //                 }
+        //             });
+        //             //分类名改变时,刷新下面的标签
+        //             $("#catName").change(function () {
+        //                 $('#multTags option:selected').each(function () {
+        //                     $(this).prop('selected', false);
+        //                 });
+        //                 $('#multTags').multiselect('refresh');
+        //             });
+        //         }, 0, false);
+        //     });
 
 
         /*
@@ -118,7 +139,7 @@ angular.module('xstApp')
         if (month < 10) {
             month = '0' + month;
         }
-        if(date<10){
+        if (date < 10) {
             date = '0' + date;
         }
         //2016-02-27
@@ -143,7 +164,7 @@ angular.module('xstApp')
             //为空判断
             var title = document.getElementById('title').value;
             var time = document.getElementById('time').value;
-            if(title == '' || time == ''){
+            if (title == '' || time == '') {
                 alert("标题和时间是必填选项");
                 return
             }
@@ -162,7 +183,7 @@ angular.module('xstApp')
                 articleType: document.getElementById('artType').value,
                 tags: $("#multTags").val(),
                 state: state,
-                content: editor.getValue()
+                // content: editor.getValue()
             };
 
             //判断是"修改"还是"新增"
@@ -213,8 +234,8 @@ angular.module('xstApp')
                         document.getElementById('time').value = ISODate2Input(res.time);
                         document.getElementById('catName').value = res.catalogueName;
                         document.getElementById('artType').value = res.articleType;
-                        $('#multTags').multiselect('select', res.tags);
-                        editor.setValue(res.content);
+                        // $('#multTags').multiselect('select', res.tags);
+                        // editor.setValue(res.content);
                     });
             })
             //显示modal
@@ -260,10 +281,10 @@ angular.module('xstApp')
             $('#multTags option:selected').each(function () {
                 $(this).prop('selected', false);
             });
-            $('#multTags').multiselect('refresh');
-            editor.setValue('');
+            // $('#multTags').multiselect('refresh');
+            // editor.setValue('');
         }
-    });
+    }]);
 
 
 

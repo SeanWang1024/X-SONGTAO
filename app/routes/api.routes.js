@@ -28,12 +28,12 @@ let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 
 /**
  * API请求验证
- * get请求+post(login/register)请求不需要token,其余都需要检查token
+ * get请求+post(login/register/upload)请求不需要token,其余都需要检查token
  * */
 router.all('*', function (req, res, next) {
     let method = req.method.toLocaleLowerCase();
     let path = req.path.toString();
-    if (method === 'get' || path.includes('register') || path.includes('login')) {
+    if (method === 'get' || path.includes('register') || path.includes('login')|| path.includes('upload')) {
         return next();
     } else {
         let authorization = req.get("authorization");
@@ -70,6 +70,7 @@ router.post('/change_password', UsersController.changePassword);
 router.get('/users', UsersController.getAll);
 //find user by id
 router.get('/user/:id', UsersController.getById);
+router.get('/user/original/:id', UsersController.getByIdWithOriginal);
 //edit user by id
 router.put('/user', UsersController.edit);
 //delete user by id
@@ -82,38 +83,44 @@ router.delete('/user/:id', UsersController.delete);
 //之后还需要uuid找图片,图片压缩,裁剪的功能
 router.post('/imgupload', multipartMiddleware, function (req, res, next) {
     if (req.files) {
-        fs.readFile(req.files.file.path, function (err, data) {
+        const UploadFilePath = './public/uploads/';
+        // console.log('req.files')
+        // console.log(req.files)
+        fs.readFile(req.files.uploadImg.path, function (err, data) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
-            let flag = req.files.file.originalFilename.lastIndexOf('.');
-            let suffix = req.files.file.originalFilename.substr(flag);
+            let arr = req.files.uploadImg.originalFilename.split('.');
+            let suffix = arr[arr.length-1];
 
-            let newPath = "./public/uploads/" + Date.parse(new Date()) + suffix;
-            let newPath2 = "./uploads/" + Date.parse(new Date()) + suffix;
+            //新建文件名
+            let fileName = `${Date.parse(new Date())}.${suffix}`;
+            let uploadPath = `${UploadFilePath}${fileName}`;
 
-            console.log('上传图片的存放位置:' + newPath);
-            fs.writeFile(newPath, data, function (err) {
+            console.log('上传图片的存放位置:' + uploadPath);
+            fs.writeFile(uploadPath, data, function (err) {
                 if (err) {
                     console.log("文件保存错误")
-                    console.log(err)
-                    res.end("writeFileerror");
+                    console.log(err);
+                    res.status(200);
+                    res.send({
+                        "code": "2",
+                        "msg": "image upload failure!"
+                    });
                     return;
                 }
                 console.log("文件保存成功");
-
-                //newPath2
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "image upload success!",
-                    "data": newPath2
+                    "msg": "image upload success! use config path and image name to find image.",
+                    "data": fileName
                 });
             });
         });
     } else {
-        //res.status(200);
+        res.status(200);
         res.send(false);
     }
 });
@@ -149,6 +156,7 @@ router.get('/articles', ArticleController.getAll);
 router.get(/^\/articles\/(\d+)_(\d+)/, ArticleController.getAllWithPages);
 //根据id查找
 router.get('/article/:id', ArticleController.getById);
+router.get('/article/raw/:id', ArticleController.getRawById);
 //根据id删除
 router.delete('/article/:id', ArticleController.delete);
 //查询历史记录

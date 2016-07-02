@@ -1,319 +1,5 @@
 @charset "UTF-8";
 /**
- * Resets
- * --------------------------------------------------
- * Adapted from normalize.css and some reset.css. We don't care even one
- * bit about old IE, so we don't need any hacks for that in here.
- *
- * There are probably other things we could remove here, as well.
- *
- * normalize.css v2.1.2 | MIT License | git.io/normalize
-
- * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
- * http://cssreset.com
- */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, i, u, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, fieldset,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  vertical-align: baseline;
-  font: inherit;
-  font-size: 100%; }
-
-ol, ul {
-  list-style: none; }
-
-blockquote, q {
-  quotes: none; }
-
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none; }
-
-/**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
-audio:not([controls]) {
-  display: none;
-  height: 0; }
-
-/**
- * Hide the `template` element in IE, Safari, and Firefox < 22.
- */
-[hidden],
-template {
-  display: none; }
-
-script {
-  display: none !important; }
-
-/* ==========================================================================
-   Base
-   ========================================================================== */
-/**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *  user zoom.
- */
-html {
-  user-select: none;
-  font-family: sans-serif;
-  /* 1 */
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  /* 2 */
-  -webkit-text-size-adjust: 100%;
-  /* 2 */ }
-
-/**
- * Remove default margin.
- */
-body {
-  margin: 0;
-  line-height: 1; }
-
-/**
- * Remove default outlines.
- */
-a,
-button,
-:focus,
-a:focus,
-button:focus,
-a:active,
-a:hover {
-  outline: 0; }
-
-/* *
- * Remove tap highlight color
- */
-a {
-  -webkit-user-drag: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-tap-highlight-color: transparent; }
-  a[href]:hover {
-    cursor: pointer; }
-
-/* ==========================================================================
-   Typography
-   ========================================================================== */
-/**
- * Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome.
- */
-b,
-strong {
-  font-weight: bold; }
-
-/**
- * Address styling not present in Safari 5 and Chrome.
- */
-dfn {
-  font-style: italic; }
-
-/**
- * Address differences between Firefox and other browsers.
- */
-hr {
-  box-sizing: content-box;
-  height: 0; }
-
-/**
- * Correct font family set oddly in Safari 5 and Chrome.
- */
-code,
-kbd,
-pre,
-samp {
-  font-size: 1em;
-  font-family: monospace, serif; }
-
-/**
- * Improve readability of pre-formatted text in all browsers.
- */
-pre {
-  white-space: pre-wrap; }
-
-/**
- * Set consistent quote types.
- */
-q {
-  quotes: "\201C" "\201D" "\2018" "\2019"; }
-
-/**
- * Address inconsistent and variable font size in all browsers.
- */
-small {
-  font-size: 80%; }
-
-/**
- * Prevent `sub` and `sup` affecting `line-height` in all browsers.
- */
-sub,
-sup {
-  position: relative;
-  vertical-align: baseline;
-  font-size: 75%;
-  line-height: 0; }
-
-sup {
-  top: -0.5em; }
-
-sub {
-  bottom: -0.25em; }
-
-/**
- * Define consistent border, margin, and padding.
- */
-fieldset {
-  margin: 0 2px;
-  padding: 0.35em 0.625em 0.75em;
-  border: 1px solid #c0c0c0; }
-
-/**
- * 1. Correct `color` not being inherited in IE 8/9.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
- */
-legend {
-  padding: 0;
-  /* 2 */
-  border: 0;
-  /* 1 */ }
-
-/**
- * 1. Correct font family not being inherited in all browsers.
- * 2. Correct font size not being inherited in all browsers.
- * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.
- * 4. Remove any default :focus styles
- * 5. Make sure webkit font smoothing is being inherited
- * 6. Remove default gradient in Android Firefox / FirefoxOS
- */
-button,
-input,
-select,
-textarea {
-  margin: 0;
-  /* 3 */
-  font-size: 100%;
-  /* 2 */
-  font-family: inherit;
-  /* 1 */
-  outline-offset: 0;
-  /* 4 */
-  outline-style: none;
-  /* 4 */
-  outline-width: 0;
-  /* 4 */
-  -webkit-font-smoothing: inherit;
-  /* 5 */
-  background-image: none;
-  /* 6 */ }
-
-/**
- * Address Firefox 4+ setting `line-height` on `input` using `importnt` in
- * the UA stylesheet.
- */
-button,
-input {
-  line-height: normal; }
-
-/**
- * Address inconsistent `text-transform` inheritance for `button` and `select`.
- * All other form control elements do not inherit `text-transform` values.
- * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.
- * Correct `select` style inheritance in Firefox 4+ and Opera.
- */
-button,
-select {
-  text-transform: none; }
-
-/**
- * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
- *  and `video` controls.
- * 2. Correct inability to style clickable `input` types in iOS.
- * 3. Improve usability and consistency of cursor style between image-type
- *  `input` and others.
- */
-button,
-html input[type="button"],
-input[type="reset"],
-input[type="submit"] {
-  cursor: pointer;
-  /* 3 */
-  -webkit-appearance: button;
-  /* 2 */ }
-
-/**
- * Re-set default cursor for disabled elements.
- */
-button[disabled],
-html input[disabled] {
-  cursor: default; }
-
-/**
- * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
- *  (include `-moz` to future-proof).
- */
-input[type="search"] {
-  /* 2 */
-  box-sizing: content-box;
-  -webkit-appearance: textfield;
-  /* 1 */ }
-
-/**
- * Remove inner padding and search cancel button in Safari 5 and Chrome
- * on OS X.
- */
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none; }
-
-/**
- * Remove inner padding and border in Firefox 4+.
- */
-button::-moz-focus-inner,
-input::-moz-focus-inner {
-  padding: 0;
-  border: 0; }
-
-/**
- * 1. Remove default vertical scrollbar in IE 8/9.
- * 2. Improve readability and alignment in all browsers.
- */
-textarea {
-  overflow: auto;
-  /* 1 */
-  vertical-align: top;
-  /* 2 */ }
-
-img {
-  -webkit-user-drag: none; }
-
-/* ==========================================================================
-   Tables
-   ========================================================================== */
-/**
- * Remove most spacing between table cells.
- */
-table {
-  border-spacing: 0;
-  border-collapse: collapse; }
-
-/**
  * Typography排版相关
  * --------------------------------------------------
  */
@@ -574,6 +260,88 @@ a.subdued {
   to {
     opacity: 1; } }
 
+/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8; }
+
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic; }
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #333;
+  font-weight: bold; }
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #008080; }
+
+.hljs-string,
+.hljs-doctag {
+  color: #d14; }
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #900;
+  font-weight: bold; }
+
+.hljs-subst {
+  font-weight: normal; }
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold; }
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #000080;
+  font-weight: normal; }
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926; }
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #990073; }
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3; }
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold; }
+
+.hljs-deletion {
+  background: #fdd; }
+
+.hljs-addition {
+  background: #dfd; }
+
+.hljs-emphasis {
+  font-style: italic; }
+
+.hljs-strong {
+  font-weight: bold; }
+
 html {
   width: 100%;
   height: 100%;
@@ -755,7 +523,6 @@ body {
   display: flex;
   align-items: center;
   overflow: visible;
-  text-indent: 2em;
   text-align: left;
   font-size: 16px;
   line-height: 22px;
@@ -1517,6 +1284,8 @@ body {
   margin-left: auto;
   margin-bottom: 50px;
   margin-right: auto; }
+  .adminBox-content.preview {
+    width: 1530px; }
   .adminBox-content .adminBox-content-header h1 {
     font-family: "Dosis", arial, tahoma, verdana;
     display: inline-block;
@@ -1548,101 +1317,166 @@ body {
 .textItem {
   color: #fff; }
 
-.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-  border-top: 1px solid rgba(132, 132, 132, 0.37); }
-
-.tags table tbody tr {
-  height: 41px; }
-
-.tableScrollBox {
-  /*width:100%;*/
-  height: calc(100% - 106px);
-  /*background-color:red;*/
-  overflow: hidden; }
-
 /*定义表格每列的宽度*/
-.table-head tr th:nth-child(2),
-.table-head tr th:nth-child(3),
-.table-head tr th:nth-child(4),
-.table-head tr th:nth-child(5),
-.table-head tr th:nth-child(6) {
-  width: 19%;
-  padding-left: 0;
-  padding-right: 0; }
-
-.table-body tr td:nth-child(2),
-.table-body tr td:nth-child(3),
-.table-body tr td:nth-child(4),
-.table-body tr td:nth-child(5),
-.table-body tr td:nth-child(6) {
-  width: 20%;
-  padding-left: 0;
-  padding-right: 0; }
-
-.table-body {
-  height: 100%;
-  overflow-y: scroll;
-  padding: 0 0 15px 0; }
-
-.article {
-  height: calc(100% - 30px); }
-
-/* line 271, ../../app/styles/_layout.scss */
-.article .title {
+.articleList .title {
   width: 100%;
   color: #fff;
   margin-bottom: 30px; }
 
-/* line 277, ../../app/styles/_layout.scss */
-.article .cudaBtnBox #deleteArticle {
-  color: #c7c7c7;
-  transition: color ease 200ms; }
-
-/* line 281, ../../app/styles/_layout.scss */
-.article .cudaBtnBox #deleteArticle:hover {
-  color: #449d44; }
-
-/* line 284, ../../app/styles/_layout.scss */
-.article .cudaBtnBox #editArticle {
-  color: #c7c7c7;
-  transition: color ease 200ms; }
-
-/* line 288, ../../app/styles/_layout.scss */
-.article .cudaBtnBox #editArticle:hover {
-  color: #449d44; }
-
-/* line 291, ../../app/styles/_layout.scss */
-.article .cudaBtnBox #addArticle {
-  color: #c7c7c7;
-  transition: color ease 200ms; }
-
-/* line 295, ../../app/styles/_layout.scss */
-.article .cudaBtnBox #addArticle:hover {
-  color: #449d44; }
-
-/* line 304, ../../app/styles/_layout.scss */
-.article table {
+.articleList table {
   text-align: center;
   color: #fff; }
+  .articleList table th {
+    text-align: center;
+    color: #00b2e2;
+    position: relative;
+    cursor: pointer; }
+    .articleList table th span {
+      position: absolute;
+      margin-left: 5px;
+      top: inherit;
+      left: inherit; }
+  .articleList table td {
+    vertical-align: middle !important;
+    max-width: 190px; }
 
-/* line 307, ../../app/styles/_layout.scss */
-.article table th {
-  text-align: center;
-  color: #00b2e2; }
+.articleEdit .title {
+  width: 100%;
+  color: #fff;
+  margin-bottom: 30px; }
 
-/* line 314, ../../app/styles/_layout.scss */
-.article table tbody .active td {
-  color: #449d44;
-  background-color: rgba(0, 0, 0, 0.5) !important; }
+.articleEdit .mainSection {
+  display: -moz-flex;
+  display: flex;
+  -moz-justify-content: space-between;
+  justify-content: space-between;
+  -moz-align-items: flex-start;
+  align-items: flex-start; }
+  .articleEdit .mainSection .editSection {
+    width: 720px; }
+    .articleEdit .mainSection .editSection .inputBox {
+      display: -moz-flex;
+      display: flex;
+      -moz-justify-content: space-between;
+      justify-content: space-between;
+      -moz-align-items: center;
+      align-items: center;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      border-bottom: 2px dashed #bbb; }
+      .articleEdit .mainSection .editSection .inputBox .inputBox__input {
+        width: 75%;
+        padding-right: 4px;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box; }
+        .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.title_form input {
+          width: 470px; }
+        .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form {
+          display: -moz-flex;
+          display: flex;
+          -moz-justify-content: space-between;
+          justify-content: space-between;
+          -moz-align-items: center;
+          align-items: center; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form input {
+            width: 195px; }
+        .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline .form-group {
+          vertical-align: middle;
+          margin-bottom: 10px; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline .form-group label {
+            color: #fff;
+            margin-right: 5px; }
+      .articleEdit .mainSection .editSection .inputBox .inputBox__btn {
+        width: 25%;
+        padding-left: 20px;
+        height: 88px;
+        display: -moz-flex;
+        display: flex;
+        -moz-justify-content: center;
+        justify-content: center;
+        -moz-align-items: center;
+        align-items: center;
+        box-sizing: border-box; }
+        .articleEdit .mainSection .editSection .inputBox .inputBox__btn .inputBox__btn--submit {
+          flex: 1;
+          height: 88px;
+          box-sizing: border-box;
+          padding: 0 0 10px 0; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__btn .inputBox__btn--submit button {
+            flex: 1;
+            height: 100%; }
+        .articleEdit .mainSection .editSection .inputBox .inputBox__btn .inputBox__btn--other {
+          flex: 1;
+          height: 88px;
+          padding: 0 0 10px 0;
+          display: -moz-flex;
+          display: flex;
+          -moz-justify-content: space-between;
+          justify-content: space-between;
+          -moz-align-items: center;
+          align-items: center;
+          -moz-flex-direction: column;
+          flex-direction: column; }
+  .articleEdit .mainSection .previewSection {
+    width: 720px; }
+    .articleEdit .mainSection .previewSection .block {
+      height: 90px;
+      width: 100%;
+      margin-bottom: 10px; }
+    .articleEdit .mainSection .previewSection #textareaPreview {
+      position: relative; }
+      .articleEdit .mainSection .previewSection #textareaPreview:before {
+        content: 'PREVIEW';
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 80px;
+        height: 90px;
+        line-height: 90px;
+        padding-right: 15px;
+        color: rgba(146, 146, 146, 0.3);
+        font-weight: bolder;
+        z-index: 999; }
+      .articleEdit .mainSection .previewSection #textareaPreview:after {
+        content: '预览区';
+        position: absolute;
+        top: 90px;
+        right: 0;
+        font-size: 40px;
+        height: 50px;
+        line-height: 50px;
+        padding-right: 15px;
+        color: rgba(56, 183, 234, 0.3);
+        font-weight: bolder;
+        z-index: 999; }
 
-/* line 322, ../../app/styles/_layout.scss */
-.article table .danger td {
-  background-color: rgba(88, 0, 0, 0.35) !important; }
-
-/* line 326, ../../app/styles/_layout.scss */
-.article table td {
-  vertical-align: middle !important;
-  cursor: pointer; }
+.textaresBox {
+  margin-top: 15px;
+  margin-bottom: 30px; }
+  .textaresBox textarea {
+    width: 100%;
+    height: 100%;
+    resize: vertical;
+    overflow-y: auto; }
+  .textaresBox .textarea {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    min-height: 400px; }
+    .textaresBox .textarea:focus {
+      border-color: #337ab7;
+      outline: none;
+      box-shadow: 0 0 10px #337ab7; }
 
 .myInfo {
   overflow: hidden;
@@ -1654,7 +1488,6 @@ body {
   .myInfo .myInfoInner {
     display: block;
     padding-bottom: 30px;
-    height: calc(100% - 77px);
     overflow: scroll; }
     .myInfo .myInfoInner .myInfoInnerFlexBox {
       display: flex;
@@ -1673,6 +1506,11 @@ body {
           overflow: hidden;
           cursor: pointer;
           position: relative; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner img {
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: 100%; }
           .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner #imgUpload {
             position: absolute;
             height: 100%;
@@ -1692,7 +1530,10 @@ body {
               padding: 0;
               margin: 0; }
               .myInfo .myInfoInner .myInfoInnerFlexBox .imgBox .imgBoxInner .dropzone .dz-preview .dz-image img {
-                width: 100%; }
+                max-width: 100%;
+                max-height: 100%;
+                width: 100%;
+                height: 100%; }
       .myInfo .myInfoInner .myInfoInnerFlexBox .inputGroup label {
         color: #00b2e2;
         margin-bottom: 5px; }
@@ -1770,9 +1611,21 @@ body {
               font-size: 14px;
               color: #fff;
               padding: 4px 12px; }
+            .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox .inputBox .buttonBox .stateText {
+              color: #fff;
+              margin-top: 5px;
+              margin-bottom: 5px;
+              font-size: 12px;
+              text-align: right;
+              width: 100%;
+              display: inline-block;
+              max-width: 100%;
+              font-weight: 700;
+              padding: 0;
+              border: 0;
+              vertical-align: baseline; }
       .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord {
-        width: 100%;
-        margin-bottom: 30px; }
+        width: 100%; }
         .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord label {
           font-size: 16px;
           color: #00b2e2;
@@ -1784,38 +1637,48 @@ body {
           color: #fff; }
           .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord table th {
             text-align: center;
-            color: #fff; }
+            color: #fff;
+            font-size: 16px; }
+          .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord table td {
+            font-size: 14px; }
+        .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord .table > tbody > tr > td, .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord .table > tbody > tr > th, .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord .table > tfoot > tr > td, .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord .table > tfoot > tr > th, .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord .table > thead > tr > td, .myInfo .myInfoInner .myInfoInnerFlexBox .loginRecord .table > thead > tr > th {
+          border-top: 1px solid rgba(132, 132, 132, 0.37); }
 
-/* line 242, ../../app/styles/_layout.scss */
 .tags {
   height: 100%; }
+  .tags .title {
+    width: 100%;
+    color: #fff;
+    margin-bottom: 30px;
+    text-align: left; }
+  .tags table {
+    color: #fff; }
+    .tags table th {
+      text-align: center;
+      color: #00b2e2;
+      cursor: pointer;
+      position: relative; }
+      .tags table th span {
+        position: absolute;
+        margin-left: 5px;
+        top: inherit;
+        left: inherit; }
+    .tags table .danger td {
+      background-color: rgba(255, 2, 0, 0.53) !important; }
+    .tags table .warning td {
+      background-color: rgba(2, 255, 0, 0.35) !important; }
+    .tags table td {
+      vertical-align: middle !important;
+      font-size: 14px; }
 
-.tags .title {
-  width: 100%;
-  color: #fff;
-  margin-bottom: 30px;
-  text-align: left; }
+.modal .submitText {
+  color: #38b7ea;
+  transition: all ease 300ms;
+  margin-right: 10px; }
 
-/* line 249, ../../app/styles/_layout.scss */
-.tags table {
-  color: #fff; }
-
-/* line 252, ../../app/styles/_layout.scss */
-.tags table th {
-  text-align: center;
-  color: #00b2e2; }
-
-/* line 258, ../../app/styles/_layout.scss */
-.tags table .danger td {
-  background-color: rgba(255, 2, 0, 0.53) !important; }
-
-.tags table .warning td {
-  background-color: rgba(2, 255, 0, 0.35) !important; }
-
-/* line 262, ../../app/styles/_layout.scss */
-.tags table td {
-  vertical-align: middle !important; }
-
+/**
+ * Created by xiangsongtao on 16/7/2.
+ */
 @media (max-width: 991px) and (min-width: 768px) {
   .bigScreen {
     padding-top: 45px; }

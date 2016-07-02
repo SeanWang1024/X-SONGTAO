@@ -3,7 +3,7 @@
         <div class="bg-right-innerBlock text-center clearfix">
             <!--img-->
             <div class="bg-right-innerBlock-myImg">
-                <img class="myInfo-box-shadow img-circle aboutme" width="100%" ng-src="{{myInfo.img_url}}" alt="我的头像好像没加载出来诶..">
+                <img class="myInfo-box-shadow img-circle aboutme" width="100%" ng-src="{{myInfo.img_url | imgURl}}" alt="我的头像好像没加载出来诶..">
             </div>
             <!--info-->
             <div class="bg-right-innerBlock-myInfo">
@@ -98,5 +98,16 @@
                 </div>
             </div>
         </footer>
+    </div>
+</div>
+
+
+<div class="modal fade" id="socialContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img width="100%" class="socialContact-img" src="" alt="来加我!!">
+            </div>
+        </div>
     </div>
 </div>

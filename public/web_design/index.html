@@ -9,6 +9,7 @@
   <link rel="shortcut icon" href="/favicon.ico">
   <link rel="stylesheet" href="web/css/common.css">
   <link rel="stylesheet" href="web/css/main.css">
+  <link rel="stylesheet" href="web/css/dark.css">
 
 </head>
 <body>
@@ -64,7 +65,7 @@
           <span class="hidden-md hidden-lg hidden-xs">我的标签</span>
         </span>
 
-        <span ui-sref="admin.articleManager.articleList" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
+        <span ui-sref="admin.articleManager" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
               data-placement="auto right" title="我的文章">
           <i class="fa fa-list fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的文章</span>
@@ -121,31 +122,23 @@
 </div>
 
 
-<div class="modal fade" id="articleImg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <img width="100%" class="article-img" src="" alt="展示的图片">
-      </div>
-      <div class="modal-footer">
-        <i class="fa fa-paper-plane"></i>
-        <span class="article-title"></span>
-        <span class="article-position"></span>
-        <span class="article-time"></span>
+<!--<div class="modal fade" id="articleImg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
+  <!--<div class="modal-dialog modal-lg" role="document">-->
+    <!--<div class="modal-content">-->
+      <!--<div class="modal-body">-->
+        <!--<img width="100%" class="article-img" src="" alt="展示的图片">-->
+      <!--</div>-->
+      <!--<div class="modal-footer">-->
+        <!--<i class="fa fa-paper-plane"></i>-->
+        <!--<span class="article-title"></span>-->
+        <!--<span class="article-position"></span>-->
+        <!--<span class="article-time"></span>-->
 
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="socialContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <img width="100%" class="socialContact-img" src="" alt="来加我!!">
-      </div>
-    </div>
-  </div>
-</div>
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
+
 
 <!--loadingPage-->
 <div class="blackShade error">
@@ -160,6 +153,7 @@
 </div>
 <!--loadingPage end-->
 <script src="web/js/common.js"></script>
+<script src="web/js/common.admin.js"></script>
 <script src="web/js/main.js"></script>
 
 </body>
