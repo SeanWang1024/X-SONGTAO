@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    angular.module('xstApp', ['ui.router', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
+    angular.module('xstApp', ['ui.router', 'ngStorage', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
     /**
      * 配置文件
      * */
@@ -377,334 +377,6 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
     });
 })();
 /**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
-    //blogPageController控制器
-    .controller('blogPageController', ['$scope', '$http', 'API', function ($scope, $http, API) {
-        $http.get(API.getMyInfo).success(function (response) {
-            console.log(response);
-            if (parseInt(response.code) === 1) {
-                $scope.myInfo = response.data;
-            }
-        }).error(function (erroInfo, status) {
-            // $(".blackShade.error").addClass("show");
-            // $(".blackShade.error h3").text("哎呦,好像出错了!");
-            // $(".blackShade.error span").html(erroInfo);
-            // $(".blackShade.error small").text("状态码:" + status);
-        });
-        $('[data-toggle="popover"]').popover();
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
-    //登陆控制器
-    .controller('loginController', ['$scope', '$http', 'API', function ($scope, $http, API) {
-        console.log(API.login);
-
-        $("#login").click(function () {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-
-            var data = {
-                username: username,
-                password: password
-            };
-            if (username == '' || password == '') {
-                alert("用户名/密码不能为空");
-                return false;
-            }
-            $http.post(API.login, data).success(function (response) {
-                if (parseInt(response.code) === 1) {
-                    //login success
-                    window.location.href = '/admin/' + response.token;
-                } else {
-                    //login error
-                    alert("用户名/密码错误");
-                }
-            });
-        });
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp');
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
-    //index的文字反动
-    .directive("indexWordFadeIn", function () {
-        return {
-            restirect: 'E',
-            replace: true,
-            link: function link(scope, element) {
-                var headlines = $("#headlines");
-                setInterval(function () {
-                    if (headlines.find('h1.current').next().length == 0) {
-                        headlines.find('h1').first().addClass('current').siblings().removeClass('current');
-                    } else {
-                        headlines.find('h1.current').next().addClass('current').siblings().removeClass('current');
-                    }
-                }, 4000);
-            }
-        };
-    });
-})();
-/**
- * Created by xiangsongtao on 16/2/22.
- */
-angular.module('xstApp')
-//myInfo的控制器
-
-.controller('articleCtrl', ['AJAX', 'API', '$scope', '$timeout', '$stateParams', 'marked', '$log', '$q', '$filter', function (AJAX, API, $scope, $timeout, $stateParams, marked, $log, $q, $filter) {
-    $scope.selection = [];
-
-    //编辑框的句柄
-    var $TextArea = document.getElementById('textarea');
-
-    //判断文章是新增还是修改
-    if (!$stateParams._id) {
-        console.log("新增文章");
-    } else {
-        getArticle($stateParams._id).then(function (response) {
-            if (parseInt(response.code) === 1) {
-                $scope.article = response.data;
-                //预先确定已选择的标签
-                $scope.selection = $scope.article.tags;
-                //记录原始编辑内容
-                //原始记录翻译一份到预览区
-                $scope.article.content_marked = marked($scope.article.content);
-                //时间
-                $scope.date = $filter('date')($scope.article.publish_time, 'yyyy/MM/dd HH:mm:ss');
-                //textarea尺寸计算
-                $timeout(function () {
-                    resizeTextarea();
-                }, 0, false);
-            }
-        });
-    }
-
-    //获取标签列表
-    $scope.options = function () {
-        return $q(function (resolve, reject) {
-            AJAX({
-                method: 'get',
-                url: API.getTagsList,
-                success: function success(response) {
-                    if (parseInt(response.code) === 1) {
-                        resolve(response.data);
-                        // console.log(response.data);
-                    }
-                }
-            });
-        });
-    };
-
-    /**
-     * markdown相关
-     * */
-    $scope.$watch('article.content', function () {
-        if (!!$scope.article) {
-            $scope.article.content_marked = marked($scope.article.content || '');
-            resizeTextarea();
-        }
-    });
-    //窗口句柄
-    var $outerBox = angular.element(document.getElementById('adminBox-content'));
-    //显示预览
-    $scope.isPreview = false;
-    $scope.previewBtn = function () {
-        $outerBox.toggleClass('preview');
-        $scope.isPreview = !$scope.isPreview;
-    };
-    //页面销毁时,调整窗口比例
-    $scope.$on("$destroy", function () {
-        $outerBox.removeClass('preview');
-    });
-
-    /**
-     * 保存相关
-     * */
-    //发布按钮
-    $scope.isPublishing = false;
-    $scope.publishBtn = function () {
-        $scope.article.state = true;
-        $scope.isPublishing = true;
-        // console.log('collectEditedArtInfo')
-        // console.log(collectEditedArtInfo())
-
-        saveArticle(collectEditedArtInfo()).then(function (data) {
-            $timeout(function () {
-                $scope.isPublishing = false;
-            }, 1000, true);
-        });
-    };
-    //保存草稿
-    $scope.isDrafting = false;
-    $scope.draftBtn = function () {
-        $scope.article.state = false;
-        $scope.isDrafting = true;
-        // console.log('collectEditedArtInfo')
-        // console.log(collectEditedArtInfo())
-        saveArticle(collectEditedArtInfo()).then(function (data) {
-            $timeout(function () {
-                $scope.isDrafting = false;
-            }, 1000, true);
-        });
-    };
-
-    function saveArticle(data) {
-        return $q(function (resolve, reject) {
-            AJAX({
-                method: 'post',
-                url: API.postArt,
-                data: data,
-                success: function success(response) {
-                    if (parseInt(response.code) === 1) {
-                        resolve(response);
-                    }
-                }
-            });
-        });
-    }
-
-    //由文章id获取文章原始信息
-    function getArticle(id) {
-        var defer = $q.defer();
-        AJAX({
-            method: 'get',
-            url: API.getRawArticleById.replace('id', id),
-            success: function success(response) {
-                defer.resolve(response);
-            },
-            error: function error(response) {
-                defer.reject(response);
-            }
-        });
-        return defer.promise;
-    }
-
-    //获取书写的文章信息
-    function collectEditedArtInfo() {
-        var tagsArr = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-            for (var _iterator = $scope.selection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var tag = _step.value;
-
-                tagsArr.push(tag._id);
-            }
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
-            }
-        }
-
-        var params = {
-            "_id": $scope.article._id,
-            "title": $scope.article.title,
-            "publish_time": new Date($scope.date),
-            "tags": tagsArr,
-            "state": $scope.article.state,
-            "content": $scope.article.content
-        };
-        return params;
-    }
-
-    function resizeTextarea() {
-        autoTextarea($TextArea, 10);
-    }
-
-    /**
-     * 文本框根据输入内容自适应高度
-     * @param                {HTMLElement}        输入框元素
-     * @param                {Number}                设置光标与输入框保持的距离(默认0)
-     * @param                {Number}                设置最大高度(可选)
-     */
-    function autoTextarea(elem, extra, maxHeight) {
-        extra = extra || 0;
-        var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
-            isOpera = !!window.opera && !!window.opera.toString().indexOf('Opera'),
-            addEvent = function addEvent(type, callback) {
-            elem.addEventListener ? elem.addEventListener(type, callback, false) : elem.attachEvent('on' + type, callback);
-        },
-            getStyle = elem.currentStyle ? function (name) {
-            var val = elem.currentStyle[name];
-
-            if (name === 'height' && val.search(/px/i) !== 1) {
-                var rect = elem.getBoundingClientRect();
-                return rect.bottom - rect.top - parseFloat(getStyle('paddingTop')) - parseFloat(getStyle('paddingBottom')) + 'px';
-            }
-            return val;
-        } : function (name) {
-            return getComputedStyle(elem, null)[name];
-        },
-            minHeight = parseFloat(getStyle('height'));
-
-        elem.style.resize = 'none';
-
-        function change() {
-            var scrollTop,
-                height,
-                padding = 0,
-                style = elem.style;
-            if (elem._length === elem.value.length) return;
-            elem._length = elem.value.length;
-
-            if (!isFirefox && !isOpera) {
-                padding = parseInt(getStyle('paddingTop')) + parseInt(getStyle('paddingBottom'));
-            }
-            ;
-            scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-
-            elem.style.height = minHeight + 'px';
-            if (elem.scrollHeight > minHeight) {
-                if (maxHeight && elem.scrollHeight > maxHeight) {
-                    height = maxHeight - padding;
-                    style.overflowY = 'auto';
-                } else {
-                    height = elem.scrollHeight - padding;
-                    style.overflowY = 'hidden';
-                }
-                ;
-                style.height = height + extra + 'px';
-                scrollTop += parseInt(style.height) - elem.currHeight;
-                document.body.scrollTop = scrollTop;
-                document.documentElement.scrollTop = scrollTop;
-                elem.currHeight = parseInt(style.height);
-            }
-            ;
-        };
-
-        addEvent('propertychange', change);
-        addEvent('input', change);
-        addEvent('focus', change);
-        change();
-    };
-}]);
-
-/**
  * Created by xiangsongtao on 16/2/22.
  */
 angular.module('xstApp')
@@ -1003,16 +675,20 @@ angular.module('xstApp')
     }
 
     //进行评论
-    $scope.isReply = false;
     $scope.isSubmitReply = false;
-    $scope.commentThis = function () {
+    $scope.comment = function (item, $event) {
+        var target = $($event.currentTarget).parents('.comments__ask');
+        target.siblings().removeClass('isReply');
+        target.toggleClass('isReply');
+    };
+    $scope.commentThis = function ($event) {
         $scope.isSubmitReply = true;
 
         //进行评论的逻辑处理
 
         $timeout(function () {
             $scope.isSubmitReply = false;
-            $scope.isReply = false;
+            $($event.currentTarget).parents('.comments__ask').toggleClass('isReply');
         }, 1000, true);
     };
 
@@ -1023,6 +699,251 @@ angular.module('xstApp')
     };
     $scope.confirmDelCommBtn = function () {
         console.log('delete:' + delCommId);
+    };
+}]);
+
+/**
+ * Created by xiangsongtao on 16/2/22.
+ */
+angular.module('xstApp')
+//myInfo的控制器
+
+.controller('articleCtrl', ['AJAX', 'API', '$scope', '$timeout', '$stateParams', 'marked', '$log', '$q', '$filter', function (AJAX, API, $scope, $timeout, $stateParams, marked, $log, $q, $filter) {
+    $scope.selection = [];
+
+    //编辑框的句柄
+    var $TextArea = document.getElementById('textarea');
+
+    //判断文章是新增还是修改
+    if (!$stateParams._id) {
+        console.log("新增文章");
+    } else {
+        getArticle($stateParams._id).then(function (response) {
+            if (parseInt(response.code) === 1) {
+                $scope.article = response.data;
+                //预先确定已选择的标签
+                $scope.selection = $scope.article.tags;
+                //记录原始编辑内容
+                //原始记录翻译一份到预览区
+                $scope.article.content_marked = marked($scope.article.content);
+                //时间
+                $scope.date = $filter('date')($scope.article.publish_time, 'yyyy/MM/dd HH:mm:ss');
+                //textarea尺寸计算
+                $timeout(function () {
+                    resizeTextarea();
+                }, 0, false);
+            }
+        });
+    }
+
+    //获取标签列表
+    $scope.options = function () {
+        return $q(function (resolve, reject) {
+            AJAX({
+                method: 'get',
+                url: API.getTagsList,
+                success: function success(response) {
+                    if (parseInt(response.code) === 1) {
+                        resolve(response.data);
+                        // console.log(response.data);
+                    }
+                }
+            });
+        });
+    };
+
+    /**
+     * markdown相关
+     * */
+    $scope.$watch('article.content', function () {
+        if (!!$scope.article) {
+            $scope.article.content_marked = marked($scope.article.content || '');
+            resizeTextarea();
+        }
+    });
+    //窗口句柄
+    var $outerBox = angular.element(document.getElementById('adminBox-content'));
+    //显示预览
+    $scope.isPreview = false;
+    $scope.previewBtn = function () {
+        $outerBox.toggleClass('preview');
+        $scope.isPreview = !$scope.isPreview;
+    };
+    //页面销毁时,调整窗口比例
+    $scope.$on("$destroy", function () {
+        $outerBox.removeClass('preview');
+    });
+
+    /**
+     * 保存相关
+     * */
+    //发布按钮
+    $scope.isPublishing = false;
+    $scope.publishBtn = function () {
+        $scope.article.state = true;
+        $scope.isPublishing = true;
+        // console.log('collectEditedArtInfo')
+        // console.log(collectEditedArtInfo())
+
+        saveArticle(collectEditedArtInfo()).then(function (data) {
+            $timeout(function () {
+                $scope.isPublishing = false;
+            }, 1000, true);
+        });
+    };
+    //保存草稿
+    $scope.isDrafting = false;
+    $scope.draftBtn = function () {
+        $scope.article.state = false;
+        $scope.isDrafting = true;
+        // console.log('collectEditedArtInfo')
+        // console.log(collectEditedArtInfo())
+        saveArticle(collectEditedArtInfo()).then(function (data) {
+            $timeout(function () {
+                $scope.isDrafting = false;
+            }, 1000, true);
+        });
+    };
+
+    function saveArticle(data) {
+        return $q(function (resolve, reject) {
+            AJAX({
+                method: 'post',
+                url: API.postArt,
+                data: data,
+                success: function success(response) {
+                    if (parseInt(response.code) === 1) {
+                        resolve(response);
+                    }
+                }
+            });
+        });
+    }
+
+    //由文章id获取文章原始信息
+    function getArticle(id) {
+        var defer = $q.defer();
+        AJAX({
+            method: 'get',
+            url: API.getRawArticleById.replace('id', id),
+            success: function success(response) {
+                defer.resolve(response);
+            },
+            error: function error(response) {
+                defer.reject(response);
+            }
+        });
+        return defer.promise;
+    }
+
+    //获取书写的文章信息
+    function collectEditedArtInfo() {
+        var tagsArr = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = $scope.selection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var tag = _step.value;
+
+                tagsArr.push(tag._id);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+
+        var params = {
+            "_id": $scope.article._id,
+            "title": $scope.article.title,
+            "publish_time": new Date($scope.date),
+            "tags": tagsArr,
+            "state": $scope.article.state,
+            "content": $scope.article.content
+        };
+        return params;
+    }
+
+    function resizeTextarea() {
+        autoTextarea($TextArea, 10);
+    }
+
+    /**
+     * 文本框根据输入内容自适应高度
+     * @param                {HTMLElement}        输入框元素
+     * @param                {Number}                设置光标与输入框保持的距离(默认0)
+     * @param                {Number}                设置最大高度(可选)
+     */
+    function autoTextarea(elem, extra, maxHeight) {
+        extra = extra || 0;
+        var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
+            isOpera = !!window.opera && !!window.opera.toString().indexOf('Opera'),
+            addEvent = function addEvent(type, callback) {
+            elem.addEventListener ? elem.addEventListener(type, callback, false) : elem.attachEvent('on' + type, callback);
+        },
+            getStyle = elem.currentStyle ? function (name) {
+            var val = elem.currentStyle[name];
+
+            if (name === 'height' && val.search(/px/i) !== 1) {
+                var rect = elem.getBoundingClientRect();
+                return rect.bottom - rect.top - parseFloat(getStyle('paddingTop')) - parseFloat(getStyle('paddingBottom')) + 'px';
+            }
+            return val;
+        } : function (name) {
+            return getComputedStyle(elem, null)[name];
+        },
+            minHeight = parseFloat(getStyle('height'));
+
+        elem.style.resize = 'none';
+
+        function change() {
+            var scrollTop,
+                height,
+                padding = 0,
+                style = elem.style;
+            if (elem._length === elem.value.length) return;
+            elem._length = elem.value.length;
+
+            if (!isFirefox && !isOpera) {
+                padding = parseInt(getStyle('paddingTop')) + parseInt(getStyle('paddingBottom'));
+            }
+            ;
+            scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+            elem.style.height = minHeight + 'px';
+            if (elem.scrollHeight > minHeight) {
+                if (maxHeight && elem.scrollHeight > maxHeight) {
+                    height = maxHeight - padding;
+                    style.overflowY = 'auto';
+                } else {
+                    height = elem.scrollHeight - padding;
+                    style.overflowY = 'hidden';
+                }
+                ;
+                style.height = height + extra + 'px';
+                scrollTop += parseInt(style.height) - elem.currHeight;
+                document.body.scrollTop = scrollTop;
+                document.documentElement.scrollTop = scrollTop;
+                elem.currHeight = parseInt(style.height);
+            }
+            ;
+        };
+
+        addEvent('propertychange', change);
+        addEvent('input', change);
+        addEvent('focus', change);
+        change();
     };
 }]);
 
@@ -1298,8 +1219,100 @@ angular.module('xstApp')
  */
 (function () {
     angular.module('xstApp')
+    //blogPageController控制器
+    .controller('blogPageController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $http.get(API.getMyInfo).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.myInfo = response.data;
+            }
+        }).error(function (erroInfo, status) {
+            // $(".blackShade.error").addClass("show");
+            // $(".blackShade.error h3").text("哎呦,好像出错了!");
+            // $(".blackShade.error span").html(erroInfo);
+            // $(".blackShade.error small").text("状态码:" + status);
+        });
+        $('[data-toggle="popover"]').popover();
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp');
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //index的文字反动
+    .directive("indexWordFadeIn", function () {
+        return {
+            restirect: 'E',
+            replace: true,
+            link: function link(scope, element) {
+                var headlines = $("#headlines");
+                setInterval(function () {
+                    if (headlines.find('h1.current').next().length == 0) {
+                        headlines.find('h1').first().addClass('current').siblings().removeClass('current');
+                    } else {
+                        headlines.find('h1.current').next().addClass('current').siblings().removeClass('current');
+                    }
+                }, 4000);
+            }
+        };
+    });
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //登陆控制器
+    .controller('loginController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        console.log(API.login);
+
+        $("#login").click(function () {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            var data = {
+                username: username,
+                password: password
+            };
+            if (username == '' || password == '') {
+                alert("用户名/密码不能为空");
+                return false;
+            }
+            $http.post(API.login, data).success(function (response) {
+                if (parseInt(response.code) === 1) {
+                    //login success
+                    window.location.href = '/admin/' + response.token;
+                } else {
+                    //login error
+                    alert("用户名/密码错误");
+                }
+            });
+        });
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
     //Detail控制器-catalogueName-type-id
-    .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
+    .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, $http, API, $localStorage, $timeout) {
+
+        //评论人的信息
+        $scope.commentUsername;
+        $scope.commentEmail;
+        //对文章进行评论的input
+        $scope.commentToArt;
+        //对评论进行评论的input内容
+        $scope.commentToComment;
+
         var url = API.getArticleById.replace('id', $stateParams.id);
         $http.get(url).success(function (response) {
             console.log(response);
@@ -1317,10 +1330,80 @@ angular.module('xstApp')
             }
         }).error(function (erroInfo, status) {});
 
-        $scope.commentThisArt = function (artId) {
-            $;
+        //点击回复按钮触发动作
+        $scope.commentThisArtBtn = function (commentInfo) {
+
+            commentInfo = {
+                "_id": "57739bccdc24e834188f2eef",
+                "article_id": "576ec5284165e58703cf7246",
+                "pre_id": "576ec5284165e58703cf7246",
+                "name": "22222222",
+                "email": "12@123.com",
+                "time": "2009-01-17T19:57:02.222Z",
+                "content": "576e5920e093fcd80d2af658-增加主评论1",
+                "ip": "12.123.123.123",
+                "state": false,
+                "__v": 0,
+                "next_id": []
+            };
+            //如果有论人的信息,则不显示输入框
+            if (!!$scope.commentUsername && !!$scope.commentEmail) {
+                $scope.canComment = true;
+                $localStorage.commentAuth = {
+                    commentUsername: $scope.commentUsername,
+                    commentEmail: $scope.commentEmail
+                };
+            }
+            var content = commentInfo.article_id.toString() === commentInfo.pre_id.toString() ? $scope.commentToArt : $scope.commentToComment;
+            if (!content) {
+                return false;
+            }
+
+            var params = {
+                article_id: commentInfo.article_id,
+                pre_id: commentInfo.pre_id,
+                next_id: [],
+                name: $scope.commentUsername,
+                email: $scope.commentEmail,
+                time: new Date(),
+                content: content,
+                state: true
+            };
+
+            console.log('评论内容:');
+            console.log(params);
+
+            //send
+            $timeout(function () {
+                $scope.commentToArt = '';
+                $scope.commentToComment = '';
+                //    对评论的评论回复还需要隐藏评论框
+                $('.comments__reply').removeClass('active');
+            }, 2000, true);
         };
-        function canComment() {}
+
+        //自评论点击回复按钮
+        $scope.commentToComemntBtn = function ($event) {
+            var $this = $($event.currentTarget).parents('.comments__ask').next('.comments__reply');
+            $('.comments__reply').not($this).removeClass('active');
+            $this.toggleClass('active');
+        };
+
+        //判断是否能评论
+        $scope.canComment = canComment();
+        function canComment() {
+            if (!!$localStorage.commentAuth) {
+                if ($scope.commentUsername && $scope.commentEmail) {
+                    return true;
+                } else {
+                    $scope.commentUsername = $localStorage.commentAuth.commentUsername;
+                    $scope.commentEmail = $localStorage.commentAuth.commentEmail;
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
     }]);
 })();
 /**
@@ -1383,6 +1466,60 @@ angular.module('xstApp')
         }).error(function (erroInfo, status) {});
     }]);
 })();
+'use strict';
+/**
+ * Created by xiangsongtao on 16/6/29.
+ * 后台路由
+ */
+
+(function () {
+    angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.when("/admin/articleManager", "/admin/articleManager/articleList");
+        // .otherwise("/");
+        $stateProvider
+
+        //修改我的信息
+        .state('admin', {
+            url: "/admin",
+            templateUrl: 'web/tpl/admin.html'
+        }).state('admin.myInfo', {
+            url: "/myInfo",
+            controller: 'myInfoCtrl',
+            templateUrl: 'web/tpl/admin.myinfo.tpl.html'
+        })
+
+        //标签
+        .state('admin.tags', {
+            url: "/tags",
+            templateUrl: 'web/tpl/admin.tags.tpl.html',
+            controller: 'tagsCtrl'
+        })
+        //文章
+        .state('admin.articleManager', {
+            url: "/articleManager",
+            templateUrl: 'web/tpl/admin.articleManager.tpl.html'
+            // controller: 'paperCtrl'
+        }).state('admin.articleManager.articleList', {
+            url: "/articleList",
+            templateUrl: 'web/tpl/admin.articleList.tpl.html',
+            controller: 'articleListCtrl'
+        }).state('admin.articleManager.article', {
+            params: {
+                _id: null
+            },
+            url: "/article/:_id",
+            templateUrl: 'web/tpl/admin.article.tpl.html',
+            controller: 'articleCtrl'
+        })
+        //    评论
+        .state('admin.comment', {
+            url: "/comments",
+            templateUrl: 'web/tpl/admin.comment.tpl.html',
+            controller: 'commentCtrl'
+        });
+    }]);
+})();
+
 'use strict';
 /**
  * Created by xiangsongtao on 16/2/8.
@@ -1452,60 +1589,6 @@ angular.module('xstApp')
             controller: 'pictureController',
             url: "/picture",
             templateUrl: 'web/tpl/home.picture.html'
-        });
-    }]);
-})();
-
-'use strict';
-/**
- * Created by xiangsongtao on 16/6/29.
- * 后台路由
- */
-
-(function () {
-    angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.when("/admin/articleManager", "/admin/articleManager/articleList");
-        // .otherwise("/");
-        $stateProvider
-
-        //修改我的信息
-        .state('admin', {
-            url: "/admin",
-            templateUrl: 'web/tpl/admin.html'
-        }).state('admin.myInfo', {
-            url: "/myInfo",
-            controller: 'myInfoCtrl',
-            templateUrl: 'web/tpl/admin.myinfo.tpl.html'
-        })
-
-        //标签
-        .state('admin.tags', {
-            url: "/tags",
-            templateUrl: 'web/tpl/admin.tags.tpl.html',
-            controller: 'tagsCtrl'
-        })
-        //文章
-        .state('admin.articleManager', {
-            url: "/articleManager",
-            templateUrl: 'web/tpl/admin.articleManager.tpl.html'
-            // controller: 'paperCtrl'
-        }).state('admin.articleManager.articleList', {
-            url: "/articleList",
-            templateUrl: 'web/tpl/admin.articleList.tpl.html',
-            controller: 'articleListCtrl'
-        }).state('admin.articleManager.article', {
-            params: {
-                _id: null
-            },
-            url: "/article/:_id",
-            templateUrl: 'web/tpl/admin.article.tpl.html',
-            controller: 'articleCtrl'
-        })
-        //    评论
-        .state('admin.comment', {
-            url: "/comments",
-            templateUrl: 'web/tpl/admin.comment.tpl.html',
-            controller: 'commentCtrl'
         });
     }]);
 })();

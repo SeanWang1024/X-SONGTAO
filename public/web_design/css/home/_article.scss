@@ -116,16 +116,15 @@
         position: absolute;
         right: 0;
         top: 0;
+        height:50px;box-sizing: border-box;
         border-bottom-right-radius: 5px;
         border-top-right-radius: 5px;
 
-        cursor: pointer;
 
         background: $base-theme-color;
         color: #fff;
-        height: 100%;
+        //height: 100%;
         padding: 0 18px;
-        box-sizing: content-box;
         @include display-flex;
         @include justify-content(center);
         @include align-items(center);
@@ -228,6 +227,14 @@
       }
       .comments__reply {
         padding-left: 80px;
+        .commentBox__question{
+          display: none;
+        }
+        &.active{
+          .commentBox__question{
+            display: block;
+          }
+        }
         .comments__reply__each {
           padding: 5px;
           margin-bottom: 0;

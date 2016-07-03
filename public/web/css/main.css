@@ -1155,14 +1155,13 @@ body {
         position: absolute;
         right: 0;
         top: 0;
+        height: 50px;
+        box-sizing: border-box;
         border-bottom-right-radius: 5px;
         border-top-right-radius: 5px;
-        cursor: pointer;
         background: #38b7ea;
         color: #fff;
-        height: 100%;
         padding: 0 18px;
-        box-sizing: content-box;
         display: -moz-flex;
         display: flex;
         -moz-justify-content: center;
@@ -1245,6 +1244,10 @@ body {
           color: #fff; }
       .commentbox .commentbox__inner .comments .comments__reply {
         padding-left: 80px; }
+        .commentbox .commentbox__inner .comments .comments__reply .commentBox__question {
+          display: none; }
+        .commentbox .commentbox__inner .comments .comments__reply.active .commentBox__question {
+          display: block; }
         .commentbox .commentbox__inner .comments .comments__reply .comments__reply__each {
           padding: 5px;
           margin-bottom: 0;
@@ -1314,6 +1317,9 @@ body {
 
 .textItem {
   color: #fff; }
+
+.modal-body .deleteConfirmText {
+  margin: 10px; }
 
 /*定义表格每列的宽度*/
 .articleList .title {
@@ -1725,6 +1731,8 @@ body {
     margin-bottom: 5px;
     border-top: 1px solid #1b1b1b;
     position: relative; }
+    .comments .commentList .comments__ask.isReply .commentBox__questionBox {
+      display: block; }
     .comments .commentList .comments__ask:after {
       content: '';
       position: absolute;
@@ -1768,36 +1776,36 @@ body {
       padding: 5px 0;
       color: #fff;
       cursor: pointer; }
-
-.commentBox__questionBox {
-  position: relative;
-  height: 50px;
-  z-index: 10; }
-  .commentBox__questionBox .commentBox__questionBox--input {
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid #38b7ea;
-    height: 100%;
-    padding-left: 20px;
-    padding-right: 78px; }
-    .commentBox__questionBox .commentBox__questionBox--input::-webkit-input-placeholder {
-      color: #a8a8a8; }
-  .commentBox__questionBox .commentBox__questionBox--reply {
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
+  .comments .commentList .commentBox__questionBox {
+    position: relative;
+    display: none;
     height: 50px;
-    box-sizing: border-box;
-    width: 84px;
-    background: #38b7ea;
-    color: #fff;
-    padding: 0 18px;
-    font-size: 16px;
-    transition: all ease 200ms; }
-    .commentBox__questionBox .commentBox__questionBox--reply:active, .commentBox__questionBox .commentBox__questionBox--reply.activated {
-      background: #17a1d8; }
+    z-index: 10; }
+    .comments .commentList .commentBox__questionBox .commentBox__questionBox--input {
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #38b7ea;
+      height: 100%;
+      padding-left: 20px;
+      padding-right: 78px; }
+      .comments .commentList .commentBox__questionBox .commentBox__questionBox--input::-webkit-input-placeholder {
+        color: #a8a8a8; }
+    .comments .commentList .commentBox__questionBox .commentBox__questionBox--reply {
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
+      height: 50px;
+      box-sizing: border-box;
+      width: 84px;
+      background: #38b7ea;
+      color: #fff;
+      padding: 0 18px;
+      font-size: 16px;
+      transition: all ease 200ms; }
+      .comments .commentList .commentBox__questionBox .commentBox__questionBox--reply:active, .comments .commentList .commentBox__questionBox .commentBox__questionBox--reply.activated {
+        background: #17a1d8; }
 
 /**
  * Created by xiangsongtao on 16/7/2.

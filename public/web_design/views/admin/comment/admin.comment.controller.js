@@ -26,9 +26,13 @@ angular.module('xstApp')
 
 
         //进行评论
-        $scope.isReply = false;
         $scope.isSubmitReply = false;
-        $scope.commentThis = function () {
+        $scope.comment = function (item,$event) {
+            let target = $($event.currentTarget).parents('.comments__ask');
+            target.siblings().removeClass('isReply');
+            target.toggleClass('isReply');
+        }
+        $scope.commentThis = function ($event) {
             $scope.isSubmitReply = true;
 
             //进行评论的逻辑处理
@@ -36,7 +40,7 @@ angular.module('xstApp')
 
             $timeout(function () {
                 $scope.isSubmitReply = false;
-                $scope.isReply = false;
+                $($event.currentTarget).parents('.comments__ask').toggleClass('isReply')
             },1000,true)
 
         }

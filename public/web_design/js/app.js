@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    angular.module('xstApp', ['ui.router', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
+    angular.module('xstApp', ['ui.router','ngStorage', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
     /**
      * 配置文件
      * */
