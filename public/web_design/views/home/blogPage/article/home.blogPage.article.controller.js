@@ -3,8 +3,6 @@
  */
 (function () {
     angular.module('xstApp')
-
-
         //Detail控制器-catalogueName-type-id
         .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
             var url = API.getArticleById.replace('id', $stateParams.id);
@@ -24,5 +22,27 @@
                 }
             }).error(function (erroInfo, status) {
             });
+
+
+
+
+            $scope.commentThisArt= function (artId) {
+                $
+                
+                
+                
+                
+            }
+            function canComment() {
+                
+            }
+
+
+
+
+
+
+
+
         }])
 })();

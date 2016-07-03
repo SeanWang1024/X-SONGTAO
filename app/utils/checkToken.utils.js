@@ -25,7 +25,14 @@ function checkToken(token) {
                     return next();
                 }
                 if (!!doc) {
-                    resolve(true);
+                    if (!!doc.is_admin) {
+                        resolve(true);
+                    } else {
+                        reject({
+                            "code": "9",
+                            "msg": "you are visitor, authorization failure!"
+                        });
+                    }
                 } else {
                     reject({
                         "code": "10",

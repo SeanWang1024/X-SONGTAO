@@ -1284,8 +1284,6 @@ body {
   margin-left: auto;
   margin-bottom: 50px;
   margin-right: auto; }
-  .adminBox-content.preview {
-    width: 1530px; }
   .adminBox-content .adminBox-content-header h1 {
     font-family: "Dosis", arial, tahoma, verdana;
     display: inline-block;
@@ -1365,13 +1363,15 @@ body {
       margin-bottom: 10px;
       border-bottom: 2px dashed #bbb; }
       .articleEdit .mainSection .editSection .inputBox .inputBox__input {
-        width: 75%;
-        padding-right: 4px;
+        width: 77%;
         box-sizing: border-box;
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box; }
-        .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.title_form input {
-          width: 470px; }
+        .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.title_form .form-group {
+          white-space: nowrap;
+          overflow: hidden; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.title_form .form-group input {
+            width: 489px; }
         .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form {
           display: -moz-flex;
           display: flex;
@@ -1379,8 +1379,23 @@ body {
           justify-content: space-between;
           -moz-align-items: center;
           align-items: center; }
-          .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form input {
-            width: 195px; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form .other_form--input {
+            width: 205px;
+            padding: 0;
+            margin: 0;
+            border: none; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form .multiselect {
+            position: relative;
+            border: none;
+            outline: none;
+            background: transparent; }
+            .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form .multiselect .btn-group {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%; }
+              .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline.other_form .multiselect .btn-group button {
+                width: 100%; }
         .articleEdit .mainSection .editSection .inputBox .inputBox__input .form-inline .form-group {
           vertical-align: middle;
           margin-bottom: 10px; }
@@ -1388,8 +1403,8 @@ body {
             color: #fff;
             margin-right: 5px; }
       .articleEdit .mainSection .editSection .inputBox .inputBox__btn {
-        width: 25%;
-        padding-left: 20px;
+        width: 23%;
+        padding-left: 10px;
         height: 88px;
         display: -moz-flex;
         display: flex;
@@ -1418,65 +1433,85 @@ body {
           align-items: center;
           -moz-flex-direction: column;
           flex-direction: column; }
+          .articleEdit .mainSection .editSection .inputBox .inputBox__btn .inputBox__btn--other button {
+            width: 95px; }
   .articleEdit .mainSection .previewSection {
+    display: none;
     width: 720px; }
     .articleEdit .mainSection .previewSection .block {
       height: 90px;
       width: 100%;
       margin-bottom: 10px; }
-    .articleEdit .mainSection .previewSection #textareaPreview {
-      position: relative; }
-      .articleEdit .mainSection .previewSection #textareaPreview:before {
-        content: 'PREVIEW';
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 80px;
-        height: 90px;
-        line-height: 90px;
-        padding-right: 15px;
-        color: rgba(146, 146, 146, 0.3);
-        font-weight: bolder;
-        z-index: 999; }
-      .articleEdit .mainSection .previewSection #textareaPreview:after {
-        content: '预览区';
-        position: absolute;
-        top: 90px;
-        right: 0;
-        font-size: 40px;
-        height: 50px;
-        line-height: 50px;
-        padding-right: 15px;
-        color: rgba(56, 183, 234, 0.3);
-        font-weight: bolder;
-        z-index: 999; }
 
 .textaresBox {
   margin-top: 15px;
-  margin-bottom: 30px; }
+  margin-bottom: 30px;
+  background-color: #fff;
+  border-radius: 4px;
+  position: relative; }
+  .textaresBox:before {
+    content: 'PREVIEW';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 80px;
+    height: 90px;
+    line-height: 90px;
+    padding-right: 15px;
+    color: rgba(146, 146, 146, 0.3);
+    font-weight: bolder;
+    z-index: 0; }
+  .textaresBox:after {
+    content: '预览区';
+    position: absolute;
+    bottom: 90px;
+    right: 0;
+    font-size: 40px;
+    height: 50px;
+    line-height: 50px;
+    padding-right: 15px;
+    color: rgba(56, 183, 234, 0.3);
+    font-weight: bolder;
+    z-index: 0; }
+  .textaresBox.textaresBox_input:before {
+    content: 'EDITING'; }
+  .textaresBox.textaresBox_input:after {
+    content: '编辑区'; }
+  .textaresBox.textaresBox_preview:before {
+    content: 'PREVIEW'; }
+  .textaresBox.textaresBox_preview:after {
+    content: '预览区'; }
   .textaresBox textarea {
     width: 100%;
     height: 100%;
-    resize: vertical;
-    overflow-y: auto; }
+    resize: none;
+    overflow: hidden; }
   .textaresBox .textarea {
+    z-index: 999;
     display: block;
     width: 100%;
     padding: 6px 12px;
     font-size: 14px;
     line-height: 1.42857143;
     color: #555;
-    background-color: #fff;
+    background-color: transparent;
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    min-height: 400px; }
+    min-height: 650px;
+    position: relative;
+    overflow: hidden; }
     .textaresBox .textarea:focus {
       border-color: #337ab7;
       outline: none;
       box-shadow: 0 0 10px #337ab7; }
+
+.adminBox-content.preview {
+  width: 1530px; }
+  .adminBox-content.preview .previewSection {
+    display: block; }
 
 .myInfo {
   overflow: hidden;
@@ -1575,7 +1610,7 @@ body {
             font-size: 16px;
             margin: 0;
             width: 100%;
-            height: 200px;
+            height: 300px;
             overflow-x: hidden;
             resize: none; }
       .myInfo .myInfoInner .myInfoInnerFlexBox .authorizationBox {
@@ -1669,12 +1704,100 @@ body {
       background-color: rgba(2, 255, 0, 0.35) !important; }
     .tags table td {
       vertical-align: middle !important;
-      font-size: 14px; }
+      font-size: 14px;
+      text-align: center; }
 
 .modal .submitText {
   color: #38b7ea;
   transition: all ease 300ms;
   margin-right: 10px; }
+
+.comments {
+  height: 100%; }
+  .comments .title {
+    width: 100%;
+    color: #fff;
+    margin-bottom: 30px;
+    text-align: left; }
+  .comments .commentList .comments__ask {
+    box-sizing: content-box;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-top: 1px solid #1b1b1b;
+    position: relative; }
+    .comments .commentList .comments__ask:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      border-top: 1px solid #6f6f6f; }
+    .comments .commentList .comments__ask:hover .reply {
+      color: #ff9700;
+      font-weight: bold; }
+    .comments .commentList .comments__ask:hover .del {
+      color: #ff0047;
+      font-weight: bold; }
+    .comments .commentList .comments__ask .comments__ask__title {
+      color: #fff;
+      cursor: pointer; }
+      .comments .commentList .comments__ask .comments__ask__title h3 {
+        color: #fff;
+        border-left: 4px solid #38b7ea;
+        padding-left: 10px;
+        transition: all ease 200ms; }
+        .comments .commentList .comments__ask .comments__ask__title h3:hover {
+          color: #38b7ea; }
+    .comments .commentList .comments__ask .comments__ask__header {
+      font-size: 14px;
+      line-height: 130%;
+      padding: 5px 0;
+      color: #ececec;
+      cursor: pointer; }
+      .comments .commentList .comments__ask .comments__ask__header .name {
+        font-size: 18px;
+        color: #38b7ea; }
+      .comments .commentList .comments__ask .comments__ask__header .reply {
+        transition: all ease 200ms; }
+      .comments .commentList .comments__ask .comments__ask__header .del {
+        transition: all ease 200ms; }
+    .comments .commentList .comments__ask .comments__ask__content {
+      font-size: 14px;
+      line-height: 150%;
+      padding: 5px 0;
+      color: #fff;
+      cursor: pointer; }
+
+.commentBox__questionBox {
+  position: relative;
+  height: 50px;
+  z-index: 10; }
+  .commentBox__questionBox .commentBox__questionBox--input {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #38b7ea;
+    height: 100%;
+    padding-left: 20px;
+    padding-right: 78px; }
+    .commentBox__questionBox .commentBox__questionBox--input::-webkit-input-placeholder {
+      color: #a8a8a8; }
+  .commentBox__questionBox .commentBox__questionBox--reply {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 50px;
+    box-sizing: border-box;
+    width: 84px;
+    background: #38b7ea;
+    color: #fff;
+    padding: 0 18px;
+    font-size: 16px;
+    transition: all ease 200ms; }
+    .commentBox__questionBox .commentBox__questionBox--reply:active, .commentBox__questionBox .commentBox__questionBox--reply.activated {
+      background: #17a1d8; }
 
 /**
  * Created by xiangsongtao on 16/7/2.

@@ -147,9 +147,9 @@ router.delete('/tag/:id', TagsController.delete);
  * Article 相关
  * */
 //增加,增加的同时对标签使用num++
-router.post('/article', ArticleController.add);
-//根据id修改
-router.put('/article', ArticleController.editById);
+// router.post('/article', ArticleController.add);
+//根据id修改/增加,增加的同时对标签使用num++
+router.post('/article', ArticleController.postArt);
 //查找全部,进行分页设置(api测试)
 router.get('/articles', ArticleController.getAll);
 //分页查找文章,进行分页设置/^\/commits\/(\w+)(?:\.\.(\w+))?$/

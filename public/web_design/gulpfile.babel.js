@@ -104,6 +104,30 @@ gulp.task('css:common', ()=> {
             break;
     }
 });
+gulp.task('css:common.admin', ()=> {
+    var stream = gulp.src([
+        `${PATH.SRC}/lib/admin/ng-bs3-datepicker.css`,
+    ])
+        .pipe($.autoprefixer({
+            browsers: ['IE 8'],
+            cascade: false
+        }))
+        .pipe($.concat('common.admin.css'));
+    switch (ENV) {
+        case 'DEV':
+            return stream.pipe(gulp.dest(`${PATH.DIST}/css`));
+            break;
+        case 'TES':
+            return stream.pipe($.md5Plus(10, APP_VIEWS_WEB))
+                .pipe(gulp.dest(`${PATH.DIST}/css`));
+            break;
+        case 'PRO':
+            return stream.pipe($.md5Plus(10, APP_VIEWS_WEB))
+                .pipe($.cleanCss())
+                .pipe(gulp.dest(`${PATH.DIST}/css`));
+            break;
+    }
+});
 gulp.task('css:main', ()=> {
     var stream = gulp.src(`${PATH.SRC}/css/**/main.scss`)
         .pipe($.sass().on('error', $.sass.logError))
@@ -133,7 +157,9 @@ gulp.task('js:common', function () {
         `${PATH.SRC}/lib/angular.js`,
         `${PATH.SRC}/lib/angular-ui-router.min.js`,
         `${PATH.SRC}/lib/bootstrap.min.js`,
-    ]).pipe($.concat('common.js')).pipe($.babel());
+        `${PATH.SRC}/lib/moment.js`,
+        `${PATH.SRC}/lib/moment-with-locales.js`,
+    ]).pipe($.concat('common.js'));
     switch (ENV) {
         case 'DEV':
             return stream.pipe(gulp.dest(`${PATH.DIST}/js`));
@@ -151,10 +177,12 @@ gulp.task('js:common.admin', function () {
     var stream = gulp.src([
         `${PATH.SRC}/lib/admin/dropzone.js`,
         `${PATH.SRC}/lib/admin/marked.js`,
-        `${PATH.SRC}/lib/admin/highlight.js`,
+        `${PATH.SRC}/lib/admin/highlight.pack.js`,
         `${PATH.SRC}/lib/admin/angular-marked.min.js`,
-        `${PATH.SRC}/lib/admin/angular-highlightjs.js`
-    ]).pipe($.concat('common.admin.js')).pipe($.babel());
+        `${PATH.SRC}/lib/admin/angular-bootstrap-multiselect.js`,
+        `${PATH.SRC}/lib/admin/ng-bs3-datepicker.js`,
+        // `${PATH.SRC}/lib/admin/angular-highlightjs.js`
+    ]).pipe($.concat('common.admin.js'));
     switch (ENV) {
         case 'DEV':
             return stream.pipe(gulp.dest(`${PATH.DIST}/js`));
@@ -229,9 +257,9 @@ gulp.task('move:images', function () {
 gulp.task("watch",function () {
     gulp.watch(`${PATH.SRC}/views/**/*.html`, ['move:tpl']);
     // // gulp.watch(`${PATH.SRC}/fonts/*.*`, ['move:fonts']);
-    gulp.watch(`${PATH.SRC}/lib/**/*.css`, ['css:common']);
+    // gulp.watch(`${PATH.SRC}/lib/**/*.css`, ['css:common']);
     gulp.watch(`${PATH.SRC}/css/**/*.scss`, ['css:main']);
-    gulp.watch(`${PATH.SRC}/lib/**/*.js`, ['js:common']);
+    // gulp.watch(`${PATH.SRC}/lib/**/*.js`, ['js:common']);
     gulp.watch(`${PATH.SRC}/js/**/*.js`, ['js:main']);
     gulp.watch(`${PATH.SRC}/views/**/*.js`, ['js:main']);
     // // gulp.watch(`${PATH.SRC}/img/**/*.*`, ['move:images']);
@@ -245,6 +273,7 @@ gulp.task('default', $.sequence(
         'move:tpl',
         'move:fonts',
         'css:common',
+        'css:common.admin',
         'css:main',
         'js:common',
         'js:common.admin',

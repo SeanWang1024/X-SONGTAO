@@ -17,12 +17,13 @@ module.exports = {
                 DO_ERROR_RES(res);
                 return next();
             }
-            //如果没有数据,则增加
+            //如果没有数据,则增加is_admin: user.is_admin,
             if (!user) {
-                let {username, password, full_name, position, address, motto, personal_state, img_url} = req.body;
-                let login = new Users({
+                let {username, password, is_admin, full_name, position, address, motto, personal_state, img_url} = req.body;
+                let UserInfo = new Users({
                     username,
                     password,
+                    is_admin,
                     login_info: [{
                         login_time: new Date().getTime().toString(),
                         login_ip: user_ip,
@@ -35,16 +36,14 @@ module.exports = {
                     img_url//头像imgurl
                 });
                 //保存
-                login.save();
+                UserInfo.save();
                 //发送
                 res.status(200);
-                let _id = login._id;
-                let UserInfo = {_id, username, full_name, position, address, motto, personal_state, img_url};
                 res.send({
                     "code": "1",
                     "msg": "user added and login success!",
                     "token": $base64.encode(`${username}|${password}|${new Date().getTime()}`),
-                    "user_info": UserInfo
+                    "data": UserInfo
                 });
             } else {
                 //否则修改找到的数据
@@ -231,11 +230,16 @@ module.exports = {
                     personal_state: user.personal_state,
                     img_url: user.img_url
                 } = req.body);
+                if (req.body.is_admin !== undefined) {
+                    user.is_admin = req.body.is_admin
+                }
+
                 user.save();
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "user update success!"
+                    "msg": "user update success!",
+                    "data":user
                 });
             }
         });

@@ -1,0 +1,74 @@
+<div class="comments animated fadeIn">
+    <!--column title-->
+    <h3 class="title">
+        <i class="fa fa-fw fa-lg fa-comments"></i> 评论管理 / <span class="blue">COMMENTS</span>
+    </h3>
+    <!--增加-->
+   <section class="commentList">
+       <div class="comments__ask">
+           <div class="comments__ask__title">
+               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
+           </div>
+           <div class="comments__ask__header">
+               <span class="name">清如水</span>&ensp;·&ensp;<span>三天前</span>&ensp;·&ensp;<span>2803034@163.com</span>&ensp;·&ensp;<span class="reply" ng-click="isReply=!isReply">回复</span>&ensp;·&ensp;<span class="del" ng-click="delbtn(1234)" data-toggle="modal" data-target="#delComm">删除</span>
+           </div>
+           <div class="comments__ask__content">
+               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+           </div>
+
+           <!--问题盒子-->
+           <div class="commentBox__questionBox" ng-if="isReply">
+               <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
+               <button ng-disabled="isSubmitReply" class="btn commentBox__questionBox--reply" ng-click="commentThis()">
+                   <i class="fa" ng-class="{true:'fa-spinner fa-spin',false:'fa-comments'}[isSubmitReply]"></i><span>  评论</span>
+               </button>
+           </div>
+       </div>
+       <div class="comments__ask">
+           <div class="comments__ask__title">
+               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
+           </div>
+           <div class="comments__ask__header">
+               <span class="name">清如水</span> · <span>三天前</span> · <span>2803034@163.com</span> · <span class="reply">回复</span> · <span class="del">删除</span>
+           </div>
+           <div class="comments__ask__content">
+               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+           </div>
+       </div>
+       <div class="comments__ask">
+           <div class="comments__ask__title">
+               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
+           </div>
+           <div class="comments__ask__header">
+               <span class="name">清如水</span> · <span>三天前</span> · <span>2803034@163.com</span> · <span class="reply">回复</span> · <span class="del">删除</span>
+           </div>
+           <div class="comments__ask__content">
+               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+           </div>
+       </div>
+   </section>
+
+
+</div>
+
+<!--弹出层-删除-->
+<div class="modal fade" id="delComm" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-bitbucket"></i> 删除评论/DELCOMMENT</h4>
+            </div>
+            <div class="modal-body">
+                <h3 class="text-center">确认删除此评论?</h3>
+            </div>
+            <div class="modal-footer">
+                <span class="submitText" ng-bind="submitText"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button ng-disabled="!!submitText" type="button" data-dismiss="modal" ng-click="confirmDelCommBtn()" class="btn btn-danger">
+                    删除
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,9 +11,8 @@
                 .when("/admin/articleManager", "/admin/articleManager/articleList");
             // .otherwise("/");
             $stateProvider
-            /**
-             * 修改我的信息
-             * */
+
+            //修改我的信息
                 .state('admin', {
                     url: "/admin",
                     templateUrl: 'web/tpl/admin.html'
@@ -24,7 +23,13 @@
                     templateUrl: 'web/tpl/admin.myinfo.tpl.html'
                 })
 
-
+                //标签
+                .state('admin.tags', {
+                    url: "/tags",
+                    templateUrl: 'web/tpl/admin.tags.tpl.html',
+                    controller: 'tagsCtrl'
+                })
+                //文章
                 .state('admin.articleManager', {
                     url: "/articleManager",
                     templateUrl: 'web/tpl/admin.articleManager.tpl.html'
@@ -36,19 +41,18 @@
                     controller: 'articleListCtrl'
                 })
                 .state('admin.articleManager.article', {
-                    params:{
-                        _id:null
+                    params: {
+                        _id: null
                     },
                     url: "/article/:_id",
                     templateUrl: 'web/tpl/admin.article.tpl.html',
                     controller: 'articleCtrl'
                 })
-
-
-                .state('admin.tags', {
-                    url: "/tags",
-                    templateUrl: 'web/tpl/admin.tags.tpl.html',
-                    controller: 'tagsCtrl'
+        //    评论
+                .state('admin.comment', {
+                    url: "/comments",
+                    templateUrl: 'web/tpl/admin.comment.tpl.html',
+                    controller: 'commentCtrl'
                 })
 
 

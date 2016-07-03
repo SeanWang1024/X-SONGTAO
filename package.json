@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "supervisor": "supervisor ./bin/www",
     "start": "pm2 start ./bin/www --watch; pm2 logs",
     "restart": "pm2 restart ./bin/www --watch; pm2 logs",
     "stop": "pm2 stop all",

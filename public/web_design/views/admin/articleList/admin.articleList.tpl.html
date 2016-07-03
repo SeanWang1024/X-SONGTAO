@@ -50,7 +50,7 @@
         <tr ng-repeat="article in articleLists | orderBy:predicate:reverse">
             <td ng-bind="$index+1"></td>
             <td ng-bind="article.title"></td>
-            <td ng-bind="article.publish_time | date: 'yyyy-MM-dd'"></td>
+            <td ng-bind="article.publish_time | date: 'yyyy/MM/dd'"></td>
             <td ng-bind="article.read_num"></td>
             <td ng-bind="article.comment_num"></td>
             <td ng-switch="article.state">
@@ -68,114 +68,6 @@
         </tbody>
     </table>
 </div>
-
-<!--弹出层-增加-->
-<div class="modal fade" id="articleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus-square"></i> 新增文章/ADDARTICLE</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group" style="display: none;">
-                        <label for="title" class="col-md-2 control-label">articleId</label>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" id="articleId" placeholder="id">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="title" class="col-md-2 control-label">标题/Title</label>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" id="title" placeholder="Title">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="pull-left col-md-6" style="padding:0">
-                            <label for="time" class="col-md-4 control-label">发表时间/Time</label>
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <input type="date" class="form-control" id="time" placeholder="Time">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" id="setToday" type="button">今天</button>
-                </span>
-                                </div><!-- /input-group -->
-                            </div>
-                        </div>
-                        <div class="pull-right col-md-6" style="padding:0">
-                            <label for="catName" class="col-md-4 control-label">分类名/Cat.Name</label>
-                            <div class="col-md-8">
-                                <select name="catName" id="catName" class="form-control">
-                                    <option value="LifeStyle">提笔随心/LifeStyle</option>
-                                    <option value="FrontEnd">前端博客/FrontEnd</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="form-group">
-                        <div class="pull-left col-md-6" style="padding:0">
-                            <label for="artType" class="col-md-4 control-label">文章类型/Art.Type</label>
-                            <div class="col-md-8">
-                                <p id="artType" name="artType" class="form-control-static" value="0">文字/Word</p>
-                                <!--<select name="artType" id="artType" class="form-control">-->
-                                <!--<option value="0">文字/Word</option>-->
-                                <!--<option value="1">图文/Pic&Word</option>-->
-                                <!--</select>-->
-                            </div>
-                        </div>
-                        <div class="pull-right col-md-6 col-md-6" style="padding:0">
-                            <label for="multTags" class="col-md-4 control-label">标签/Tags</label>
-                            <div class="col-md-8">
-                                <select name="multTags" id="multTags" class="form-control" multiple="multiple">
-                                    <optgroup label="LifeStyle" id="LifeStyleOptGroup">
-                                        <option ng-if="lifeStyleTags.state" value="{{lifeStyleTags._id}}" ng-repeat="lifeStyleTags in tagLists | filter: {catalogueName:'LifeStyle'}">
-                                            {{lifeStyleTags.name}}
-                                        </option>
-                                        <!--<option value="1-2">Option 1.2</option>-->
-                                        <!--<option value="1-3">Option 1.3</option>-->
-                                    </optgroup>
-                                    <optgroup label="FrontEnd" id="FrontEndOptGroup">
-                                        <option ng-if="frontEndTags.state" value="{{frontEndTags._id}}" ng-repeat="frontEndTags in tagLists | filter: {catalogueName:'FrontEnd'}">
-                                            {{frontEndTags.name}}
-                                        </option>
-                                        <!--<option value="2-1">Option 2.1</option>-->
-                                        <!--<option value="2-2">Option 2.2</option>-->
-                                        <!--<option value="2-3">Option 2.3</option>-->
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!--<div class="form-group">-->
-                    <!--<label for="abstract" class="col-md-2 control-label">文章摘要/Abstract</label>-->
-                    <!--<div class="col-md-10">-->
-                    <!--<textarea rows="5" class="form-control" id="abstract" placeholder="文章摘要..."></textarea>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <div class="form-group">
-                        <label for="articleContent" class="col-md-2 control-label">文章内容/Article</label>
-                        <div class="col-md-10">
-                            <textarea id="articleContent" placeholder="Balabala" autofocus></textarea>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button id="draft" type="button" class="btn btn-danger submit">保存草稿</button>
-                <div id="publish" class="btn btn-blue submit">
-                    发表
-                    <span class="sending" style="display: none;"><i class="fa fa-spin fa-spinner"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <!--弹出层-删除-->
 <div class="modal fade" id="delArticle" tabindex="-1" role="dialog">

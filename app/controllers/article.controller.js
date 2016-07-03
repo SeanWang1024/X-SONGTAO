@@ -34,6 +34,16 @@ function findTagNameById(tags, id) {
     }
     return null;
 }
+//由id在tagsAray中查找他的对象
+function findTagById(tags, id) {
+    for (let tag of tags) {
+        if (tag._id.toString() === id.toString()) {
+            return tag;
+            break;
+        }
+    }
+    return null;
+}
 
 module.exports = {
     //增加,增加的同时对标签使用num++
@@ -68,83 +78,102 @@ module.exports = {
         });
     },
     //对标签使用num进行处理
-    editById: function (req, res, next) {
-        Articles.findOne({_id: req.body._id}, function (err, article) {
-            if (err) {
-                DO_ERROR_RES(res);
-                return next();
-            }
-            if (!!article) {
-                let {title, publish_time, tags, state, content} = req.body;
-                /**
-                 * tag判断操作
-                 * */
-                let oldTags = article.tags;
-                //找新增的
-                for (let new_tag of tags) {
-                    if (oldTags.indexOf(new_tag) === -1) {
-                        Tags.findOne({_id: new_tag}, function (err, tag) {
-                            if (!!tag) {
-                                tag.used_num++;
-                                tag.save();
-                            }
-                        });
-                    }
+    postArt: function (req, res, next) {
+        console.log('req.body._id')
+        console.log(req.body._id)
+        if(!!req.body._id){
+            //id存在-->修改操作
+            Articles.findOne({_id: req.body._id}, function (err, article) {
+                if (err) {
+                    DO_ERROR_RES(res);
+                    return next();
                 }
-                //找去除的
-                for (let old_tag of oldTags) {
-                    if (tags.indexOf(old_tag) === -1) {
-                        Tags.findOne({_id: old_tag}, function (err, tag) {
-                            if (!!tag && tag.used_num > 0) {
-                                tag.used_num--;
-                                tag.save();
-                            }
-                        });
+                if (!!article) {
+                    let {title, publish_time, tags, state, content} = req.body;
+
+                    /**
+                     * tag判断操作
+                     * */
+                    let oldTags = article.tags;
+                    //找新增的
+                    for (let new_tag of tags) {
+                        if (oldTags.indexOf(new_tag) === -1) {
+                            Tags.findOne({_id: new_tag}, function (err, tag) {
+                                if (!!tag) {
+                                    tag.used_num++;
+                                    tag.save();
+                                }
+                            });
+                        }
                     }
+                    //找去除的
+                    for (let old_tag of oldTags) {
+                        if (tags.indexOf(old_tag) === -1) {
+                            Tags.findOne({_id: old_tag}, function (err, tag) {
+                                if (!!tag && tag.used_num > 0) {
+                                    tag.used_num--;
+                                    tag.save();
+                                }
+                            });
+                        }
+                    }
+
+                    //数据写入并保存
+                    article.title = title;
+                    article.publish_time = publish_time;
+
+                    article.tags = tags;
+                    article.state = state;
+                    article.content = content;
+                    console.log(content)
+                    //保存
+                    article.save();
+                    res.status(200);
+                    res.send({
+                        "code": "1",
+                        "msg": "article edit success!",
+                        "data": article
+                    });
+                } else {
+                    res.status(200);
+                    res.send({
+                        "code": "2",
+                        "msg": "article edit failure, article non-exist!"
+                    });
                 }
-
-                // /**
-                //  * markdown转html
-                //  **/
-                // marked.setOptions({
-                //     renderer: new marked.Renderer(),
-                //     gfm: true,
-                //     tables: true,
-                //     breaks: true,
-                //     pedantic: false,
-                //     sanitize: false,
-                //     smartLists: true,
-                //     smartypants: false,
-                //     highlight: function (code) {
-                //         return hljs.highlightAuto(code).value;
-                //     }
-                // });
-                // article.content = marked(content);
-
-
-
-                //数据写入并保存
-                article.title = title;
-                article.publish_time = publish_time;
-                article.tags = tags;
-                article.state = state;
-                // article.content = content;
-                //保存
-                article.save();
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": "article edit success!",
-                    "data": article
-                });
-            } else {
-                res.status(200);
-                res.send({
-                    "code": "2",
-                    "msg": "article edit failure, article non-exist!"
-                });
+            });
+        }else{
+            //id不存在-->新增操作
+            let {title, publish_time, tags, state, content} =  req.body;
+            let article = new Articles({
+                title,
+                publish_time,
+                read_num: 0,
+                comment_num: 0,
+                comment_id: "",
+                tags,
+                state,
+                content
+            });
+            article.save();
+            //tag used_num ++
+            for (let tag_id of article.tags) {
+                Tags.findOne({_id: tag_id}, function (err, tag) {
+                    if (!!tag) {
+                        tag.used_num++;
+                        tag.save();
+                    }
+                })
             }
-        });
+
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "article add success!",
+                "data": article
+            });
+        }
+
     },
     /***
      * 评论统计在评论新增、修改、删除的时候进行,
@@ -284,20 +313,20 @@ module.exports = {
                 return next();
             }
             if (!!doc) {
-                //阅读数++
+                //阅读数++ 
                 doc.read_num++;
                 doc.save();
                 let article = doc;
                 findAllTags().then(function (tags) {
                     for (let j = 0; article.tags.length > j; j++) {
                         //tag id => tag name
-                        let name = findTagNameById(tags, article.tags[j]);
-                        if (!name) {
+                        let findOutTag = findTagById(tags, article.tags[j]);
+                        if (!findOutTag) {
                             //对于未找到tagid的则去除此位置
                             article.tags.splice(j, 1);
                             j--;
                         } else {
-                            article.tags[j] = name;
+                            article.tags[j] = findOutTag;
                         }
                     }
 
@@ -305,7 +334,7 @@ module.exports = {
                     res.send({
                         "code": "1",
                         "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
-                        "data": article
+                        "data": article,
                     });
                 });
             } else {

@@ -1,0 +1,131 @@
+.comments {
+  height: 100%;
+  .title {
+    width: 100%;
+    color: #fff;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+
+  .commentList {
+    .comments__ask {
+      box-sizing: content-box;
+      padding: 10px;
+      margin-bottom: 5px;
+      //cursor: pointer;
+      border-top: 1px solid #1b1b1b;
+      position: relative;
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 0;
+        border-top: 1px solid #6f6f6f;
+
+      }
+
+      &:hover {
+        .reply {
+          color: $base-theme-color-o;
+          font-weight: bold;
+        }
+        .del {
+          color: #ff0047;
+          font-weight: bold;
+        }
+      }
+      .comments__ask__title {
+        color: #fff;
+        cursor: pointer;
+        h3 {
+          color: #fff;
+          border-left: 4px solid $base-theme-color;
+          padding-left: 10px;
+          transition: all ease 200ms;
+          &:hover {
+            color: $base-theme-color;
+
+          }
+        }
+
+      }
+      .comments__ask__header {
+        font-size: 14px;
+        line-height: 130%;
+        padding: 5px 0;
+        color: #ececec;
+        cursor: pointer;
+        .name {
+          font-size: 18px;
+          color: $base-theme-color;
+        }
+        .reply {
+          transition: all ease 200ms;
+        }
+        .del {
+          transition: all ease 200ms;
+
+        }
+
+      }
+      .comments__ask__content {
+        font-size: 14px;
+        line-height: 150%;
+        padding: 5px 0;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+  }
+
+}
+
+.commentBox__questionBox {
+  position: relative;
+  height: 50px;
+  z-index: 10;
+  .commentBox__questionBox--input {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid $base-theme-color;
+    height: 100%;
+    padding-left: 20px;
+    padding-right: 78px;
+    &::-webkit-input-placeholder {
+      color: #a8a8a8;
+    }
+  }
+  .commentBox__questionBox--reply {
+
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+
+    //cursor: pointer;
+
+    height: 50px;
+    box-sizing: border-box;
+    width:84px;;
+
+    background: $base-theme-color;
+    color: #fff;
+    //height: 100%;
+    padding: 0 18px;
+    //box-sizing: content-box;
+    //@include display-flex;
+    //@include justify-content(center);
+    //@include align-items(center);
+    font-size: 16px;
+
+    transition: all ease 200ms;
+    &:active,
+    &.activated {
+      background: darken($base-theme-color, 10%);
+    }
+  }
+}

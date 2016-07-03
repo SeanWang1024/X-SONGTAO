@@ -8,6 +8,7 @@
             //获取Token,只是进行get请求和register、login的post请求是不需要token的。
             //登录会能获得token,如果localstorage中存在token信息,则发送时将token携带。
             //这里只是使用localstorage存放数据,古故$localStorage不使用
+
             return function (httpParams) {
                 let authorization = (httpParams.method.toLocaleLowerCase() !== 'get') && !!localStorage.authorization ? localStorage.authorization : null;
                 let header = {
@@ -30,10 +31,12 @@
                 return $http(params).then(
                     //success
                     function (response) {
-                        if(parseInt(response.data.code) == 10){
+                        if (parseInt(response.data.code) == 10) {
                             alert("token问题,请重新登录!");
+                        } else {
+                            //需要补充,如果code为9,则代表用户没有访问权限,
+                            httpParams.success && httpParams.success(response.data);
                         }
-                        httpParams.success && httpParams.success(response.data)
                     },
                     //error
                     function (response) {

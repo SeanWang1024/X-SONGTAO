@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    angular.module('xstApp', ['ui.router', 'hc.marked'])
+    angular.module('xstApp', ['ui.router', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
     /**
      * 配置文件
      * */
@@ -40,6 +40,9 @@
 
                 //由文章id获取文章详情(原始markdown版本)
                 getRawArticleById: `${url}/api/article/raw/id`,
+
+                //新增(如果传入的_id不存在的电话)-修改文章,
+                postArt: `${url}/api/article`,
 
                 /**
                  * 标签相关
@@ -80,18 +83,10 @@
                 smartLists: true,
                 smartypants: false,
                 highlight: function (code) {
-                    console.log(code)
-                    console.log(hljs.highlightAuto(code).value)
                     return hljs.highlightAuto(code).value;
                 }
             });
         }])
-        // .config(function (hljsServiceProvider) {
-        //     hljsServiceProvider.setOptions({
-        //         // replace tab with 4 spaces
-        //         tabReplace: '    '
-        //     });
-        // });
 })();
 
 
