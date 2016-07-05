@@ -5,78 +5,29 @@
     </h3>
     <!--增加-->
    <section class="commentList">
-       <div class="comments__ask">
+       <div class="comments__ask" ng-repeat="item in commentList">
            <div class="comments__ask__title">
-               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
+               <h3  ui-sref="blog.detail({id:item.article_id._id})"><span>原文: </span><span ng-bind="item.article_id.title"></span></h3>
            </div>
            <div class="comments__ask__header">
-               <span class="name">清如水</span>&ensp;·&ensp;<span>三天前</span>&ensp;·&ensp;<span>2803034@163.com</span>&ensp;·&ensp;<span class="reply" ng-click="comment(item,$event)">回复</span>&ensp;·&ensp;<span class="del" ng-click="delbtn(1234)" data-toggle="modal" data-target="#delComm">删除</span>
+               <span class="name" ng-bind="item.name"></span>
+               &ensp;·&ensp;
+               <span>三天前</span>
+               &ensp;·&ensp;
+               <span ng-bind="item.email"></span>
+
+               <span ng-if="!item.name.isIReplied">&ensp;·&ensp; <span class="reply" ng-click="comment(item,$event)">回复</span></span>
+               &ensp;·&ensp;
+               <span class="del" ng-click="delbtn(item._id)" data-toggle="modal" data-target="#delComm">删除</span>
            </div>
            <div class="comments__ask__content">
-               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+               <span ng-bind="item.content"></span>
            </div>
 
            <!--问题盒子-->
            <div class="commentBox__questionBox">
-               <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
-               <button ng-disabled="isSubmitReply" class="btn commentBox__questionBox--reply" ng-click="commentThis($event)">
-                   <i class="fa" ng-class="{true:'fa-spinner fa-spin',false:'fa-comments'}[isSubmitReply]"></i><span>  评论</span>
-               </button>
-           </div>
-       </div>
-       <div class="comments__ask">
-           <div class="comments__ask__title">
-               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
-           </div>
-           <div class="comments__ask__header">
-               <span class="name">清如水</span>&ensp;·&ensp;<span>三天前</span>&ensp;·&ensp;<span>2803034@163.com</span>&ensp;·&ensp;<span class="reply" ng-click="comment(item,$event)">回复</span>&ensp;·&ensp;<span class="del" ng-click="delbtn(1234)" data-toggle="modal" data-target="#delComm">删除</span>
-           </div>
-           <div class="comments__ask__content">
-               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
-           </div>
-
-           <!--问题盒子-->
-           <div class="commentBox__questionBox">
-               <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
-               <button ng-disabled="isSubmitReply" class="btn commentBox__questionBox--reply" ng-click="commentThis($event)">
-                   <i class="fa" ng-class="{true:'fa-spinner fa-spin',false:'fa-comments'}[isSubmitReply]"></i><span>  评论</span>
-               </button>
-           </div>
-       </div>
-       <div class="comments__ask">
-           <div class="comments__ask__title">
-               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
-           </div>
-           <div class="comments__ask__header">
-               <span class="name">清如水</span>&ensp;·&ensp;<span>三天前</span>&ensp;·&ensp;<span>2803034@163.com</span>&ensp;·&ensp;<span class="reply" ng-click="comment(item,$event)">回复</span>&ensp;·&ensp;<span class="del" ng-click="delbtn(1234)" data-toggle="modal" data-target="#delComm">删除</span>
-           </div>
-           <div class="comments__ask__content">
-               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
-           </div>
-
-           <!--问题盒子-->
-           <div class="commentBox__questionBox">
-               <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
-               <button ng-disabled="isSubmitReply" class="btn commentBox__questionBox--reply" ng-click="commentThis($event)">
-                   <i class="fa" ng-class="{true:'fa-spinner fa-spin',false:'fa-comments'}[isSubmitReply]"></i><span>  评论</span>
-               </button>
-           </div>
-       </div>
-       <div class="comments__ask">
-           <div class="comments__ask__title">
-               <h3><span>原文: </span><span>你好未来,我是小石头!</span></h3>
-           </div>
-           <div class="comments__ask__header">
-               <span class="name">清如水</span>&ensp;·&ensp;<span>三天前</span>&ensp;·&ensp;<span>2803034@163.com</span>&ensp;·&ensp;<span class="reply" ng-click="comment(item,$event)">回复</span>&ensp;·&ensp;<span class="del" ng-click="delbtn(1234)" data-toggle="modal" data-target="#delComm">删除</span>
-           </div>
-           <div class="comments__ask__content">
-               <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
-           </div>
-
-           <!--问题盒子-->
-           <div class="commentBox__questionBox">
-               <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句">
-               <button ng-disabled="isSubmitReply" class="btn commentBox__questionBox--reply" ng-click="commentThis($event)">
+               <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="comment_info.content">
+               <button ng-disabled="!comment_info.content" class="btn commentBox__questionBox--reply" ng-click="commentThis($event,item)">
                    <i class="fa" ng-class="{true:'fa-spinner fa-spin',false:'fa-comments'}[isSubmitReply]"></i><span>  评论</span>
                </button>
            </div>

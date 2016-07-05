@@ -7,10 +7,7 @@
 (function () {
     angular.module('xstApp')
         .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-            $urlRouterProvider
-                .when("/blog", "/blog/articleList")
-               
-                .otherwise("/");
+            $urlRouterProvider.when("/blog", "/blog/articleList").otherwise("/");
 
             $stateProvider
             /**
@@ -18,7 +15,7 @@
              * */
                 .state('home', {
                     url: "/",
-                    templateUrl: 'web/tpl/home.index.html'
+                    templateUrl: 'web/tpl/home.index.html',
                 })
                 /**
                  * 登陆

@@ -3,8 +3,11 @@
  */
 angular.module('xstApp')
 //myInfo的控制器
-    .controller('tagsCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
-
+    .controller('tagsCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', '$rootScope', '$state', function (AJAX, API, $scope, $log, $timeout, $rootScope, $state) {
+        if (!$rootScope.isLogin) {
+            $state.go('home');
+            return;
+        }
         /*
          * 写入页面信息
          */
@@ -148,10 +151,6 @@ angular.module('xstApp')
                 }
             });
         }
-
-
-
-
 
 
     }]);

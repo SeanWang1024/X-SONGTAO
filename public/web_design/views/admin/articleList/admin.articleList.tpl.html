@@ -62,7 +62,7 @@
                         class="btn btn-default btn-sm">
                     <i class="fa fa-pencil"></i>
                 </button>
-                <button data-toggle="modal" data-target="#delArticle" ng-click="delTagBtn(tag._id)" class="btn btn-danger btn-sm"><i class="fa fa-bitbucket"></i></button>
+                <button data-toggle="modal" data-target="#delArticle" ng-click="delArtBtn(article._id)" class="btn btn-danger btn-sm"><i class="fa fa-bitbucket"></i></button>
             </td>
         </tr>
         </tbody>
@@ -83,7 +83,7 @@
             <div class="modal-footer">
                 <span class="submitText" ng-bind="submitText"></span>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button ng-disabled="!!submitText" type="button"  data-dismiss="modal" ng-click="confirmDelTagBtn()" class="btn btn-danger">
+                <button ng-disabled="!!submitText" type="button"  data-dismiss="modal" ng-click="confirmDelArtBtn()" class="btn btn-danger">
                     删除
                 </button>
             </div>

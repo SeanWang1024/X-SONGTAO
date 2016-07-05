@@ -356,6 +356,10 @@ body {
   overflow: hidden;
   font-family: 'PingHei', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
   background: transparent radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%); }
+  body.isLogin .admin_btn {
+    display: block !important; }
+  body .admin_btn {
+    display: none; }
 
 .header h3 {
   margin-top: 0;
@@ -1768,6 +1772,10 @@ body {
         color: #38b7ea; }
       .comments .commentList .comments__ask .comments__ask__header .reply {
         transition: all ease 200ms; }
+      .comments .commentList .comments__ask .comments__ask__header .alreadyReply {
+        color: green; }
+      .comments .commentList .comments__ask .comments__ask__header .noReply {
+        color: #ff9700; }
       .comments .commentList .comments__ask .comments__ask__header .del {
         transition: all ease 200ms; }
     .comments .commentList .comments__ask .comments__ask__content {

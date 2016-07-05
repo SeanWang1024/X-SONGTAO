@@ -177,11 +177,13 @@ router.get('/comment/:comment_id', CommentController.getById);
 router.post('/comment', CommentController.add);
 //修改
 router.put('/comment', CommentController.edit);
-//根据文章id查询其评论的数组
+//根据文章id查询其评论的数组(用于详细的文章调取评论接口)
 router.get('/article/comments/:article_id',CommentController.getByArticleId);
-//delete
+//delete(用于后台删除评论)
 router.delete('/comment/:id', CommentController.delete);
 //checkComments
-router.post('/changeCommentState', CommentController.check);
+router.post('/changeCommentReplyState', CommentController.isIReplied);
+//commentToArticleList
+router.get('/commentToArticleList', CommentController.commentToArticle);
 
 module.exports = router;

@@ -4,7 +4,11 @@
 angular.module('xstApp')
 //myInfo的控制器
 
-    .controller('articleCtrl', ['AJAX', 'API', '$scope', '$timeout', '$stateParams', 'marked', '$log', '$q', '$filter', function (AJAX, API, $scope, $timeout, $stateParams, marked, $log, $q, $filter) {
+    .controller('articleCtrl', ['AJAX', 'API', '$scope', '$timeout', '$stateParams', 'marked', '$log', '$q', '$filter', '$rootScope', '$state', function (AJAX, API, $scope, $timeout, $stateParams, marked, $log, $q, $filter, $rootScope, $state) {
+        if (!$rootScope.isLogin) {
+            $state.go('home');
+            return;
+        }
         $scope.selection = [];
 
         //编辑框的句柄
@@ -88,7 +92,7 @@ angular.module('xstApp')
             saveArticle(collectEditedArtInfo()).then(function (data) {
                 $timeout(function () {
                     $scope.isPublishing = false;
-                },1000,true)
+                }, 1000, true)
             })
 
         };
@@ -102,7 +106,7 @@ angular.module('xstApp')
             saveArticle(collectEditedArtInfo()).then(function (data) {
                 $timeout(function () {
                     $scope.isDrafting = false;
-                },1000,true)
+                }, 1000, true)
             })
         }
 
@@ -156,7 +160,7 @@ angular.module('xstApp')
         }
 
         function resizeTextarea() {
-            autoTextarea($TextArea,10);
+            autoTextarea($TextArea, 10);
         }
 
         /**
@@ -228,7 +232,6 @@ angular.module('xstApp')
             addEvent('focus', change);
             change();
         };
-
 
     }]);
 

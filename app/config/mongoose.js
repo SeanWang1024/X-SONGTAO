@@ -14,7 +14,7 @@ module.exports = function () {
     mongoose.model('Users', new mongoose.Schema({
         username: String,//名字
         password: String,//职位
-        is_admin:Boolean,//用户权限组,true:admin组;false:visitor组
+        is_admin: Boolean,//用户权限组,true:admin组;false:visitor组
         login_info: [
             {
                 login_time: Date,//回复时间
@@ -53,13 +53,14 @@ module.exports = function () {
 
 
     //评论数据模型
+    var Schema = mongoose.Schema;
     mongoose.model('Comments', new mongoose.Schema({
         //自动维护
-        article_id: String,//记录此评论所属的文章_id
+        article_id: {type: Schema.Types.ObjectId, ref: 'Articles'},//记录此评论所属的文章_id
         pre_id: String,//钩子的id。即,上一条父记录id,如果没有则为根id->article_id(必须)
         next_id: Array,//沟槽id,即,下一条记录的id,一般是子评论的id。
         //
-        isIReplied:Boolean,//我是否回复过?
+        isIReplied: Boolean,//我是否回复过?
         //
         name: String,//评论人姓名、昵称
         email: String,//评论人邮箱

@@ -7,15 +7,15 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input class="form-control" id="username" type="text" name="username" required placeholder="用户名">
+                        <input class="form-control" id="username" type="text" name="username" ng-model="data.username" placeholder="用户名">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input class="form-control" id="password" type="password" name="password" required placeholder="密码">
+                        <input class="form-control" id="password" type="password" name="password" ng-model="data.password" placeholder="密码">
                     </div>
                 </div>
-                <button id="login" class="btn btn-x-songtao">登陆</button>
+                <button ng-click="loginBtn()" class="btn btn-x-songtao">登陆</button>
             </div>
         </div>
     </div>

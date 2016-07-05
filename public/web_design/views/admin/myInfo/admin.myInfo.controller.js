@@ -3,8 +3,11 @@
  */
 (function () {
     angular.module('xstApp')
-        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification','$timeout', function ($scope, AJAX, API, $log, $verification,$timeout) {
-
+        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state) {
+            if (!$rootScope.isLogin) {
+                $state.go('home');
+                return;
+            }
             //获取我的信息
             AJAX({
                 method: 'get',
@@ -12,14 +15,14 @@
                 success: function (response) {
                     if (parseInt(response.code) === 1) {
                         $scope.myinfo = response.data;
-                        console.log($scope.myinfo);
+                        // console.log($scope.myinfo);
                     }
                 }
             });
 
             //取值
             let changedValue;
-            $scope.setThis =function (value) {
+            $scope.setThis = function (value) {
                 changedValue = value;
             };
             //保存操作
@@ -84,11 +87,11 @@
                             $log.error(response.msg);
                         }
                     },
-                    complete:function () {
+                    complete: function () {
                         $timeout(function () {
                             $scope.myinfo.new_password = null;
                             $scope.textState = 'Submit';
-                        },2000,true)
+                        }, 2000, true)
                     }
                 });
             };

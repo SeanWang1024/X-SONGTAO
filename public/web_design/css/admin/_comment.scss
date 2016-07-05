@@ -70,9 +70,14 @@
         .reply {
           transition: all ease 200ms;
         }
+        .alreadyReply {
+          color: green;
+        }
+        .noReply {
+          color: $base-theme-color-o;
+        }
         .del {
           transition: all ease 200ms;
-
         }
 
       }

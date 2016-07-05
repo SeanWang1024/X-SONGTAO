@@ -78,8 +78,7 @@ module.exports = {
                 res.send({
                     "code": "1",
                     "msg": "login success! please use token to access!",
-                    "token": $base64.encode(`${username}|${password}|${new Date().getTime()}`),
-                    "data": user
+                    "token": $base64.encode(`${username}|${password}|${new Date().getTime()}`)
                 });
             } else {
                 res.status(200);

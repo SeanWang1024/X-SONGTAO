@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="web/css/main.css">
 
 </head>
-<body>
+<body ng-controller="indexController" ng-class="{true:'isLogin',false:''}[isLogin]">
 <!--[if lt IE 10]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
   your browser</a> to improve your experience.</p>
@@ -48,30 +48,30 @@
       <div class="st-leftNav-bottom clearfix">
 
 
-        <span class="st-leftNav-top-each text-overflow hidden" data-toggle="tooltip" data-placement="auto right" title="阅读模式">
-          <i class="fa fa-cogs fa-lg"></i>
-          <span class="hidden-md hidden-lg hidden-xs">阅读模式</span>
-        </span>
+        <!--<span class="st-leftNav-top-each text-overflow hidden" data-toggle="tooltip" data-placement="auto right" title="阅读模式">-->
+          <!--<i class="fa fa-cogs fa-lg"></i>-->
+          <!--<span class="hidden-md hidden-lg hidden-xs">阅读模式</span>-->
+        <!--</span>-->
 
-        <span ui-sref="admin.myInfo" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.myInfo" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
               data-placement="auto right" title="我的信息">
           <i class="fa fa-user fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的信息</span>
         </span>
 
-        <span ui-sref="admin.tags" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.tags" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
                      data-placement="auto right" title="我的标签">
           <i class="fa fa-tag fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的标签</span>
         </span>
 
-        <span ui-sref="admin.articleManager" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.articleManager" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
               data-placement="auto right" title="我的文章">
           <i class="fa fa-list fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的文章</span>
         </span>
 
-        <span ui-sref="admin.comment" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.comment" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
               data-placement="auto right" title="我的评论">
           <i class="fa fa-comments fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的评论</span>
@@ -83,14 +83,14 @@
           <!--<span class="hidden-md hidden-lg hidden-xs">我的图片</span>-->
         <!--</span>-->
 
-        <span class="st-leftNav-top-each text-overflow" data-toggle="tooltip"
+        <span ng-if="isLogin" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="modal" data-target="#logout" data-toggle="tooltip"
               data-placement="auto right" title="退出">
           <i class="fa fa-sign-out fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">退出</span>
         </span>
 
 
-        <span ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip" data-placement="auto right" title="登录">
+        <span  ng-if="!isLogin" ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip" data-placement="auto right" title="登录">
           <i class="fa fa-sign-in fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">登录</span>
         </span>
@@ -149,6 +149,26 @@
       <span></span>
       <small></small>
     </section>
+  </div>
+</div>
+
+<!--退出的弹层-->
+<!--弹出层-删除-->
+<div class="modal fade" id="logout" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-sign-out"></i> 提出提示</h4>
+      </div>
+      <div class="modal-body">
+        <h3 class="text-center deleteConfirmText">确定退出后台管理?</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button"  data-dismiss="modal" ng-click="confirmLogout()" class="btn btn-danger">退出</button>
+      </div>
+    </div>
   </div>
 </div>
 <!--loadingPage end-->

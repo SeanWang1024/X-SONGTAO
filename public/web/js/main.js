@@ -8,11 +8,15 @@
     .factory('API', function () {
         var url = "http://localhost:8088";
         var MY_INFO_ID = '576b95155fce2dfd3874e738';
+        var MY = '我';
+        var EMAIL = '280304286@163.com';
         return {
             /**
              * 用户、登录相关
              * */
             MY_INFO_ID: MY_INFO_ID,
+            MY: MY,
+            EMAIL: EMAIL,
             //登录
             login: url + '/api/login',
             //获取我的信息
@@ -44,6 +48,9 @@
             //新增(如果传入的_id不存在的电话)-修改文章,
             postArt: url + '/api/article',
 
+            //delete 文章
+            deleteArt: url + '/api/article/id',
+
             /**
              * 标签相关
              * */
@@ -65,7 +72,16 @@
              * 获取评论
              * */
             getArticlesComments: url + '/api/article/comments/article_id',
-            changeCommentState: url + '/api/changeCommentState'
+            changeCommentState: url + '/api/changeCommentState',
+
+            getCommentToArticleList: url + '/api/commentToArticleList',
+            postComment: url + '/api/comment',
+
+            //  评论已阅读 post
+            changeCommentReplyState: url + '/api/changeCommentReplyState',
+
+            //    删除评论 delete
+            delComment: url + '/api/comment/id'
 
         };
     }).config(['markedProvider', function (markedProvider) {
@@ -255,15 +271,19 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
 (function () {
     angular.module('xstApp')
     //myInfo的控制器
-    .factory("AJAX", ['$http', function ($http) {
+    .factory("AJAX", ['$http', '$localStorage', function ($http, $localStorage) {
         //获取Token,只是进行get请求和register、login的post请求是不需要token的。
         //登录会能获得token,如果localstorage中存在token信息,则发送时将token携带。
         //这里只是使用localstorage存放数据,古故$localStorage不使用
-
         return function (httpParams) {
-            var authorization = httpParams.method.toLocaleLowerCase() !== 'get' && !!localStorage.authorization ? localStorage.authorization : null;
+            var token = void 0;
+            if (!!$localStorage.authorization && !!$localStorage.authorization.token) {
+                token = $localStorage.authorization.token;
+            } else {
+                token = null;
+            }
             var header = {
-                'authorization': "token " + authorization,
+                'authorization': "token " + token,
                 'Content-Type': 'application/json; charset=utf-8'
             };
             var params = {
@@ -283,9 +303,12 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
             //success
             function (response) {
                 if (parseInt(response.data.code) == 10) {
-                    alert("token问题,请重新登录!");
-                } else {
+                    //做退出操作,token异常
+                    $rootScope.confirmLogout();
+                } else if (parseInt(response.data.code) == 9) {
                     //需要补充,如果code为9,则代表用户没有访问权限,
+                    alert("您代表用户组没有修改权限!");
+                } else {
                     httpParams.success && httpParams.success(response.data);
                 }
             },
@@ -381,334 +404,12 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
  */
 angular.module('xstApp')
 //myInfo的控制器
-.controller('articleListCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
 
-    getArticles();
-    function getArticles() {
-        return AJAX({
-            method: 'get',
-            url: API.getArticleList,
-            success: function success(response) {
-                console.log(response);
-                if (parseInt(response.code) === 1) {
-                    $scope.articleLists = response.data;
-                    console.log($scope.articleLists);
-                }
-            }
-        });
+.controller('articleCtrl', ['AJAX', 'API', '$scope', '$timeout', '$stateParams', 'marked', '$log', '$q', '$filter', '$rootScope', '$state', function (AJAX, API, $scope, $timeout, $stateParams, marked, $log, $q, $filter, $rootScope, $state) {
+    if (!$rootScope.isLogin) {
+        $state.go('home');
+        return;
     }
-
-    //页面中数据写入
-    // $scope.articleLists = response.data.articleLists;
-
-    //页面载入完毕后,激活选中状态
-    // $scope.initTr = function () {
-    //     $("#table tbody tr").click(function () {
-    //         $(this).toggleClass("active").siblings().removeClass("active");
-    //     });
-    // };
-
-    /*
-     * 数据更新时,查找所有内容,之后自动刷新列表
-     * */
-    // function refreshArticleList() {
-    //     $http.get('/admin/api/article')
-    //         .success(function (response) {
-    //             console.log('article,refreshArticleList');
-    //             console.log(response);
-    //             $scope.articleLists = response.articleLists;
-    //         });
-    // }
-
-    /*
-     * 模态框弹出
-     * */
-    // $('#articleModal').modal({
-    //     //需要点击才能弹出
-    //     show: false,
-    //     //背景变黑但是不弹出来
-    //     backdrop: 'static'
-    // });
-
-    //文本输入
-    // var toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'];
-    // var editor = new Simditor({
-    //     textarea: $('#articleContent'),
-    //     toolbar: toolbar
-    // });
-
-    /*
-     * 请求后台更新tags的内容并写入,写入完毕后初始化#multTags->多选tags按钮
-     * */
-    // $http.get("api/tags")
-    //     .success(function (res) {
-    //         //console.log(res)
-    //         //数据写入
-    //         $scope.tagLists = res.tagLists;
-    //
-    //         /*
-    //          * 初始化多选tags->标签
-    //          * 点击多选的时候判断分类名的情况,如果是lifestyle,则显示他的tags
-    //          * 当分类名变化是,刷新tags的选中状态
-    //          * */
-    //         $timeout(function () {
-    //             $('#multTags').multiselect({
-    //                 onDropdownShow: function (event) {
-    //                     var $catName = $("#catName");
-    //                     //$('#multTags option:selected').each(function () {
-    //                     //    $(this).prop('selected', false);
-    //                     //});
-    //                     //当前的值
-    //                     var value = $catName.val();
-    //                     var selectLi = $(".multiselect-container").find("li");
-    //                     var selectLiLength = $(".multiselect-container").find("li").length;
-    //                     var lifeStyleLength = $('#LifeStyleOptGroup').find("option").length;
-    //                     var frontEndLength = $('#FrontEndOptGroup').find("option").length;
-    //                     if (value == 'FrontEnd') {
-    //                         //上面的是lifeStyle
-    //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
-    //                             selectLi.eq(i).css("display", "none");
-    //                         }
-    //                         //下面的是front-end
-    //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-    //                             selectLi.eq(i).css("display", "block");
-    //                         }
-    //                     }//lifeStyleLength
-    //                     else if (value == 'LifeStyle') {
-    //                         //上面的是lifeStyle
-    //                         for (var i = 0; lifeStyleLength + 1 > i; i++) {
-    //                             selectLi.eq(i).css("display", "block");
-    //                         }
-    //                         //下面的是front-end
-    //                         for (var i = lifeStyleLength + 1; selectLiLength > i; i++) {
-    //                             selectLi.eq(i).css("display", "none");
-    //                         }
-    //                     }
-    //                     //$('#multTags').multiselect('refresh');
-    //                 }
-    //             });
-    //             //分类名改变时,刷新下面的标签
-    //             $("#catName").change(function () {
-    //                 $('#multTags option:selected').each(function () {
-    //                     $(this).prop('selected', false);
-    //                 });
-    //                 $('#multTags').multiselect('refresh');
-    //             });
-    //         }, 0, false);
-    //     });
-
-    /*
-     * 获得今天的时间
-     * 当点击"今天",将今天的日期写入input内
-     * */
-    var dateNow = new Date();
-    var year = dateNow.getFullYear();
-    var month = dateNow.getMonth() + 1;
-    var date = dateNow.getDate();
-    if (month < 10) {
-        month = '0' + month;
-    }
-    if (date < 10) {
-        date = '0' + date;
-    }
-    //2016-02-27
-    var dateNowFormat = year + "-" + month + "-" + date;
-    console.log(dateNowFormat);
-    $("#setToday").click(function () {
-        $("#time").val(dateNowFormat);
-    });
-
-    /*
-     * ISO时间转化为input-date能识别的时间 -> 2016-02-28
-     * */
-    function ISODate2Input(iso) {
-        return iso.substr(0, 10);
-    }
-
-    /*
-     * 数据提取 草稿--发布
-     * */
-    $(".submit").click(function () {
-        //为空判断
-        var title = document.getElementById('title').value;
-        var time = document.getElementById('time').value;
-        if (title == '' || time == '') {
-            alert("标题和时间是必填选项");
-            return;
-        }
-
-        var state;
-        //判断是草稿还是发表
-        if (this.id == 'publish') {
-            state = true;
-        } else if (this.id == 'draft') {
-            state = false;
-        }
-        var data = {
-            title: title,
-            time: time,
-            catalogueName: document.getElementById('catName').value,
-            articleType: document.getElementById('artType').value,
-            tags: $("#multTags").val(),
-            state: state
-        };
-
-        //判断是"修改"还是"新增"
-        // content: editor.getValue()
-        var articleId = document.getElementById('articleId').value;
-        if (!articleId) {
-            //无id值,则是"新增"
-            $http.post("admin/api/article/add", data).success(function (res) {
-                //alert("新增成功")
-                $('#articleModal').modal('hide');
-                //刷新articleList
-                refreshArticleList();
-            });
-        } else {
-            //有id值,则是"修改"
-            $http.post("admin/api/article/" + articleId, data).success(function (res) {
-                //alert("修改成功")
-                $('#articleModal').modal('hide');
-                //刷新articleList
-                refreshArticleList();
-            });
-        }
-    });
-
-    /*
-     * 修改按钮
-     * */
-    $("#editArticle").click(function () {
-        //清除modal之前的残留
-        cleanModal();
-        //得到当前点击的row id
-        var id = $("#table").find(".active").children().eq(0).text();
-        if (!id) {
-            alert("修改请先选择");
-            return;
-        }
-        //显示之后将数据写入modal中,只进行当前这次
-        $('#articleModal').one('show.bs.modal', function (e) {
-            $http.get("admin/api/article/" + id).success(function (res) {
-                //console.log('//显示之后将数据写入modal中')
-                //console.log(res)
-                //数据写入modal中
-                document.getElementById('articleId').value = res._id;
-                document.getElementById('title').value = res.title;
-                //input的输入框需要2016-02-02这样的数据
-                document.getElementById('time').value = ISODate2Input(res.time);
-                document.getElementById('catName').value = res.catalogueName;
-                document.getElementById('artType').value = res.articleType;
-                // $('#multTags').multiselect('select', res.tags);
-                // editor.setValue(res.content);
-            });
-        });
-        //显示modal
-        $('#articleModal').modal('show');
-    });
-
-    /*
-     * 添加按钮
-     * */
-    $("#addArticle").click(function () {
-        //清除modal之前的残留
-        cleanModal();
-        $('#articleModal').modal('show');
-    });
-
-    /*
-     * 删除按钮
-     * */
-    $("#deleteArticle").click(function () {
-        var id = $("#table").find(".active").children().eq(0).text();
-        if (id == '' || id == null) {
-            alert("删除前请选择");
-            return;
-        }
-        $http.delete("admin/api/article/" + id).success(function (res) {
-            //刷新列表
-            refreshArticleList();
-        });
-    });
-
-    /*
-     * modal内容清除
-     * */
-    function cleanModal() {
-        document.getElementById('articleId').value = '';
-        document.getElementById('title').value = '';
-        document.getElementById('time').value = '';
-        document.getElementById('catName').value = 'LifeStyle';
-        document.getElementById('artType').value = undefined;
-        //清空tag的选项
-        $('#multTags option:selected').each(function () {
-            $(this).prop('selected', false);
-        });
-        // $('#multTags').multiselect('refresh');
-        // editor.setValue('');
-    }
-}]);
-
-/**
- * Created by xiangsongtao on 16/2/22.
- */
-angular.module('xstApp')
-//myInfo的控制器
-.controller('commentCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
-
-    /*
-     * 写入页面信息
-     */
-    getTags();
-    function getTags() {
-        return AJAX({
-            method: 'get',
-            url: API.getTagsList,
-            success: function success(response) {
-                console.log(response);
-                if (parseInt(response.code) === 1) {
-                    $scope.tagLists = response.data;
-                    console.log($scope.tagLists);
-                }
-            }
-        });
-    }
-
-    //进行评论
-    $scope.isSubmitReply = false;
-    $scope.comment = function (item, $event) {
-        var target = $($event.currentTarget).parents('.comments__ask');
-        target.siblings().removeClass('isReply');
-        target.toggleClass('isReply');
-    };
-    $scope.commentThis = function ($event) {
-        $scope.isSubmitReply = true;
-
-        //进行评论的逻辑处理
-
-        $timeout(function () {
-            $scope.isSubmitReply = false;
-            $($event.currentTarget).parents('.comments__ask').toggleClass('isReply');
-        }, 1000, true);
-    };
-
-    //    删除评论
-    var delCommId = void 0;
-    $scope.delbtn = function (id) {
-        delCommId = id;
-    };
-    $scope.confirmDelCommBtn = function () {
-        console.log('delete:' + delCommId);
-    };
-}]);
-
-/**
- * Created by xiangsongtao on 16/2/22.
- */
-angular.module('xstApp')
-//myInfo的控制器
-
-.controller('articleCtrl', ['AJAX', 'API', '$scope', '$timeout', '$stateParams', 'marked', '$log', '$q', '$filter', function (AJAX, API, $scope, $timeout, $stateParams, marked, $log, $q, $filter) {
     $scope.selection = [];
 
     //编辑框的句柄
@@ -948,11 +649,187 @@ angular.module('xstApp')
 }]);
 
 /**
+ * Created by xiangsongtao on 16/2/22.
+ */
+angular.module('xstApp')
+//myInfo的控制器
+.controller('articleListCtrl', ['AJAX', 'API', '$scope', '$log', '$rootScope', '$state', function (AJAX, API, $scope, $log, $rootScope, $state) {
+    if (!$rootScope.isLogin) {
+        $state.go('home');
+        return;
+    }
+    getArticles();
+    function getArticles() {
+        return AJAX({
+            method: 'get',
+            url: API.getArticleList,
+            success: function success(response) {
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.articleLists = response.data;
+                    // console.log($scope.articleLists);
+                }
+            }
+        });
+    }
+
+    var deleteArticleId = void 0;
+    $scope.delArtBtn = function (_id) {
+        deleteArticleId = _id;
+    };
+    $scope.confirmDelArtBtn = function () {
+        AJAX({
+            method: 'delete',
+            url: API.deleteArt.replace('id', deleteArticleId),
+            success: function success(response) {
+                // console.log('response');
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    // $scope.commentList = response.data;
+                    // console.log(response.data);
+                    //刷新文章列表
+                    getArticles();
+                }
+            }
+        });
+    };
+}]);
+
+/**
+ * Created by xiangsongtao on 16/2/22.
+ */
+angular.module('xstApp')
+//myInfo的控制器
+.controller('commentCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', '$rootScope', '$state', function (AJAX, API, $scope, $log, $timeout, $rootScope, $state) {
+
+    if (!$rootScope.isLogin) {
+        $state.go('home');
+        return;
+    }
+    /*
+     * 写入页面信息
+     */
+    getComments();
+    function getComments() {
+        return AJAX({
+            method: 'get',
+            url: API.getCommentToArticleList,
+            success: function success(response) {
+                // console.log('response');
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.commentList = response.data;
+                    // console.log($scope.commentList);
+                }
+            }
+        });
+    }
+
+    //进行评论
+    $scope.isSubmitReply = false;
+    //评论的内容
+    $scope.comment_info = {
+        content: ''
+    };
+    $scope.comment = function (item, $event) {
+        var target = $($event.currentTarget).parents('.comments__ask');
+        target.siblings().removeClass('isReply');
+        target.toggleClass('isReply');
+    };
+    $scope.commentThis = function ($event, item) {
+        $scope.isSubmitReply = true;
+
+        //进行评论的逻辑处理,我对此的评论
+        // console.log($scope.comment_info.content)
+        var params = {
+            article_id: item.article_id._id,
+            pre_id: item._id,
+            next_id: [],
+            name: "我",
+            email: "280304286@163.com",
+            time: new Date(),
+            content: $scope.comment_info.content,
+            isIReplied: true,
+            state: true
+        };
+        // console.log(params)
+        AJAX({
+            method: 'post',
+            url: API.postComment,
+            data: params,
+            success: function success(response) {
+                // console.log('response');
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    // $scope.commentList = response.data;
+                    // console.log(response.data);
+                    changeCommentReplyState(item._id);
+                }
+            }
+        });
+
+        $timeout(function () {
+            $scope.isSubmitReply = false;
+            $($event.currentTarget).parents('.comments__ask').toggleClass('isReply');
+        }, 1000, true);
+    };
+
+    //    删除评论
+    var delCommId = void 0;
+    $scope.delbtn = function (id) {
+        delCommId = id;
+    };
+    $scope.confirmDelCommBtn = function () {
+        // console.log('delete:' + delCommId);
+        AJAX({
+            method: 'delete',
+            url: API.delComment.replace('id', delCommId),
+            success: function success(response) {
+                // console.log('response');
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    // $scope.commentList = response.data;
+                    // console.log(response.data);
+                    //刷新文章列表
+                    getComments();
+                }
+            }
+        });
+    };
+
+    //如果对用户的文章评论进行了评论,则标记此评论为已阅读
+    function changeCommentReplyState(_id) {
+        var params = {
+            _id: _id,
+            isIReplied: true
+        };
+        return AJAX({
+            method: 'post',
+            url: API.changeCommentReplyState,
+            data: params,
+            success: function success(response) {
+                // console.log('response');
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    // $scope.commentList = response.data;
+                    // console.log(response.data);
+                    //刷新文章列表
+                    getComments();
+                }
+            }
+        });
+    }
+}]);
+
+/**
  * Created by xiangsongtao on 16/6/29.
  */
 (function () {
-    angular.module('xstApp').controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', function ($scope, AJAX, API, $log, $verification, $timeout) {
-
+    angular.module('xstApp').controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state) {
+        if (!$rootScope.isLogin) {
+            $state.go('home');
+            return;
+        }
         //获取我的信息
         AJAX({
             method: 'get',
@@ -960,7 +837,7 @@ angular.module('xstApp')
             success: function success(response) {
                 if (parseInt(response.code) === 1) {
                     $scope.myinfo = response.data;
-                    console.log($scope.myinfo);
+                    // console.log($scope.myinfo);
                 }
             }
         });
@@ -1068,8 +945,11 @@ angular.module('xstApp')
  */
 angular.module('xstApp')
 //myInfo的控制器
-.controller('tagsCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', function (AJAX, API, $scope, $log, $timeout) {
-
+.controller('tagsCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', '$rootScope', '$state', function (AJAX, API, $scope, $log, $timeout, $rootScope, $state) {
+    if (!$rootScope.isLogin) {
+        $state.go('home');
+        return;
+    }
     /*
      * 写入页面信息
      */
@@ -1270,31 +1150,58 @@ angular.module('xstApp')
 (function () {
     angular.module('xstApp')
     //登陆控制器
-    .controller('loginController', ['$scope', '$http', 'API', function ($scope, $http, API) {
-        console.log(API.login);
-
-        $("#login").click(function () {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-
-            var data = {
-                username: username,
-                password: password
+    .controller('loginController', ['$scope', 'AJAX', 'API', '$localStorage', '$rootScope', '$state', function ($scope, AJAX, API, $localStorage, $rootScope, $state) {
+        if ($rootScope.isLogin) {
+            $state.go('home');
+        } else {
+            $scope.data = {
+                username: '',
+                password: ''
             };
-            if (username == '' || password == '') {
-                alert("用户名/密码不能为空");
-                return false;
-            }
-            $http.post(API.login, data).success(function (response) {
-                if (parseInt(response.code) === 1) {
-                    //login success
-                    window.location.href = '/admin/' + response.token;
-                } else {
-                    //login error
-                    alert("用户名/密码错误");
+            $scope.loginBtn = function () {
+                if (!$scope.data.username) {
+                    alert('请输入用户名');
+                    return;
                 }
-            });
-        });
+                if (!$scope.data.password) {
+                    alert('请输入用户名');
+                    return;
+                }
+                AJAX({
+                    method: 'post',
+                    url: API.login,
+                    data: $scope.data,
+                    success: function success(response) {
+                        if (parseInt(response.code) === 1) {
+                            //权限信息
+                            $localStorage.authorization = {
+                                token: response.token,
+                                time: new Date().getTime()
+                            };
+                            //我进行评论的信息
+                            $localStorage.commentAuth = {
+                                "commentUsername": API.MY,
+                                "commentEmail": API.EMAIL
+                            };
+                            $rootScope.isLogin = true;
+                            $state.go('home');
+                        } else {
+                            switch (parseInt(response.code)) {
+                                case 2:
+                                    alert("用户名或密码错误,请再检查!");
+                                    break;
+                                default:
+                                    alert("系统错误!");
+                                    break;
+                            }
+                        }
+                    },
+                    error: function error() {
+                        alert("系统错误!");
+                    }
+                });
+            };
+        }
     }]);
 })();
 /**
@@ -1464,6 +1371,32 @@ angular.module('xstApp')
                 $scope.articleLists = response.data;
             }
         }).error(function (erroInfo, status) {});
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/7/4.
+ */
+(function () {
+    angular.module('xstApp')
+    //主页
+    .controller('indexController', ['$scope', '$rootScope', '$localStorage', '$state', function ($scope, $rootScope, $localStorage, $state) {
+        //初始化
+        $rootScope.isLogin = false;
+
+        $rootScope.confirmLogout = function () {
+            $localStorage.$reset();
+            $rootScope.isLogin = false;
+            $state.go('home');
+        };
+
+        //    进入检查是否有token,是否能直接登录
+        if (!!$localStorage.authorization) {
+            var time = parseInt($localStorage.authorization.time);
+            if (new Date().getTime() - time < 1000 * 60 * 60 * 2) {
+                //token有效,能进入
+                $rootScope.isLogin = true;
+            }
+        }
     }]);
 })();
 'use strict';

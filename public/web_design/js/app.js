@@ -8,11 +8,15 @@
         .factory('API', function () {
             const url = "http://localhost:8088";
             const MY_INFO_ID = '576b95155fce2dfd3874e738';
+            const MY = '我';
+            const EMAIL = '280304286@163.com';
             return {
                 /**
                  * 用户、登录相关
                  * */
                 MY_INFO_ID: MY_INFO_ID,
+                MY: MY,
+                EMAIL: EMAIL,
                 //登录
                 login: `${url}/api/login`,
                 //获取我的信息
@@ -44,6 +48,9 @@
                 //新增(如果传入的_id不存在的电话)-修改文章,
                 postArt: `${url}/api/article`,
 
+                //delete 文章
+                deleteArt:`${url}/api/article/id`,
+
                 /**
                  * 标签相关
                  * */
@@ -67,6 +74,18 @@
                  * */
                 getArticlesComments: `${url}/api/article/comments/article_id`,
                 changeCommentState: `${url}/api/changeCommentState`,
+
+                getCommentToArticleList: `${url}/api/commentToArticleList`,
+                postComment: `${url}/api/comment`,
+
+                 //  评论已阅读 post
+                changeCommentReplyState:`${url}/api/changeCommentReplyState`,
+
+            //    删除评论 delete
+                delComment:`${url}/api/comment/id`,
+
+
+
 
             }
 

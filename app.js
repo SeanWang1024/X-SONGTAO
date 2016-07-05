@@ -4,6 +4,7 @@ let favicon = require('serve-favicon');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
+// let res_api = require('res.api');
 
 // 引入 mongoose 配置文件,执行配置文件中的函数，以实现数据库的配置和 Model 的创建等
 let mongoose = require('./app/config/mongoose.js');
@@ -22,6 +23,7 @@ app.set('view engine', 'hbs');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(res_api);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -10,7 +10,7 @@ let Articles = mongoose.model('Articles');
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 
 module.exports = {
-    getAll:  function (req, res, next) {
+    getAll: function (req, res, next) {
         Comments.find({}, function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
@@ -68,7 +68,7 @@ module.exports = {
             }
             if (!!comment) {
                 CommentsArr.push(comment);
-                if (comment.article_id === comment.pre_id && comment.next_id.length > 0) {
+                if (comment.article_id.toString() === comment.pre_id.toString() && comment.next_id.length > 0) {
                     //在这个情况下,next_id是可能有值的。
                     getCommentDetail(comment.next_id).then(function () {
                         res.status(200);
@@ -134,7 +134,7 @@ module.exports = {
             }
         });
     },
-    delete:function (req, res, next) {
+    delete: function (req, res, next) {
         //更新文章
         function refreshArticle(comment) {
             return new Promise(function (resolve, reject) {
@@ -144,7 +144,7 @@ module.exports = {
                     }
 
                     if (!!article) {
-                        if (comment.article_id === comment.pre_id) {
+                        if (comment.article_id.toString() === comment.pre_id.toString()) {
                             //删除主评论时,统计下面子评论数
                             let deleteNum = comment.next_id.length + 1;
                             if (article.comment_num > deleteNum) {
@@ -168,7 +168,7 @@ module.exports = {
         //更新评论,
         function refreshComment(comment) {
             return new Promise(function (resolve, reject) {
-                if (comment.article_id === comment.pre_id) {
+                if (comment.article_id.toString() === comment.pre_id.toString()) {
                     //更新的评论是父评论,需要将手下的字评论删除
                     for (let child_comment_id of comment.next_id) {
                         Comments.remove({_id: child_comment_id});
@@ -179,14 +179,12 @@ module.exports = {
                         if (err) {
                             reject();
                         }
-                        if (!!preComment && preComment.article_id === preComment.pre_id) {
+                        if (!!preComment && preComment.article_id.toString() === preComment.pre_id.toString()) {
                             //更新的是子评论,需要到父级去除自己的信息
                             preComment.next_id.splice(preComment.next_id.indexOf(comment._id), 1);
                             preComment.save();
-                            resolve();
-                        } else {
-                            reject();
                         }
+                        resolve();
                     })
                 }
 
@@ -231,7 +229,7 @@ module.exports = {
         });
 
     },
-    getByArticleId:function (req, res, next) {
+    getByArticleId: function (req, res, next) {
         let CommentsArr = [];
         Comments.find({article_id: req.params.article_id}, function (err, comments) {
             if (err) {
@@ -239,7 +237,7 @@ module.exports = {
                 return next();
             }
             for (let comment of comments) {
-                if (comment.article_id === comment.pre_id) {
+                if (comment.article_id.toString() === comment.pre_id.toString()) {
                     //根评论
                     let tpl = [];
                     tpl.push(comment);
@@ -263,7 +261,7 @@ module.exports = {
         })
     },
     add: function (req, res, next) {
-        let {article_id, pre_id, next_id, name, email, time, content, ip, state} =  req.body;
+        let {article_id, pre_id, next_id, name, email, time, content, ip,isIReplied, state} =  req.body;
         let comment = new Comments({
             article_id,
             pre_id,
@@ -273,6 +271,7 @@ module.exports = {
             time,
             content,
             ip,
+            isIReplied,
             state
         });
 
@@ -300,7 +299,7 @@ module.exports = {
                     if (err) {
                         reject();
                     }
-                    if (!!preComment && preComment.article_id === preComment.pre_id) {
+                    if (!!preComment && preComment.article_id.toString() === preComment.pre_id.toString()) {
                         //对根评论进行修改
                         preComment.next_id.push(comment._id);
                         //当前子评论关闭子子评论
@@ -317,7 +316,9 @@ module.exports = {
         refreshArticle(article_id).then(function () {
             //保存评论
             comment.save();
-            if (comment.article_id !== comment.pre_id) {
+            console.log(comment.article_id)
+            console.log(comment.pre_id)
+            if (comment.article_id.toString() !== comment.pre_id.toString()) {
                 //对评论进行跟评
                 refreshPreComment(comment).then(function () {
                     res.status(200);
@@ -349,32 +350,49 @@ module.exports = {
             });
         });
     },
-    check:function (req,res,next) {
+    isIReplied: function (req, res, next) {
         Comments.findOne({_id: req.body._id}, function (err, comment) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
             if (!!comment) {
-                let {state} = req.body;
+                let {isIReplied} = req.body;
                 //数据写入并保存
-                comment.state = !!state;
+                comment.isIReplied = isIReplied;
                 //保存
                 comment.save();
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "comment check success!",
+                    "msg": "comment isIReplied change success!",
                     "data": comment
                 });
             } else {
                 res.status(200);
                 res.send({
                     "code": "2",
-                    "msg": "comment check failure, comment non-exist!"
+                    "msg": "comment isIReplied change failure, comment non-exist!"
                 });
             }
         });
+    },
+    commentToArticle: function (req, res, next) {
+        Comments.$where('this.article_id == this.pre_id')
+            .where('isIReplied',false)
+            .populate({
+                path: "article_id",
+                select: {title: 1},
+            })
+            .exec(function (err, commentList) {
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "comment to articles list get success!",
+                    "data": commentList
+                })
+
+            })
     }
 };
 
