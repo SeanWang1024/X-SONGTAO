@@ -58,7 +58,9 @@ module.exports = function () {
         //自动维护
         article_id: {type: Schema.Types.ObjectId, ref: 'Articles'},//记录此评论所属的文章_id
         pre_id: String,//钩子的id。即,上一条父记录id,如果没有则为根id->article_id(必须)
-        next_id: Array,//沟槽id,即,下一条记录的id,一般是子评论的id。
+        next_id: [{
+            type: Schema.Types.ObjectId, ref: 'Comments'
+        }],//沟槽id,即,下一条记录的id,一般是子评论的id。
         //
         isIReplied: Boolean,//我是否回复过?
         //

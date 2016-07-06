@@ -1,11 +1,13 @@
 'use strict';
 
 (function () {
-    angular.module('xstApp', ['ui.router', 'ngStorage', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
+    angular.module('xstApp', ['ui.router', 'ngStorage', 'hc.marked', 'btorfs.multiselect', 'angularMoment', 'ng-bs3-datepicker'])
     /**
      * 配置文件
      * */
-    .factory('API', function () {
+    .run(function (amMoment) {
+        amMoment.changeLocale('Zh-cn');
+    }).factory('API', function () {
         var url = "http://localhost:8088";
         var MY_INFO_ID = '576b95155fce2dfd3874e738';
         var MY = '我';
@@ -81,7 +83,10 @@
             changeCommentReplyState: url + '/api/changeCommentReplyState',
 
             //    删除评论 delete
-            delComment: url + '/api/comment/id'
+            delComment: url + '/api/comment/id',
+
+            //    新增评论
+            newComment: url + '/api/comment'
 
         };
     }).config(['markedProvider', function (markedProvider) {
@@ -271,7 +276,7 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
 (function () {
     angular.module('xstApp')
     //myInfo的控制器
-    .factory("AJAX", ['$http', '$localStorage', function ($http, $localStorage) {
+    .factory("AJAX", ['$http', '$localStorage', '$rootScope', function ($http, $localStorage, $rootScope) {
         //获取Token,只是进行get请求和register、login的post请求是不需要token的。
         //登录会能获得token,如果localstorage中存在token信息,则发送时将token携带。
         //这里只是使用localstorage存放数据,古故$localStorage不使用
@@ -1209,115 +1214,6 @@ angular.module('xstApp')
  */
 (function () {
     angular.module('xstApp')
-    //Detail控制器-catalogueName-type-id
-    .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, $http, API, $localStorage, $timeout) {
-
-        //评论人的信息
-        $scope.commentUsername;
-        $scope.commentEmail;
-        //对文章进行评论的input
-        $scope.commentToArt;
-        //对评论进行评论的input内容
-        $scope.commentToComment;
-
-        var url = API.getArticleById.replace('id', $stateParams.id);
-        $http.get(url).success(function (response) {
-            console.log(response);
-            if (parseInt(response.code) === 1) {
-                $scope.article = response.data;
-                //获取评论
-                var url = API.getArticlesComments.replace('article_id', $scope.article._id);
-                $http.get(url).success(function (response) {
-                    console.log('-----response------');
-                    console.log(response);
-                    if (parseInt(response.code) === 1) {
-                        $scope.comment = response.data;
-                    }
-                });
-            }
-        }).error(function (erroInfo, status) {});
-
-        //点击回复按钮触发动作
-        $scope.commentThisArtBtn = function (commentInfo) {
-
-            commentInfo = {
-                "_id": "57739bccdc24e834188f2eef",
-                "article_id": "576ec5284165e58703cf7246",
-                "pre_id": "576ec5284165e58703cf7246",
-                "name": "22222222",
-                "email": "12@123.com",
-                "time": "2009-01-17T19:57:02.222Z",
-                "content": "576e5920e093fcd80d2af658-增加主评论1",
-                "ip": "12.123.123.123",
-                "state": false,
-                "__v": 0,
-                "next_id": []
-            };
-            //如果有论人的信息,则不显示输入框
-            if (!!$scope.commentUsername && !!$scope.commentEmail) {
-                $scope.canComment = true;
-                $localStorage.commentAuth = {
-                    commentUsername: $scope.commentUsername,
-                    commentEmail: $scope.commentEmail
-                };
-            }
-            var content = commentInfo.article_id.toString() === commentInfo.pre_id.toString() ? $scope.commentToArt : $scope.commentToComment;
-            if (!content) {
-                return false;
-            }
-
-            var params = {
-                article_id: commentInfo.article_id,
-                pre_id: commentInfo.pre_id,
-                next_id: [],
-                name: $scope.commentUsername,
-                email: $scope.commentEmail,
-                time: new Date(),
-                content: content,
-                state: true
-            };
-
-            console.log('评论内容:');
-            console.log(params);
-
-            //send
-            $timeout(function () {
-                $scope.commentToArt = '';
-                $scope.commentToComment = '';
-                //    对评论的评论回复还需要隐藏评论框
-                $('.comments__reply').removeClass('active');
-            }, 2000, true);
-        };
-
-        //自评论点击回复按钮
-        $scope.commentToComemntBtn = function ($event) {
-            var $this = $($event.currentTarget).parents('.comments__ask').next('.comments__reply');
-            $('.comments__reply').not($this).removeClass('active');
-            $this.toggleClass('active');
-        };
-
-        //判断是否能评论
-        $scope.canComment = canComment();
-        function canComment() {
-            if (!!$localStorage.commentAuth) {
-                if ($scope.commentUsername && $scope.commentEmail) {
-                    return true;
-                } else {
-                    $scope.commentUsername = $localStorage.commentAuth.commentUsername;
-                    $scope.commentEmail = $localStorage.commentAuth.commentEmail;
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
     //ArticleList控制器
     .controller('ArticleListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
         var url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
@@ -1371,6 +1267,183 @@ angular.module('xstApp')
                 $scope.articleLists = response.data;
             }
         }).error(function (erroInfo, status) {});
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //Detail控制器-catalogueName-type-id
+    .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, AJAX, API, $localStorage, $timeout) {
+
+        //评论人的信息
+        $scope.commentUsername;
+        $scope.commentEmail;
+        //对文章进行评论的input
+        $scope.commentToArt;
+        //对评论进行评论的input内容
+        $scope.commentToComment;
+
+        AJAX({
+            method: 'get',
+            url: API.getArticleById.replace('id', $stateParams.id),
+            success: function success(response) {
+                console.log(response);
+                if (parseInt(response.code) === 1) {
+                    $scope.article = response.data;
+                    getCommentList($scope.article._id);
+                }
+            },
+            error: function error(err) {}
+        });
+
+        //点击回复按钮触发动作
+        $scope.commentThisArtBtn = function (commentInfo) {
+
+            console.log('commentInfo');
+            console.log(commentInfo);
+            //如果有论人的信息,则不显示输入框
+            if (!!$scope.commentUsername && !!$scope.commentEmail) {
+                $scope.canComment = true;
+                $localStorage.commentAuth = {
+                    commentUsername: $scope.commentUsername,
+                    commentEmail: $scope.commentEmail
+                };
+            }
+
+            if (!$scope.commentToArt) {
+                alert("评论内容不能为空");
+                return false;
+            }
+
+            var params = {
+                article_id: commentInfo._id,
+                pre_id: commentInfo._id,
+                next_id: [],
+                name: $scope.commentUsername,
+                email: $scope.commentEmail,
+                time: new Date(),
+                content: $scope.commentToArt,
+                state: true,
+                isIReplied: false
+            };
+
+            //send
+            AJAX({
+                method: 'post',
+                url: API.newComment,
+                data: params,
+                success: function success(response) {
+                    console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        console.log("评论成功@@@!!!!");
+                        $scope.commentToArt = '';
+                        $scope.commentToComment = '';
+                        //    对评论的评论回复还需要隐藏评论框
+                        $('.comments__reply').removeClass('active');
+
+                        //刷新
+                        getCommentList(commentInfo._id);
+                    }
+                },
+                error: function error(err) {}
+            });
+        };
+
+        $scope.$watch('commentToComment', function () {
+            console.log($scope.commentToComment);
+        });
+        //对评论进行评论
+        $scope.commentThisCommentBtn = function (commentInfo, content) {
+            // $scope.$apply();
+
+            console.log('commentInfo');
+            console.log(commentInfo + "--" + content);
+            //如果有论人的信息,则不显示输入框
+            if (!!$scope.commentUsername && !!$scope.commentEmail) {
+                $scope.canComment = true;
+                $localStorage.commentAuth = {
+                    commentUsername: $scope.commentUsername,
+                    commentEmail: $scope.commentEmail
+                };
+            }
+
+            if (!content) {
+                alert("评论内容不能为空");
+                return false;
+            }
+
+            var params = {
+                article_id: commentInfo.article_id,
+                pre_id: commentInfo._id,
+                next_id: [],
+                name: $scope.commentUsername,
+                email: $scope.commentEmail,
+                time: new Date(),
+                content: content,
+                state: true,
+                isIReplied: false
+            };
+
+            //send
+            AJAX({
+                method: 'post',
+                url: API.newComment,
+                data: params,
+                success: function success(response) {
+                    console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        console.log("评论成功@@@!!!!");
+                        $scope.commentToComment = '';
+                        //    对评论的评论回复还需要隐藏评论框
+                        $('.comments__reply').removeClass('active');
+
+                        //刷新
+                        getCommentList(commentInfo.article_id);
+                    }
+                },
+                error: function error(err) {}
+            });
+        };
+
+        //自评论点击回复按钮
+        $scope.commentToComemntBtn = function ($event) {
+            var $this = $($event.currentTarget).parents('.comments__ask').next('.comments__reply');
+            $('.comments__reply').not($this).removeClass('active');
+            $this.toggleClass('active');
+        };
+
+        //判断是否能评论
+        $scope.canComment = canComment();
+        function canComment() {
+            if (!!$localStorage.commentAuth) {
+                if ($scope.commentUsername && $scope.commentEmail) {
+                    return true;
+                } else {
+                    $scope.commentUsername = $localStorage.commentAuth.commentUsername;
+                    $scope.commentEmail = $localStorage.commentAuth.commentEmail;
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        function getCommentList(id) {
+            //获取评论
+            return AJAX({
+                method: 'get',
+                url: API.getArticlesComments.replace('article_id', id),
+                success: function success(response) {
+                    console.log('-----response------');
+                    console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        $scope.commentList = response.data;
+                    }
+                }
+            });
+        }
     }]);
 })();
 /**

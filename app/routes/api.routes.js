@@ -33,7 +33,7 @@ let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 router.all('*', function (req, res, next) {
     let method = req.method.toLocaleLowerCase();
     let path = req.path.toString();
-    if (method === 'get' || path.includes('register') || path.includes('login')|| path.includes('upload')) {
+    if (method === 'get' || path.includes('register') || path.includes('login')|| path.includes('upload')|| path.includes('comment')) {
         return next();
     } else {
         let authorization = req.get("authorization");
@@ -175,7 +175,7 @@ router.get('/comment/:comment_id', CommentController.getById);
 //评论的文章的评论数++
 //对评论进行评论的将前评论的next_id中新增自评论_id
 router.post('/comment', CommentController.add);
-//修改
+//修改,基本不用
 router.put('/comment', CommentController.edit);
 //根据文章id查询其评论的数组(用于详细的文章调取评论接口)
 router.get('/article/comments/:article_id',CommentController.getByArticleId);

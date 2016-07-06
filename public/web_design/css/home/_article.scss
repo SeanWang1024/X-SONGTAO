@@ -228,11 +228,17 @@
       .comments__reply {
         padding-left: 80px;
         .commentBox__question{
-          display: none;
+          display: block;
+          height:0;
+          opacity: 0;
+          overflow: hidden;
         }
         &.active{
           .commentBox__question{
             display: block;
+            height:auto;
+            opacity: 1;
+            overflow: visible;
           }
         }
         .comments__reply__each {

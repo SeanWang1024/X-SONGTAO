@@ -160,6 +160,7 @@ gulp.task('js:common', function () {
         `${PATH.SRC}/lib/moment.js`,
         `${PATH.SRC}/lib/moment-with-locales.js`,
         `${PATH.SRC}/lib/ngStorage.min.js`,
+        `${PATH.SRC}/lib/angular-moment.js`,
     ]).pipe($.concat('common.js'));
     switch (ENV) {
         case 'DEV':

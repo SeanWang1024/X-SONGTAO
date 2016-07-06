@@ -1249,9 +1249,15 @@ body {
       .commentbox .commentbox__inner .comments .comments__reply {
         padding-left: 80px; }
         .commentbox .commentbox__inner .comments .comments__reply .commentBox__question {
-          display: none; }
+          display: block;
+          height: 0;
+          opacity: 0;
+          overflow: hidden; }
         .commentbox .commentbox__inner .comments .comments__reply.active .commentBox__question {
-          display: block; }
+          display: block;
+          height: auto;
+          opacity: 1;
+          overflow: visible; }
         .commentbox .commentbox__inner .comments .comments__reply .comments__reply__each {
           padding: 5px;
           margin-bottom: 0;

@@ -48,15 +48,15 @@
 
             <!--标题-->
             <div class="commentbox__header">
-                <h3>Comments <span>16</span></h3>
+                <h3>Comments <span ng-bind="commentList.length">16</span></h3>
             </div>
 
             <!--提问题-->
             <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
                 <!--问题盒子-->
                 <div class="commentBox__questionBox">
-                    <input  class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToArt">
-                    <button class="btn commentBox__questionBox--reply" ng-click="commentThisArtBtn(1123)" ng-disabled="!commentToArt">
+                    <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToArt">
+                    <button class="btn commentBox__questionBox--reply" ng-click="commentThisArtBtn(article)" ng-disabled="!commentToArt">
                         <span>评论</span>
                     </button>
                 </div>
@@ -75,13 +75,13 @@
 
             <!--问题盒子-->
             <div class="commentbox__inner">
-                <div class="comments">
+                <div class="comments" ng-repeat="comment in commentList track by $index">
                     <div class="comments__ask">
                         <div class="comments__ask__header">
-                            <span class="name">清如水</span> · <span>三天前</span> · <span class="reply" ng-click="commentToComemntBtn($event)">回复</span>
+                            <span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>&ensp;·&ensp;<span class="reply" ng-click="commentToComemntBtn($event)">回复</span>
                         </div>
                         <div class="comments__ask__content">
-                            <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
+                            <span ng-bind="comment.content"></span>
                         </div>
                     </div>
                     <div class="comments__reply">
@@ -89,8 +89,8 @@
                         <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
                             <!--问题盒子-->
                             <div class="commentBox__questionBox">
-                                <input  class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToComment">
-                                <button class="btn commentBox__questionBox--reply" ng-click="commentThisArtBtn(1123)" ng-disabled="!commentToComment">
+                                <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToComment">
+                                <button class="btn commentBox__questionBox--reply" ng-click="commentThisCommentBtn(comment,commentToComment)" ng-disabled="!commentToComment">
                                     <span>评论</span>
                                 </button>
                             </div>
@@ -107,144 +107,12 @@
                             </div>
                         </div>
 
-                        <div class="comments__reply__each">
+                        <div class="comments__reply__each" ng-repeat="reply in comment.next_id track by $index">
                             <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
+                                <span class="name" ng-bind="reply.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>
                             </div>
                             <div class="comments__reply__content">
-                                <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗!</span>
-                            </div>
-                        </div>
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>好的,同意!</span>
-                            </div>
-                        </div>
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>好的,同意!</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="comments">
-                    <div class="comments__ask">
-                        <div class="comments__ask__header">
-                            <span class="name">清如水</span> · <span>三天前</span> · <span class="reply" ng-click="commentToComemntBtn($event)">回复</span>
-                        </div>
-                        <div class="comments__ask__content">
-                            <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
-                        </div>
-                    </div>
-                    <div class="comments__reply">
-                        <!--提问题-->
-                        <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
-                            <!--问题盒子-->
-                            <div class="commentBox__questionBox">
-                                <input  class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToComment">
-                                <button class="btn commentBox__questionBox--reply" ng-click="commentThisArtBtn(1123)" ng-disabled="!commentToComment">
-                                    <span>评论</span>
-                                </button>
-                            </div>
-                            <!--个人信息-->
-                            <div class="commentBox__info">
-                                <div class="commentBox__info--input">
-                                    <label>昵称:</label>
-                                    <input type="text" placeholder="请输入昵称!" ng-model="commentUsername">
-                                </div>
-                                <div class="commentBox__info--input ">
-                                    <label>邮箱: </label>
-                                    <input type="text" placeholder="请输入邮箱!" ng-model="commentEmail">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗!</span>
-                            </div>
-                        </div>
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>好的,同意!</span>
-                            </div>
-                        </div>
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>好的,同意!</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="comments">
-                    <div class="comments__ask">
-                        <div class="comments__ask__header">
-                            <span class="name">清如水</span> · <span>三天前</span> · <span class="reply" ng-click="commentToComemntBtn($event)">回复</span>
-                        </div>
-                        <div class="comments__ask__content">
-                            <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗?</span>
-                        </div>
-                    </div>
-                    <div class="comments__reply">
-                        <!--提问题-->
-                        <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
-                            <!--问题盒子-->
-                            <div class="commentBox__questionBox">
-                                <input  class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToComment">
-                                <button class="btn commentBox__questionBox--reply" ng-click="commentThisArtBtn(1123)" ng-disabled="!commentToComment">
-                                    <span>评论</span>
-                                </button>
-                            </div>
-                            <!--个人信息-->
-                            <div class="commentBox__info">
-                                <div class="commentBox__info--input">
-                                    <label>昵称:</label>
-                                    <input type="text" placeholder="请输入昵称!" ng-model="commentUsername">
-                                </div>
-                                <div class="commentBox__info--input ">
-                                    <label>邮箱: </label>
-                                    <input type="text" placeholder="请输入邮箱!" ng-model="commentEmail">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗请问我能复制你的站点吗!</span>
-                            </div>
-                        </div>
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>好的,同意!</span>
-                            </div>
-                        </div>
-                        <div class="comments__reply__each">
-                            <div class="comments__reply__header">
-                                <span class="name">清如水</span> · <span>三天前</span>
-                            </div>
-                            <div class="comments__reply__content">
-                                <span>好的,同意!</span>
+                                <span ng-bind="reply.content"></span>
                             </div>
                         </div>
                     </div>

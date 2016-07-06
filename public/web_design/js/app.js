@@ -1,10 +1,13 @@
 'use strict';
 
 (function () {
-    angular.module('xstApp', ['ui.router','ngStorage', 'hc.marked', 'btorfs.multiselect', 'ng-bs3-datepicker'])
+    angular.module('xstApp', ['ui.router', 'ngStorage', 'hc.marked', 'btorfs.multiselect', 'angularMoment', 'ng-bs3-datepicker'])
     /**
      * 配置文件
      * */
+        .run(function (amMoment) {
+            amMoment.changeLocale('Zh-cn');
+        })
         .factory('API', function () {
             const url = "http://localhost:8088";
             const MY_INFO_ID = '576b95155fce2dfd3874e738';
@@ -49,7 +52,7 @@
                 postArt: `${url}/api/article`,
 
                 //delete 文章
-                deleteArt:`${url}/api/article/id`,
+                deleteArt: `${url}/api/article/id`,
 
                 /**
                  * 标签相关
@@ -78,13 +81,14 @@
                 getCommentToArticleList: `${url}/api/commentToArticleList`,
                 postComment: `${url}/api/comment`,
 
-                 //  评论已阅读 post
-                changeCommentReplyState:`${url}/api/changeCommentReplyState`,
+                //  评论已阅读 post
+                changeCommentReplyState: `${url}/api/changeCommentReplyState`,
 
-            //    删除评论 delete
-                delComment:`${url}/api/comment/id`,
+                //    删除评论 delete
+                delComment: `${url}/api/comment/id`,
 
-
+            //    新增评论
+                newComment: `${url}/api/comment`,
 
 
             }

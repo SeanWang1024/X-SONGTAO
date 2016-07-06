@@ -81,7 +81,7 @@ module.exports = {
     postArt: function (req, res, next) {
         console.log('req.body._id')
         console.log(req.body._id)
-        if(!!req.body._id){
+        if (!!req.body._id) {
             //id存在-->修改操作
             Articles.findOne({_id: req.body._id}, function (err, article) {
                 if (err) {
@@ -142,7 +142,7 @@ module.exports = {
                     });
                 }
             });
-        }else{
+        } else {
             //id不存在-->新增操作
             let {title, publish_time, tags, state, content} =  req.body;
             let article = new Articles({
@@ -212,6 +212,7 @@ module.exports = {
             });
         })
     },
+    //home需要的格式(带分页的文章列表)
     getAllWithPages: function (req, res, next) {
         //查找文章
         let from = parseInt(req.params[0]);
@@ -236,6 +237,22 @@ module.exports = {
                             articles[i].tags[j] = name;
                         }
                     }
+
+                    //获取文章摘要
+                    let abstractArr = marked.lexer(articles[i].content);
+                    let abstract = '';
+                    let fragment_text;
+                    for (let fragment of abstractArr) {
+                        fragment_text = fragment.text;
+                        if (!!fragment_text) {
+                            if (abstract.length < 250) {
+                                abstract += fragment_text;
+                            }else{
+                                break;
+                            }
+                        }
+                    }
+                    articles[i].content = abstract;
                 }
                 res.status(200);
                 res.send({
@@ -287,7 +304,10 @@ module.exports = {
                             return hljs.highlightAuto(code).value;
                         }
                     });
+
+
                     article.content = marked(article.content);
+
 
                     res.status(200);
                     res.send({

@@ -4,7 +4,7 @@
 (function () {
     angular.module('xstApp')
     //myInfo的控制器
-        .factory("AJAX", ['$http', '$localStorage', function ($http, $localStorage) {
+        .factory("AJAX", ['$http', '$localStorage','$rootScope', function ($http, $localStorage,$rootScope) {
             //获取Token,只是进行get请求和register、login的post请求是不需要token的。
             //登录会能获得token,如果localstorage中存在token信息,则发送时将token携带。
             //这里只是使用localstorage存放数据,古故$localStorage不使用

@@ -230,38 +230,55 @@ module.exports = {
 
     },
     getByArticleId: function (req, res, next) {
-        let CommentsArr = [];
-        Comments.find({article_id: req.params.article_id}, function (err, comments) {
-            if (err) {
-                DO_ERROR_RES(res);
-                return next();
-            }
-            for (let comment of comments) {
-                if (comment.article_id.toString() === comment.pre_id.toString()) {
-                    //根评论
-                    let tpl = [];
-                    tpl.push(comment);
-                    for (let next_id of comment.next_id) {
-                        //得到next_id,查找comments中的评论记录
-                        for (let com of comments) {
-                            if (next_id.toString() === com._id.toString()) {
-                                tpl.push(com);
-                            }
-                        }
-                    }
-                    CommentsArr.push(tpl);
-                }
-            }
-            res.status(200);
-            res.send({
-                "code": "1",
-                "msg": "find comments by article_id success!",
-                "data": CommentsArr
+        Comments.find({article_id: req.params.article_id, pre_id: req.params.article_id})
+            .populate({
+                path: "next_id",
+                options: {sort: { time: -1 }}
+            })
+            .sort('-time')
+            .exec(function (err, commentList) {
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "comment to articles list get success!",
+                    "data": commentList
+                })
             });
-        })
+
+        //
+        // Comments.find({article_id: req.params.article_id}, function (err, comments) {
+        //     if (err) {
+        //         DO_ERROR_RES(res);
+        //         return next();
+        //     }
+        //     for (let comment of comments) {
+        //         if (comment.article_id.toString() === comment.pre_id.toString()) {
+        //             //根评论
+        //             let tpl = [];
+        //             tpl.push(comment);
+        //             for (let next_id of comment.next_id) {
+        //                 //得到next_id,查找comments中的评论记录
+        //                 for (let com of comments) {
+        //                     if (next_id.toString() === com._id.toString()) {
+        //                         tpl.push(com);
+        //                     }
+        //                 }
+        //             }
+        //             CommentsArr.push(tpl);
+        //         }
+        //     }
+        //     res.status(200);
+        //     res.send({
+        //         "code": "1",
+        //         "msg": "find comments by article_id success!",
+        //         "data": CommentsArr
+        //     });
+        // })
+
+
     },
     add: function (req, res, next) {
-        let {article_id, pre_id, next_id, name, email, time, content, ip,isIReplied, state} =  req.body;
+        let {article_id, pre_id, next_id, name, email, time, content, ip, isIReplied, state} =  req.body;
         let comment = new Comments({
             article_id,
             pre_id,
@@ -379,7 +396,7 @@ module.exports = {
     },
     commentToArticle: function (req, res, next) {
         Comments.$where('this.article_id == this.pre_id')
-            .where('isIReplied',false)
+            .where('isIReplied', false)
             .populate({
                 path: "article_id",
                 select: {title: 1},

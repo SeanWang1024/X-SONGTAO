@@ -4,7 +4,7 @@
 (function () {
     angular.module('xstApp')
     //Detail控制器-catalogueName-type-id
-        .controller('DetailController', ['$scope', '$stateParams', '$http', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, $http, API, $localStorage, $timeout) {
+        .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage','$timeout', function ($scope, $stateParams, AJAX, API, $localStorage,$timeout) {
 
             //评论人的信息
             $scope.commentUsername;
@@ -15,41 +15,29 @@
             $scope.commentToComment;
 
 
-            var url = API.getArticleById.replace('id', $stateParams.id);
-            $http.get(url).success(function (response) {
-                console.log(response);
-                if (parseInt(response.code) === 1) {
-                    $scope.article = response.data;
-                    //获取评论
-                    var url = API.getArticlesComments.replace('article_id', $scope.article._id);
-                    $http.get(url).success(function (response) {
-                        console.log('-----response------')
-                        console.log(response)
-                        if (parseInt(response.code) === 1) {
-                            $scope.comment = response.data;
-                        }
-                    });
+            AJAX({
+                method: 'get',
+                url: API.getArticleById.replace('id', $stateParams.id),
+                success: function (response) {
+                    console.log(response);
+                    if (parseInt(response.code) === 1) {
+                        $scope.article = response.data;
+                        getCommentList($scope.article._id);
+                    }
+                },
+                error: function (err) {
+
                 }
-            }).error(function (erroInfo, status) {
             });
+
+
 
 
             //点击回复按钮触发动作
             $scope.commentThisArtBtn = function (commentInfo) {
 
-                commentInfo = {
-                    "_id": "57739bccdc24e834188f2eef",
-                    "article_id": "576ec5284165e58703cf7246",
-                    "pre_id": "576ec5284165e58703cf7246",
-                    "name": "22222222",
-                    "email": "12@123.com",
-                    "time": "2009-01-17T19:57:02.222Z",
-                    "content": "576e5920e093fcd80d2af658-增加主评论1",
-                    "ip": "12.123.123.123",
-                    "state": false,
-                    "__v": 0,
-                    "next_id": []
-                }
+                console.log('commentInfo')
+                console.log(commentInfo)
                 //如果有论人的信息,则不显示输入框
                 if (!!$scope.commentUsername && !!$scope.commentEmail) {
                     $scope.canComment = true;
@@ -58,35 +46,104 @@
                         commentEmail: $scope.commentEmail,
                     }
                 }
-                let content = (commentInfo.article_id.toString() === commentInfo.pre_id.toString()) ? $scope.commentToArt : $scope.commentToComment;
+
+                if (!$scope.commentToArt) {
+                    alert("评论内容不能为空")
+                    return false;
+                }
+
+                let params = {
+                    article_id: commentInfo._id,
+                    pre_id: commentInfo._id,
+                    next_id: [],
+                    name: $scope.commentUsername,
+                    email: $scope.commentEmail,
+                    time: new Date(),
+                    content: $scope.commentToArt,
+                    state: true,
+                    isIReplied:false
+                };
+
+                //send
+                AJAX({
+                    method: 'post',
+                    url: API.newComment,
+                    data: params,
+                    success: function (response) {
+                        console.log(response);
+                        if (parseInt(response.code) === 1) {
+                            console.log("评论成功@@@!!!!")
+                            $scope.commentToArt = '';
+                            $scope.commentToComment = '';
+                            //    对评论的评论回复还需要隐藏评论框
+                            $('.comments__reply').removeClass('active');
+
+                            //刷新
+                            getCommentList(commentInfo._id);
+                        }
+                    },
+                    error: function (err) {
+
+                    }
+                });
+            };
+
+            $scope.$watch('commentToComment',function () {
+                console.log($scope.commentToComment)
+            })
+            //对评论进行评论
+            $scope.commentThisCommentBtn = function (commentInfo,content) {
+                // $scope.$apply();
+
+                console.log('commentInfo')
+                console.log(commentInfo + "--" + content)
+                //如果有论人的信息,则不显示输入框
+                if (!!$scope.commentUsername && !!$scope.commentEmail) {
+                    $scope.canComment = true;
+                    $localStorage.commentAuth = {
+                        commentUsername: $scope.commentUsername,
+                        commentEmail: $scope.commentEmail,
+                    }
+                }
+
                 if (!content) {
+                    alert("评论内容不能为空")
                     return false;
                 }
 
                 let params = {
                     article_id: commentInfo.article_id,
-                    pre_id: commentInfo.pre_id,
+                    pre_id: commentInfo._id,
                     next_id: [],
                     name: $scope.commentUsername,
                     email: $scope.commentEmail,
                     time: new Date(),
                     content: content,
-                    state: true
+                    state: true,
+                    isIReplied:false
                 };
 
-
-                console.log('评论内容:');
-                console.log(params);
-
                 //send
-                $timeout(function () {
-                    $scope.commentToArt = '';
-                    $scope.commentToComment = '';
-                //    对评论的评论回复还需要隐藏评论框
-                    $('.comments__reply').removeClass('active');
-                }, 2000, true)
+                AJAX({
+                    method: 'post',
+                    url: API.newComment,
+                    data: params,
+                    success: function (response) {
+                        console.log(response);
+                        if (parseInt(response.code) === 1) {
+                            console.log("评论成功@@@!!!!")
+                            $scope.commentToComment = '';
+                            //    对评论的评论回复还需要隐藏评论框
+                            $('.comments__reply').removeClass('active');
 
+                            //刷新
+                            getCommentList(commentInfo.article_id);
 
+                        }
+                    },
+                    error: function (err) {
+                    }
+                });
             }
 
             //自评论点击回复按钮
@@ -94,6 +151,17 @@
                 let $this = $($event.currentTarget).parents('.comments__ask').next('.comments__reply');
                 $('.comments__reply').not($this).removeClass('active');
                 $this.toggleClass('active');
+
+
+
+
+
+
+
+
+
+
+
             };
 
             //判断是否能评论
@@ -112,6 +180,22 @@
                 }
             }
 
+
+
+            function getCommentList(id) {
+                //获取评论
+                return AJAX({
+                    method: 'get',
+                    url: API.getArticlesComments.replace('article_id',id),
+                    success: function (response) {
+                        console.log('-----response------')
+                        console.log(response)
+                        if (parseInt(response.code) === 1) {
+                            $scope.commentList = response.data;
+                        }
+                    }
+                })
+            }
 
         }])
 })();
