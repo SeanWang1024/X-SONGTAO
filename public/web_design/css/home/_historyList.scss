@@ -1,34 +1,53 @@
 .yearBox {
 
-  //padding: 30px 35px 30px;
-  margin-bottom:20px;
+  position: relative;
+  margin-bottom: 20px;
+  &::after{
+    content: '';
+    border-top: 2px solid $base-theme-color;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-top-right-radius: 3px;
+    width:40%;
+    height:0;
+  }
   .yearBox__title {
-    padding: 26px 0 4px 43px;
+    padding: 8px 10px 4px 43px;
     color: #fff;
-    margin:0;
+    margin: 0;
+    text-align: right;
     background: $base-background-color;
-    //border-bottom: 1px solid #ddd;
+    position: relative;
+
+    .year {
+      font-size: 50px;
+
+    }
+    .ofYear {
+      font-size: 20px;
+      color:$base-theme-color;
+    }
   }
   .yearBox__content {
     width: 100%;
     background-color: #fff;
     margin-bottom: 10px;
-    padding:15px 0;
+    padding: 15px 0;
     .monthBox {
       @include display-flex;
       @include justify-content(flex-start);
       @include align-items(flex-start);
       margin: 0 0 15px 0;
-      padding:10px 10px 10px 85px;
-      border:1px solid transparent;
+      padding: 10px 10px 10px 85px;
+      border: 1px solid transparent;
       //padding-left: 85px;
-      &:nth-child(n){
-        background-color:#fff;
+      &:nth-child(n) {
+        background-color: #fff;
       }
-      &:nth-child(2n){
-        background-color:#f5f5f5;
+      &:nth-child(2n) {
+        background-color: #f5f5f5;
       }
-
 
       .monthBox__name {
         width: 100px;
@@ -46,13 +65,13 @@
         height: 100%;
         border-left: 1px solid #ddd;
         .monthBox__content__item {
-          height:28px;
-          line-height:28px;
-          font-size:16px;
+          height: 28px;
+          line-height: 28px;
+          font-size: 16px;
           color: $base-word-color;
           cursor: pointer;
           list-style-type: square;
-          &:hover{
+          &:hover {
             color: $base-theme-color;
           }
 

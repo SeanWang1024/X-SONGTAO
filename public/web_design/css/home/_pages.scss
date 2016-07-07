@@ -3,7 +3,11 @@ html {
   height: 100%;
   overflow: hidden;
   font-size: 16px;
-  //background: #333 url(../img/demo-10.jpg) no-repeat center center/cover;
+  background: #333 url(../img/demo-11.jpg) no-repeat center center/cover;
+  -webkit-filter: blur(10px); /* Chrome, Opera */
+  -moz-filter: blur(10px);
+  -ms-filter: blur(10px);
+  filter: blur(10px);
 }
 
 body {

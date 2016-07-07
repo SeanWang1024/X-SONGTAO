@@ -418,25 +418,25 @@ module.exports = {
             let yearObj = {};
             let monthObj = {};
 
-            //将时间戳转化为Date
-            function toDate(timestamp) {
-                let timestampInt = parseInt(timestamp);
-                if (timestampInt.toString().length === 13) {
-                    //正确的时间戳
-                    return new Date(timestampInt);
-                } else {
-                    //错误的时间戳返回现在时间
-                    return new Date();
-                }
-            }
+            // //将时间戳转化为Date
+            // function toDate(timestamp) {
+            //     let timestampInt = parseInt(timestamp);
+            //     if (timestampInt.toString().length === 13) {
+            //         //正确的时间戳
+            //         return new Date(timestampInt);
+            //     } else {
+            //         //错误的时间戳返回现在时间
+            //         return new Date();
+            //     }
+            // }
 
             //当前循环的-年-月
             let yearNow = 0;
             let monthNow = 0;
             for (let i = 0, docLen = docs.length; docLen > i; i++) {
                 //记录当前文章的时间-年-月
-                let tplYear = toDate(docs[i].publish_time).getFullYear();
-                let tplMonth = toDate(docs[i].publish_time).getMonth() + 1;
+                let tplYear = new Date(docs[i].publish_time).getFullYear();
+                let tplMonth = new Date(docs[i].publish_time).getMonth() + 1;
                 if (yearNow !== tplYear) {
                     //保存上一年的年月数据,如果存在的话
                     if (yearNow !== 0) {

@@ -6,7 +6,7 @@
   &:hover .article__header .article__header--title {
     color: $base-theme-color;
   }
-  &:hover .article__infobox .arrticle__readmore span{
+  &:hover .article__infobox .arrticle__readmore span {
     background-color: $base-theme-color;
   }
   //标题
@@ -16,11 +16,38 @@
     font-size: 20px;
     line-height: 28px;
     background: #fff;
+    position: relative;
+    //&:after {
+    //  content: '';
+    //  position: absolute;
+    //  top: 0;
+    //  right: 0;
+    //  height:0;
+    //  border-top: 2px solid $base-theme-color;border-top-right-radius: 3px;
+    //
+    //  background: $base-theme-color;
+    //  width: 40%;
+    //}
     //title
     .article__header--title {
-      text-align: left;
+      text-align: right;
       color: #333;
-      transition: color ease 200ms;
+      transition: color ease 200ms; position: relative;
+      margin-bottom:0;
+      padding-bottom:10px;
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 3px;
+        right: 0;
+        height:0;
+        border-top: 3px solid #333;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+
+        //background: #333;
+        width: 40%;
+      }
     }
     //内容
     .article__header--content {
@@ -37,7 +64,7 @@
     @include display-flex;
     @include justify-content(space-between);
     @include align-items(center);
-    background:$base-background-color;
+    background: $base-background-color;
     padding: 14px 35px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8) inset;
     transition: all ease 200ms;
@@ -54,9 +81,9 @@
     //阅读更多
     .arrticle__readmore {
       span {
-        border:1px solid $base-theme-color;
+        border: 1px solid $base-theme-color;
         transition: all ease 200ms;
-        border-radius:34px;
+        border-radius: 34px;
         color: #eee;
         padding: 4px 22px;
         font-size: 16px;
@@ -66,24 +93,25 @@
   }
 
 }
-.readMoreTo{
-  margin-top:50px;
-  text-align:center;
-  span{
-    &:hover{
-      color:$base-theme-color;
-      &:after{
+
+.readMoreTo {
+  margin-top: 50px;
+  text-align: center;
+  span {
+    &:hover {
+      color: $base-theme-color;
+      &:after {
         background-color: $base-theme-color;
       }
     }
     transition: all ease 200ms;
-    cursor:pointer;
+    cursor: pointer;
     text-align: center;
     color: #fff;
     display: inline-block;
     position: relative;
     padding: 0 0px 0 6px;
-    &:after{
+    &:after {
       transition: all ease 200ms;
       content: '';
       position: absolute;

@@ -1214,66 +1214,6 @@ angular.module('xstApp')
  */
 (function () {
     angular.module('xstApp')
-    //ArticleList控制器
-    .controller('ArticleListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
-        var url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
-        $http.get(url).success(function (response) {
-            console.log(response);
-            if (parseInt(response.code) === 1) {
-                $scope.articleLists = response.data;
-            }
-        }).error(function (erroInfo, status) {
-            // $(".blackShade.error").addClass("show");
-            // $(".blackShade.error h3").text("哎呦,好像出错了!");
-            // $(".blackShade.error span").html(erroInfo);
-            // $(".blackShade.error small").text("状态码:" + status);
-        });
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
-    //HistoryList控制器
-    .controller('HistoryListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
-        $http.get(API.getArticleHistoryWithStructure).success(function (response) {
-            console.log(response);
-            if (parseInt(response.code) === 1) {
-                $scope.historyLists = response.data;
-            }
-        }).error(function (erroInfo, status) {});
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
-    //TagList控制器
-    .controller('TagListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
-        $http.get(API.getTagsListWithStructure).success(function (response) {
-            console.log("TagListController response");
-            console.log(response);
-            if (parseInt(response.code) === 1) {
-                $scope.tagLists = response.data;
-            }
-        }).error(function (erroInfo, status) {});
-    }]).controller('findArticlesByTagController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
-        var url = API.getArticlesWithTagId.replace('id', $stateParams.id);
-        $http.get(url).success(function (response) {
-            console.log(response);
-            if (parseInt(response.code) === 1) {
-                $scope.articleLists = response.data;
-            }
-        }).error(function (erroInfo, status) {});
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
     //Detail控制器-catalogueName-type-id
     .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, AJAX, API, $localStorage, $timeout) {
 
@@ -1444,6 +1384,66 @@ angular.module('xstApp')
                 }
             });
         }
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //ArticleList控制器
+    .controller('ArticleListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        var url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
+        $http.get(url).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.articleLists = response.data;
+            }
+        }).error(function (erroInfo, status) {
+            // $(".blackShade.error").addClass("show");
+            // $(".blackShade.error h3").text("哎呦,好像出错了!");
+            // $(".blackShade.error span").html(erroInfo);
+            // $(".blackShade.error small").text("状态码:" + status);
+        });
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //HistoryList控制器
+    .controller('HistoryListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $http.get(API.getArticleHistoryWithStructure).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.historyLists = response.data;
+            }
+        }).error(function (erroInfo, status) {});
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //TagList控制器
+    .controller('TagListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $http.get(API.getTagsListWithStructure).success(function (response) {
+            console.log("TagListController response");
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.tagLists = response.data;
+            }
+        }).error(function (erroInfo, status) {});
+    }]).controller('findArticlesByTagController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
+        var url = API.getArticlesWithTagId.replace('id', $stateParams.id);
+        $http.get(url).success(function (response) {
+            console.log(response);
+            if (parseInt(response.code) === 1) {
+                $scope.articleLists = response.data;
+            }
+        }).error(function (erroInfo, status) {});
     }]);
 })();
 /**

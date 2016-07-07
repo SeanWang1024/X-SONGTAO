@@ -1,11 +1,23 @@
 <article class="main-article  animated fadeIn">
-  <!--<div class="tags">-->
-    <div class="tagBox" ng-repeat="cata in tagLists track by $index">
-      <h3 class="tagBox__header"><i class="fa fa-tags"></i>&ensp;{{cata.name}}</h3>
-      <div class="tagBox__content">
-        <span class="tagBox__content__item"
-              ng-repeat="tag in cata.data"
-              ui-sref="blog.findArticlesByTag({id:tag._id})"><i class="fa fa-tag"></i>&ensp;{{tag.name}}</span>
-      </div>
+    <!--<div class="tags">-->
+    <div class="tagBox">
+        <h3 class="tagBox__header">
+            <!--<i class="fa fa-tags"></i>-->
+            <span class="tags">Tags</span>
+            <span class="lib">Lib</span>
+            <!--&ensp;{{cata.name}}-->
+        </h3>
+        <div class="tagBox__content">
+            <div class="tagBox__content--div"  ng-repeat="cata in tagLists track by $index">
+                <div class="tagBox__content--div--left">
+                   <h3> {{cata.name}}</h3>
+                </div>
+                <div class="tagBox__content--div--right">
+                    <span class="tagBox__content__item"
+                          ng-repeat="tag in cata.data"
+                          ui-sref="blog.findArticlesByTag({id:tag._id})"><i class="fa fa-tag"></i>&ensp;{{tag.name}}</span>
+                </div>
+            </div>
+        </div>
     </div>
 </article>
