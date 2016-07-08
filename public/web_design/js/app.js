@@ -84,6 +84,9 @@
                 //  评论已阅读 post
                 changeCommentReplyState: `${url}/api/changeCommentReplyState`,
 
+                //  评论审核状态 post
+                changeAuthState: `${url}/api/changeCommentAuthState`,
+
                 //    删除评论 delete
                 delComment: `${url}/api/comment/id`,
 

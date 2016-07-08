@@ -28,17 +28,18 @@
                 <div class="paper__content--inner" ng-bind-html="article.content | toTrusted"></div>
                 <!--page-->
             </section>
-            <!--上一篇 下一篇-->
-            <!--<section class="paper__navBox">-->
-                <!--<div class="paper__navBox__inner">-->
+            <!--the end-->
+            <section class="paper__navBox">
+                <div class="paper__navBox__inner">
+                    <!--<div>-&#45;&#45; The End -&#45;&#45;</div>-->
                     <!--<div class="pager-prev">-->
                         <!--<span>上一篇</span>-->
                     <!--</div>-->
                     <!--<div class="pager-next">-->
                         <!--<span>下一篇</span>-->
                     <!--</div>-->
-                <!--</div>-->
-            <!--</section>-->
+                </div>
+            </section>
             <!--评论-->
 
 
@@ -48,7 +49,7 @@
 
             <!--标题-->
             <div class="commentbox__header">
-                <h3>Comments <span ng-bind="commentList.length">16</span></h3>
+                <h3><span class="commentbox__header--Comments">Comments</span><span class="commentbox__header--count" ng-bind="commentList.length">16</span></h3>
             </div>
 
             <!--提问题-->

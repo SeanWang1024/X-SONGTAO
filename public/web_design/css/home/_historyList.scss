@@ -2,15 +2,17 @@
 
   position: relative;
   margin-bottom: 20px;
-  &::after{
+  border-radius: 4px;
+  overflow: hidden;
+  &::after {
     content: '';
-    border-top: 2px solid $base-theme-color;
+    border-top: 4px solid $base-theme-color;
     position: absolute;
     top: 0;
     right: 0;
     border-top-right-radius: 3px;
-    width:40%;
-    height:0;
+    width: 40%;
+    height: 0;
   }
   .yearBox__title {
     padding: 8px 10px 4px 43px;
@@ -19,14 +21,28 @@
     text-align: right;
     background: $base-background-color;
     position: relative;
-
+    @include display-flex;
+    @include justify-content(flex-end);
+    @include align-items(center);
     .year {
       font-size: 50px;
-
+      z-index:1;
+      margin-right: 10px;
     }
     .ofYear {
+      //z-index:1;
+      //font-size: 20px;
+      //color: $base-theme-color;
+
       font-size: 20px;
-      color:$base-theme-color;
+      background: $base-theme-color;
+      color: #fff;
+      border-radius: 5px;
+      padding: 3px 6px;
+      position: relative;
+      font-weight: 400;
+      vertical-align: baseline;
+      top:6px;
     }
   }
   .yearBox__content {

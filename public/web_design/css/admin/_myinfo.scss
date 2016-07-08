@@ -76,8 +76,8 @@
           .inputContent {
             font-size: 16px;
             height: 34px;
-            background-color: transparent;
-            color: #fff;
+            background-color: #fff;
+            color: #333;
             margin: 0 0 0 -11px;
             //display: none;
             border: 1px solid $base-theme-color;
@@ -109,8 +109,8 @@
           width: 100%;
           padding: 0 5px;
           textarea {
-            background-color: transparent;
-            color: #fff;
+            background-color: #fff;
+            color: #333;
             border-radius: 3px;
             border: 1px solid $base-theme-color;
             padding: 11px;
@@ -121,6 +121,7 @@
             height: 300px;
             overflow-x: hidden;
             resize: none;
+            outline: none;
           }
         }
       }

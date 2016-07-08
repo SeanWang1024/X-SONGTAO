@@ -183,6 +183,8 @@ router.get('/article/comments/:article_id',CommentController.getByArticleId);
 router.delete('/comment/:id', CommentController.delete);
 //checkComments
 router.post('/changeCommentReplyState', CommentController.isIReplied);
+//改变审核状态
+router.post('/changeCommentAuthState', CommentController.changeState);
 //commentToArticleList
 router.get('/commentToArticleList', CommentController.commentToArticle);
 

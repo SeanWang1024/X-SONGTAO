@@ -82,6 +82,9 @@
             //  评论已阅读 post
             changeCommentReplyState: url + '/api/changeCommentReplyState',
 
+            //  评论审核状态 post
+            changeAuthState: url + '/api/changeCommentAuthState',
+
             //    删除评论 delete
             delComment: url + '/api/comment/id',
 
@@ -737,9 +740,10 @@ angular.module('xstApp')
         content: ''
     };
     $scope.comment = function (item, $event) {
-        var target = $($event.currentTarget).parents('.comments__ask');
-        target.siblings().removeClass('isReply');
-        target.toggleClass('isReply');
+        // let target = $($event.currentTarget).parents('.comments__ask');
+        // target.siblings().removeClass('isReply');
+        // target.toggleClass('isReply');
+        $scope.replyBox = item;
     };
     $scope.commentThis = function ($event, item) {
         $scope.isSubmitReply = true;
@@ -802,11 +806,75 @@ angular.module('xstApp')
         });
     };
 
+    //改变此评论的审核状态true/false
+    // function changeAuthState
+    $scope.changeAuthState = function (_id) {
+        console.log(_id);
+        return AJAX({
+            method: 'post',
+            url: API.changeAuthState,
+            data: {
+                _id: _id
+            },
+            success: function success(response) {
+                // console.log('response');
+                // console.log(response);
+                if (parseInt(response.code) === 1) {
+                    // $scope.commentList = response.data;
+                    // console.log(response.data);
+                    //刷新文章列表
+                    $log.debug("状态改变成功");
+                    // getComments();
+                }
+            }
+        });
+    };
+
+    $scope.Condition;
+    $scope.ConditionFilter = function (data) {
+        if (!$scope.Condition) {
+            return true;
+        }
+        switch (parseInt($scope.Condition)) {
+            case 0:
+                return true;
+                break;
+            //主评论
+            case 1:
+                return data.article_id._id.toString() === data.pre_id.toString();
+                break;
+            //子评论
+            case 2:
+                return data.article_id._id.toString() !== data.pre_id.toString();
+                break;
+            //主评论+未回复
+            case 3:
+                return !data.isIReplied && data.article_id._id.toString() === data.pre_id.toString();
+                break;
+            //主评论+未审核
+            case 4:
+                return !data.state && data.article_id._id.toString() === data.pre_id.toString();
+                break;
+            //主回复
+            case 5:
+                return !data.isIReplied;
+                break;
+            //未审核
+            case 6:
+                return !data.state;
+                break;
+            default:
+                return true;
+                break;
+
+        }
+    };
+
     //如果对用户的文章评论进行了评论,则标记此评论为已阅读
+    //此接口只对我有效
     function changeCommentReplyState(_id) {
         var params = {
-            _id: _id,
-            isIReplied: true
+            _id: _id
         };
         return AJAX({
             method: 'post',
@@ -999,16 +1067,18 @@ angular.module('xstApp')
                     getTags();
                     //操作提示
                     $scope.submitText = '新增成功!';
-                    $timeout(function () {
-                        angular.element(document.getElementById('addTag')).modal('hide');
-                        $scope.submitText = null;
-                    }, 1500, true);
+                    // $timeout(function () {
+                    //   
+                    // }, 1500, true);
+                    angular.element(document.getElementById('addTag')).modal('hide');
+                    $scope.submitText = null;
                 } else {
                     //操作提示
                     $scope.submitText = '新增失败, 标签名称已存在!';
-                    $timeout(function () {
-                        $scope.submitText = null;
-                    }, 1500, true);
+                    // $timeout(function () {
+                    //
+                    // }, 1500, true);
+                    $scope.submitText = null;
                     $log.error(response.msg);
                 }
             }
@@ -1037,10 +1107,11 @@ angular.module('xstApp')
                     getTags();
                     //操作提示
                     $scope.submitText = '修改成功!';
-                    $timeout(function () {
-                        angular.element(document.getElementById('editTag')).modal('hide');
-                        $scope.submitText = null;
-                    }, 1500, true);
+                    // $timeout(function () {
+                    //
+                    // }, 1500, true);
+                    angular.element(document.getElementById('editTag')).modal('hide');
+                    $scope.submitText = null;
                 } else {
                     //操作提示
                     switch (parseInt(response.code)) {
@@ -1054,9 +1125,10 @@ angular.module('xstApp')
                             $scope.submitText = '修改失败!';
                             break;
                     }
-                    $timeout(function () {
-                        $scope.submitText = null;
-                    }, 1500, true);
+                    // $timeout(function () {
+                    //
+                    // }, 1500, true);
+                    $scope.submitText = null;
                     $log.error(response.msg);
                 }
             }
@@ -1082,16 +1154,18 @@ angular.module('xstApp')
                     getTags();
                     //操作提示
                     $scope.submitText = '删除成功!';
-                    $timeout(function () {
-                        angular.element(document.getElementById('delTag')).modal('hide');
-                        $scope.submitText = null;
-                    }, 1500, true);
+                    // $timeout(function () {
+                    //  
+                    // }, 1500, true);
+                    angular.element(document.getElementById('delTag')).modal('hide');
+                    $scope.submitText = null;
                 } else {
                     //操作提示
                     $scope.submitText = '删除失败!';
-                    $timeout(function () {
-                        $scope.submitText = null;
-                    }, 1500, true);
+                    // $timeout(function () {
+                    //  
+                    // }, 1500, true);
+                    $scope.submitText = null;
                     $log.error(response.msg);
                 }
             }
@@ -1119,35 +1193,6 @@ angular.module('xstApp')
         });
         $('[data-toggle="popover"]').popover();
     }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp');
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
-    angular.module('xstApp')
-    //index的文字反动
-    .directive("indexWordFadeIn", function () {
-        return {
-            restirect: 'E',
-            replace: true,
-            link: function link(scope, element) {
-                var headlines = $("#headlines");
-                setInterval(function () {
-                    if (headlines.find('h1.current').next().length == 0) {
-                        headlines.find('h1').first().addClass('current').siblings().removeClass('current');
-                    } else {
-                        headlines.find('h1.current').next().addClass('current').siblings().removeClass('current');
-                    }
-                }, 4000);
-            }
-        };
-    });
 })();
 /**
  * Created by xiangsongtao on 16/6/29.
@@ -1208,6 +1253,35 @@ angular.module('xstApp')
             };
         }
     }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp');
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
+    //index的文字反动
+    .directive("indexWordFadeIn", function () {
+        return {
+            restirect: 'E',
+            replace: true,
+            link: function link(scope, element) {
+                var headlines = $("#headlines");
+                setInterval(function () {
+                    if (headlines.find('h1.current').next().length == 0) {
+                        headlines.find('h1').first().addClass('current').siblings().removeClass('current');
+                    } else {
+                        headlines.find('h1.current').next().addClass('current').siblings().removeClass('current');
+                    }
+                }, 4000);
+            }
+        };
+    });
 })();
 /**
  * Created by xiangsongtao on 16/6/29.

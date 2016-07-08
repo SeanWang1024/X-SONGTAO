@@ -53,16 +53,18 @@ angular.module('xstApp')
                         getTags();
                         //操作提示
                         $scope.submitText = '新增成功!';
-                        $timeout(function () {
-                            angular.element(document.getElementById('addTag')).modal('hide');
-                            $scope.submitText = null;
-                        }, 1500, true);
+                        // $timeout(function () {
+                        //    
+                        // }, 1500, true);
+                        angular.element(document.getElementById('addTag')).modal('hide');
+                        $scope.submitText = null;
                     } else {
                         //操作提示
                         $scope.submitText = '新增失败, 标签名称已存在!';
-                        $timeout(function () {
-                            $scope.submitText = null;
-                        }, 1500, true);
+                        // $timeout(function () {
+                        //
+                        // }, 1500, true);
+                        $scope.submitText = null;
                         $log.error(response.msg);
                     }
                 }
@@ -91,10 +93,11 @@ angular.module('xstApp')
                         getTags();
                         //操作提示
                         $scope.submitText = '修改成功!';
-                        $timeout(function () {
-                            angular.element(document.getElementById('editTag')).modal('hide');
-                            $scope.submitText = null;
-                        }, 1500, true);
+                        // $timeout(function () {
+                        //
+                        // }, 1500, true);
+                        angular.element(document.getElementById('editTag')).modal('hide');
+                        $scope.submitText = null;
                     } else {
                         //操作提示
                         switch (parseInt(response.code)) {
@@ -108,9 +111,10 @@ angular.module('xstApp')
                                 $scope.submitText = '修改失败!';
                                 break;
                         }
-                        $timeout(function () {
-                            $scope.submitText = null;
-                        }, 1500, true);
+                        // $timeout(function () {
+                        //
+                        // }, 1500, true);
+                        $scope.submitText = null;
                         $log.error(response.msg);
                     }
                 }
@@ -136,16 +140,18 @@ angular.module('xstApp')
                         getTags();
                         //操作提示
                         $scope.submitText = '删除成功!';
-                        $timeout(function () {
-                            angular.element(document.getElementById('delTag')).modal('hide');
-                            $scope.submitText = null;
-                        }, 1500, true);
+                        // $timeout(function () {
+                        //   
+                        // }, 1500, true);
+                        angular.element(document.getElementById('delTag')).modal('hide');
+                        $scope.submitText = null;
                     } else {
                         //操作提示
                         $scope.submitText = '删除失败!';
-                        $timeout(function () {
-                            $scope.submitText = null;
-                        }, 1500, true);
+                        // $timeout(function () {
+                        //   
+                        // }, 1500, true);
+                        $scope.submitText = null;
                         $log.error(response.msg);
                     }
                 }

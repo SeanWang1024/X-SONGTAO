@@ -1,56 +1,64 @@
 .paper {
-  background-color: #fff;
+  background-color: transparent;
   margin-bottom: 30px;
+  border-radius: 4px;
+  overflow: hidden;
 
   .paper__header {
-    border:1px solid transparent;
+    border: 1px solid transparent;
     padding: 35px 35px 0;
+    background: #fff;
+    text-align: right;
   }
   .paper__info {
     @include display-flex;
-    @include justify-content(flex-start);
+    @include justify-content(flex-end);
     @include align-items(center);
     background: $base-background-color;
-    padding: 14px 35px;
+    padding: 10px 35px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8) inset;
     transition: all ease 200ms;
     .paper__info--span {
       color: #eee;
-      margin-right: 20px;
+      margin-left: 20px;
       font-size: 14px;
     }
 
   }
   .paper__content {
-    padding: 0 35px;
+    padding: 35px 35px 0;
+    background: #fff;
     .paper__content--inner {
-      padding: 35px 0;
+      padding: 5px 0;
       //border-bottom: 1px dashed #464646;
     }
   }
   .paper__navBox {
+    background-color: #fff;
     .paper__navBox__inner {
       padding: 20px 0;
       text-align: center;
       list-style: none;
-      border: 1px solid transparent;
+      color: $base-word-color;
+      //border: 1px solid transparent;
       //padding: 35px;
       @include display-flex;
       @include justify-content(center);
       @include align-items(center);
+      border-bottom: 1px solid #000;
       div {
         margin: 0 10px;
-        border: 1px solid #464646;
+        //border: 1px solid #464646;
         padding: 5px 20px;
         font-size: 16px;
-        border-radius: 28px;
-        transition: all ease 200ms;
-        cursor: pointer;
-        &:hover {
-          color: #fff;
-          border-color: $base-theme-color;
-          background-color: $base-theme-color;
-        }
+        //border-radius: 28px;
+        //transition: all ease 200ms;
+        //cursor: pointer;
+        //&:hover {
+        //  color: #fff;
+        //  border-color: $base-theme-color;
+        //  background-color: $base-theme-color;
+        //}
 
       }
     }
@@ -61,35 +69,64 @@
 
 .commentbox {
   background-color: $base-background-color;
-  padding: 35px;
+  padding: 0;
   border-radius: 3px;
-  border-top: 3px solid $base-theme-color;
+  //border-top: 3px solid $base-theme-color;
   border-bottom: 3px solid $base-theme-color;
-  .commentbox__header {
-    //padding:10px 0;
-    border-bottom: 1px solid #fff;
-    margin-bottom: 25px;
-    h3 {
-      color: #fff;
-    }
-    span {
-      background: #FFF;
-      color: #333;
-      border-radius: 5px;
-      padding: 0 4px;
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-top: 4px solid $base-theme-color;
+    border-top-right-radius: 3px;
+    width: 40%;
+    height: 0;
+  }
 
+  .commentbox__header {
+    padding:0 10px;
+    //border-bottom: 1px solid #fff;
+    margin-bottom: 15px;
+    text-align: right;
+    h3 {
+      margin:0;
+      height:72px;
+      @include display-flex;
+      @include justify-content(flex-end);
+      @include align-items(center);
+
+      .commentbox__header--Comments{
+        font-size:50px;
+        color: #fff;
+        margin-right: 10px;
+      }
+      .commentbox__header--count{
+        top: 6px;
+        background: $base-theme-color;
+        font-size: 20px;
+        background: $base-theme-color;
+        color: #fff;
+        border-radius: 5px;
+        padding: 3px 6px;
+        position: relative;
+        font-weight: 400;
+        vertical-align: baseline;
+      }
     }
   }
 
   //问题盒子
   .commentBox__question {
     width: 100%;
-    box-sizing: content-box;
+    box-sizing: border-box;
     position: relative;
     height: 50px;
-    transition:all ease 200ms;
-    z-index:1;
-    margin: 12px 0 0;
+    transition: all ease 200ms;
+    z-index: 1;
+    margin: 0;
+    padding:0 35px;
     &.active {
       height: 100px;
       .commentBox__info {
@@ -99,7 +136,7 @@
     .commentBox__questionBox {
       position: relative;
       height: 50px;
-      z-index:10;
+      z-index: 10;
       .commentBox__questionBox--input {
         width: 100%;
         border-radius: 5px;
@@ -116,10 +153,10 @@
         position: absolute;
         right: 0;
         top: 0;
-        height:50px;box-sizing: border-box;
+        height: 50px;
+        box-sizing: border-box;
         border-bottom-right-radius: 5px;
         border-top-right-radius: 5px;
-
 
         background: $base-theme-color;
         color: #fff;
@@ -146,8 +183,8 @@
       top: 0;
       left: 0;
       width: 100%;
-      z-index:1;
-      transition:all ease 200ms;
+      z-index: 1;
+      transition: all ease 200ms;
       .commentBox__info--input {
         flex: 1;
         @include display-flex;
@@ -177,7 +214,7 @@
   }
   //用户评论内容盒子
   .commentbox__inner {
-    padding: 15px 0;
+    padding: 15px 35px 35px 35px;
     .comments {
       margin-bottom: 22px;
       .comments__ask {
@@ -227,16 +264,16 @@
       }
       .comments__reply {
         padding-left: 80px;
-        .commentBox__question{
+        .commentBox__question {
           display: block;
-          height:0;
+          height: 0;
           opacity: 0;
           overflow: hidden;
         }
-        &.active{
-          .commentBox__question{
+        &.active {
+          .commentBox__question {
             display: block;
-            height:auto;
+            height: auto;
             opacity: 1;
             overflow: visible;
           }

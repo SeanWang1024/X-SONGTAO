@@ -146,12 +146,8 @@ module.exports = {
                     if (!!article) {
                         if (comment.article_id.toString() === comment.pre_id.toString()) {
                             //删除主评论时,统计下面子评论数
-                            let deleteNum = comment.next_id.length + 1;
-                            if (article.comment_num > deleteNum) {
-                                article.comment_num -= deleteNum;
-                            } else {
-                                article.comment_num = 0;
-                            }
+                            article.comment_num -= comment.next_id.length;
+                            !article.comment_num || (article.comment_num = 0);
                         } else {
                             //只是删除子评论自己
                             !!article.comment_num ? article.comment_num-- : (article.comment_num = 0);
@@ -233,7 +229,7 @@ module.exports = {
         Comments.find({article_id: req.params.article_id, pre_id: req.params.article_id})
             .populate({
                 path: "next_id",
-                options: {sort: { time: -1 }}
+                options: {sort: {time: -1}}
             })
             .sort('-time')
             .exec(function (err, commentList) {
@@ -244,38 +240,6 @@ module.exports = {
                     "data": commentList
                 })
             });
-
-        //
-        // Comments.find({article_id: req.params.article_id}, function (err, comments) {
-        //     if (err) {
-        //         DO_ERROR_RES(res);
-        //         return next();
-        //     }
-        //     for (let comment of comments) {
-        //         if (comment.article_id.toString() === comment.pre_id.toString()) {
-        //             //根评论
-        //             let tpl = [];
-        //             tpl.push(comment);
-        //             for (let next_id of comment.next_id) {
-        //                 //得到next_id,查找comments中的评论记录
-        //                 for (let com of comments) {
-        //                     if (next_id.toString() === com._id.toString()) {
-        //                         tpl.push(com);
-        //                     }
-        //                 }
-        //             }
-        //             CommentsArr.push(tpl);
-        //         }
-        //     }
-        //     res.status(200);
-        //     res.send({
-        //         "code": "1",
-        //         "msg": "find comments by article_id success!",
-        //         "data": CommentsArr
-        //     });
-        // })
-
-
     },
     add: function (req, res, next) {
         let {article_id, pre_id, next_id, name, email, time, content, ip, isIReplied, state} =  req.body;
@@ -292,7 +256,7 @@ module.exports = {
             state
         });
 
-        //将此评论挂载到article_id这个文章下
+        //对文章的评论数++
         function refreshArticle(article_id) {
             return new Promise(function (resolve, reject) {
                 Articles.findOne({_id: article_id}, function (err, article) {
@@ -316,12 +280,14 @@ module.exports = {
                     if (err) {
                         reject();
                     }
-                    if (!!preComment && preComment.article_id.toString() === preComment.pre_id.toString()) {
-                        //对根评论进行修改
-                        preComment.next_id.push(comment._id);
-                        //当前子评论关闭子子评论
-                        comment.next_id = [];
-                        preComment.save();
+                    if (!!preComment) {
+                        if (preComment.article_id.toString() === preComment.pre_id.toString()) {
+                            //对根评论进行修改
+                            preComment.next_id.push(comment._id);
+                            //当前子评论关闭子子评论
+                            comment.next_id = [];
+                            preComment.save();
+                        }
                         resolve();
                     } else {
                         reject();
@@ -333,8 +299,8 @@ module.exports = {
         refreshArticle(article_id).then(function () {
             //保存评论
             comment.save();
-            console.log(comment.article_id)
-            console.log(comment.pre_id)
+            // console.log(comment.article_id)
+            // console.log(comment.pre_id)
             if (comment.article_id.toString() !== comment.pre_id.toString()) {
                 //对评论进行跟评
                 refreshPreComment(comment).then(function () {
@@ -367,6 +333,8 @@ module.exports = {
             });
         });
     },
+    //只是修改我对此评论的回复状态
+    //此接口只对我有效
     isIReplied: function (req, res, next) {
         Comments.findOne({_id: req.body._id}, function (err, comment) {
             if (err) {
@@ -374,9 +342,8 @@ module.exports = {
                 return next();
             }
             if (!!comment) {
-                let {isIReplied} = req.body;
                 //数据写入并保存
-                comment.isIReplied = isIReplied;
+                comment.isIReplied = true;
                 //保存
                 comment.save();
                 res.status(200);
@@ -394,21 +361,46 @@ module.exports = {
             }
         });
     },
+    //修改审核情况
+    changeState: function (req, res, next) {
+        Comments.findOne({_id: req.body._id}, function (err, comment) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            if (!!comment) {
+                comment.state = !comment.state;
+                //保存
+                comment.save();
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "comment state change success!",
+                    "data": comment
+                });
+            } else {
+                res.status(200);
+                res.send({
+                    "code": "2",
+                    "msg": "comment state change failure, comment non-exist!"
+                });
+            }
+        });
+    },
     commentToArticle: function (req, res, next) {
-        Comments.$where('this.article_id == this.pre_id')
-            .where('isIReplied', false)
-            .populate({
-                path: "article_id",
-                select: {title: 1},
-            })
-            .exec(function (err, commentList) {
+        // Comments.$where('this.article_id == this.pre_id')
+        // Comments
+        // .where('isIReplied', false)
+        Comments.find().where('state', true).populate({
+            path: "article_id",
+            select: {title: 1}
+        }).exec(function (err, commentList) {
                 res.status(200);
                 res.send({
                     "code": "1",
                     "msg": "comment to articles list get success!",
                     "data": commentList
                 })
-
             })
     }
 };

@@ -55,6 +55,5 @@
                     controller: 'commentCtrl'
                 })
 
-
         }])
 })();
