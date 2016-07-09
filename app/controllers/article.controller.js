@@ -217,7 +217,7 @@ module.exports = {
         //查找文章
         let from = parseInt(req.params[0]);
         let limit = parseInt(req.params[1]);
-        Articles.find({}).sort('-publish_time').skip(from).limit(limit).exec(function (err, docs) {
+        Articles.find({state:true}).sort('-publish_time').skip(from).limit(limit).exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -409,7 +409,7 @@ module.exports = {
     },
     //获取文章历史记录,需要根据【年】->【月】->【文章arr】划分组合
     getHistory: function (req, res, next) {
-        Articles.find({}, {'title': 1, 'publish_time': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
+        Articles.find({state:true}, {'title': 1, 'publish_time': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -498,7 +498,7 @@ module.exports = {
     },
     getByTagId: function (req, res, next) {
         //根据tag查找文章,不限制文章数量
-        Articles.find({tags: {"$in": [req.params.id]}}, function (err, docs) {
+        Articles.find({tags: {"$in": [req.params.id]},state:true}, function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -518,6 +518,22 @@ module.exports = {
                             articles[i].tags[j] = name;
                         }
                     }
+
+                    //获取文章摘要
+                    let abstractArr = marked.lexer(articles[i].content);
+                    let abstract = '';
+                    let fragment_text;
+                    for (let fragment of abstractArr) {
+                        fragment_text = fragment.text;
+                        if (!!fragment_text) {
+                            if (abstract.length < 250) {
+                                abstract += fragment_text;
+                            }else{
+                                break;
+                            }
+                        }
+                    }
+                    articles[i].content = abstract;
                 }
                 res.status(200);
                 res.send({

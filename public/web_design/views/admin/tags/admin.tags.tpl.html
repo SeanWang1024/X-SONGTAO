@@ -43,7 +43,7 @@
                 </thead>
                 <!--<colgroup></colgroup>-->
                 <tbody>
-                <tr ng-repeat="tag in tagLists | orderBy:predicate:reverse">
+                <tr ng-repeat="tag in tagLists | orderBy:predicate:reverse track by $index">
                     <td ng-bind="$index+1"></td>
                     <!--<td ng-bind="tag._id" style="display: none;"></td>-->
                     <td ng-bind="tag.name"></td>
@@ -57,6 +57,11 @@
                 </tr>
                 </tbody>
             </table>
+            <!--无数据提示-->
+            <div class="nodata" ng-if="!tagLists.length">
+                <img src="web/img/employee.svg" alt="当前没有数据诶">
+                <p class="content">当前没有数据诶!</p>
+            </div>
         </div>
 
     </div>

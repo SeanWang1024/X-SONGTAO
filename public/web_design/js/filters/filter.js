@@ -65,8 +65,9 @@
                 if (!!imgName && imgName.indexOf('http') === -1) {
                     //正确的时间戳
                     return `${API.imgResource}${imgName}`;
-                } else {
-                    //错误的时间戳返回现在时间
+                } else if(!imgName) {
+                    return false;
+                }else{
                     return imgName;
                 }
             }

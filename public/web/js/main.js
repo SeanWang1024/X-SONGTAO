@@ -10,6 +10,7 @@
     }).factory('API', function () {
         var url = "http://localhost:8088";
         var MY_INFO_ID = '576b95155fce2dfd3874e738';
+        //admin对评论进行回复的信息
         var MY = '我';
         var EMAIL = '280304286@163.com';
         return {
@@ -255,8 +256,9 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
             if (!!imgName && imgName.indexOf('http') === -1) {
                 //正确的时间戳
                 return '' + API.imgResource + imgName;
+            } else if (!imgName) {
+                return false;
             } else {
-                //错误的时间戳返回现在时间
                 return imgName;
             }
         };
@@ -336,6 +338,163 @@ console.log('你好!你这是在.....想看源码?联系我吧!');
         };
     }]);
 })();
+(function () {
+    angular.module('xstApp')
+
+    /**
+     * 图片加载失败的时候进行处理
+     * <img height="100%" ng-src="{{video.imgUrl}}" err-src="images/video-img-404.png">
+     *  如果err-src不传入数据,则计算使用最近尺寸比例匹配的图片
+     * */
+    .directive('errSrc', [function () {
+        return {
+            restrict: 'A',
+            link: function link(scope, element, attrs) {
+                element.css({ "opacity": 0 });
+
+                var emptyTransparent = "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==";
+
+                //如果失败
+                element.on('error', function () {
+                    console.log('--------------');
+                    console.log(attrs.errSrc);
+                    console.log(attrs.src);
+                    console.log(attrs.src != attrs.errSrc);
+                    if (!!attrs.errSrc && attrs.src != attrs.errSrc) {
+                        attrs.$set('src', attrs.errSrc);
+                    } else {
+                        // console.log(getPlaceHolderImgUrl())
+                        attrs.$set('src', emptyTransparent);
+                    }
+                    element.css({ "opacity": 1, "transition": "opacity ease 300ms" });
+                });
+                //如果成功
+                element.on('load', function () {
+                    element.css({ "opacity": 1, "transition": "opacity ease 300ms" });
+                });
+            }
+        };
+    }]);
+})();
+
+// /**
+//  * Created by xiangsongtao on 16/7/9.
+//  */
+// (function () {
+//     angular.module('xstApp')
+//         .directive('noData', function () {
+//             return {
+//                 restrict:'E',
+//                 replace:true,
+//                 template:'<div class="nodata" ng-if="ndData.length"><img src="web/img/employee.svg" alt="当前没有数据诶"><p class="content">{{ndText}}</p></div>',
+//                 scope:{
+//                     ndData:'=',
+//                     ndText:'@'
+//                 },
+//                 controller:function ($scope) {
+//                     console.log($scope.ndData)
+//                     console.log($scope.ndText)
+//                 }
+//             }
+//         })
+// })();
+/**
+ * Created by xiangsongtao on 16/3/21.
+ */
+
+(function () {
+    angular.module('xstApp')
+
+    /**
+     * 用$ionicLoading改造出$ionicToast提示
+     * */
+    .factory("$toast", ['$timeout', '$rootScope', '$log', function ($timeout, $rootScope, $log) {
+        //传入参数有两种情况
+        var _contentBox = [];
+        var _token = true;
+        //将内容布置好
+        //<div id="toaster-container">
+        // <div class="toaster">
+        // <span>text</span>
+        // </div>
+        // </div>
+        // <div class="alert alert-success" role="alert">
+        //     <a href="#" class="alert-link">...</a>
+        // </div>
+        var _outerHtml = '<div id="toaster-container"></div>';
+        var _innerHtml;
+        //上传
+        angular.element(document.body).append(_outerHtml);
+        //定位
+        var $toasterContainer = angular.element(document.getElementById('toaster-container'));
+
+        function showToast(argsArray) {
+            //1. 字符串,表示toast要显示的
+            //2. 配置参数options,表示需要对options进行配置
+            var _during = angular.isArray(argsArray) && argsArray.length > 1 && !!argsArray[1] ? argsArray[1] : 1300;
+            var _interval = angular.isArray(argsArray) && argsArray.length > 2 && !!argsArray[2] ? argsArray[2] : 300;
+            //拿牌
+            _token = false;
+            //取第一个
+            var noticeToShow = _contentBox.shift();
+            //填入
+            _innerHtml = '<div class="toaster alert alert-success"><span>' + noticeToShow + '</span></div>';
+            //清空 上膛
+            $toasterContainer.empty().append(_innerHtml).addClass('visible active');
+            //定时后取消显示
+            $timeout(function () {
+                $toasterContainer.removeClass("active");
+                $timeout(function () {
+                    $toasterContainer.removeClass('visible');
+                    //归还牌子
+                    _token = true;
+                    //广播事件
+                    $rootScope.$broadcast("toastComplete");
+                }, _interval);
+            }, _during);
+        };
+        //设置监听 事件请求
+        $rootScope.$on("toastRequest", function (event, data) {
+            //将消息推到末尾
+            _contentBox.push(data[0]);
+            if (_token) {
+                showToast(data);
+            }
+        });
+        //设置监听 事件完成
+        $rootScope.$on("toastComplete", function () {
+            if (_contentBox.length > 0) {
+                showToast();
+            }
+        });
+        // $rootScope.$on("$locationChangeSuccess",function () {
+        //     console.log("$locationChangeSuccess");
+        //     console.log(_contentBox)
+        //
+        // });
+        //
+        // $rootScope.$on("toastAbandon",function () {
+        //
+        // });
+
+        return {
+            show: function show() {
+                if (arguments[0] && angular.isString(arguments[0])) {
+                    var argsArray = Array.prototype.slice.call(arguments);
+                    $log.debug("$ionicToast:" + argsArray);
+                    //如果第一个参数是字符串,则显示
+                    $rootScope.$broadcast("toastRequest", argsArray);
+                } else {
+                    $rootScope.$broadcast("toastRequest", "操作失败!");
+                    $log.error('注意使用方法: $ionicToast.show("string")!');
+                    // console.log('注意使用方法: $ionicToast.show("string")!');
+                    return false;
+                }
+            }
+        };
+    }]);
+})();
+
 /**
  * Created by xiangsongtao on 16/7/1.
  */
@@ -734,53 +893,53 @@ angular.module('xstApp')
     }
 
     //进行评论
-    $scope.isSubmitReply = false;
+    // $scope.isSubmitReply = false;
     //评论的内容
     $scope.comment_info = {
         content: ''
     };
-    $scope.comment = function (item, $event) {
-        // let target = $($event.currentTarget).parents('.comments__ask');
-        // target.siblings().removeClass('isReply');
-        // target.toggleClass('isReply');
+    $scope.comment = function (item) {
         $scope.replyBox = item;
     };
-    $scope.commentThis = function ($event, item) {
-        $scope.isSubmitReply = true;
+    $scope.confirmAddComment = function (item) {
+        // $scope.isSubmitReply = true;
 
         //进行评论的逻辑处理,我对此的评论
-        // console.log($scope.comment_info.content)
+        // console.log('评论内容:');
+        // console.log($scope.comment_info.content);
         var params = {
             article_id: item.article_id._id,
             pre_id: item._id,
             next_id: [],
-            name: "我",
-            email: "280304286@163.com",
+            name: API.MY,
+            email: API.EMAIL,
             time: new Date(),
             content: $scope.comment_info.content,
+            //这里是增加对主评论的子评论,
+            // 既然是我的评论那我没有道理继续评论的理由,
+            // 故对自评论显示我已评论,我的评论,审核状态为true
+            // 但是主评论需要手动设置
             isIReplied: true,
             state: true
         };
-        // console.log(params)
         AJAX({
             method: 'post',
             url: API.postComment,
             data: params,
             success: function success(response) {
-                // console.log('response');
-                // console.log(response);
                 if (parseInt(response.code) === 1) {
-                    // $scope.commentList = response.data;
-                    // console.log(response.data);
+                    $log.debug("回复成功: " + response);
+                    //将主评论设为我已评论
                     changeCommentReplyState(item._id);
                 }
+            },
+            error: function error(response) {
+                $log.debug("回复失败: " + response);
+            },
+            complete: function complete() {
+                $scope.comment_info.content;
             }
         });
-
-        $timeout(function () {
-            $scope.isSubmitReply = false;
-            $($event.currentTarget).parents('.comments__ask').toggleClass('isReply');
-        }, 1000, true);
     };
 
     //    删除评论
@@ -794,11 +953,7 @@ angular.module('xstApp')
             method: 'delete',
             url: API.delComment.replace('id', delCommId),
             success: function success(response) {
-                // console.log('response');
-                // console.log(response);
                 if (parseInt(response.code) === 1) {
-                    // $scope.commentList = response.data;
-                    // console.log(response.data);
                     //刷新文章列表
                     getComments();
                 }
@@ -817,11 +972,7 @@ angular.module('xstApp')
                 _id: _id
             },
             success: function success(response) {
-                // console.log('response');
-                // console.log(response);
                 if (parseInt(response.code) === 1) {
-                    // $scope.commentList = response.data;
-                    // console.log(response.data);
                     //刷新文章列表
                     $log.debug("状态改变成功");
                     // getComments();
@@ -830,12 +981,13 @@ angular.module('xstApp')
         });
     };
 
-    $scope.Condition;
-    $scope.ConditionFilter = function (data) {
-        if (!$scope.Condition) {
+    //子主评论筛选
+    $scope.Condition_1;
+    $scope.ConditionFilter_1 = function (data) {
+        if (!$scope.Condition_1) {
             return true;
         }
-        switch (parseInt($scope.Condition)) {
+        switch (parseInt($scope.Condition_1)) {
             case 0:
                 return true;
                 break;
@@ -847,26 +999,73 @@ angular.module('xstApp')
             case 2:
                 return data.article_id._id.toString() !== data.pre_id.toString();
                 break;
-            //主评论+未回复
-            case 3:
-                return !data.isIReplied && data.article_id._id.toString() === data.pre_id.toString();
+            default:
+                return true;
                 break;
-            //主评论+未审核
-            case 4:
-                return !data.state && data.article_id._id.toString() === data.pre_id.toString();
+        }
+    };
+
+    //回复筛选
+    $scope.Condition_2;
+    $scope.ConditionFilter_2 = function (data) {
+        if (!$scope.Condition_2) {
+            return true;
+        }
+        switch (parseInt($scope.Condition_2)) {
+            case 0:
+                return true;
                 break;
-            //主回复
-            case 5:
+            //未回复
+            case 1:
                 return !data.isIReplied;
                 break;
+            //已回复
+            case 2:
+                return !!data.isIReplied;
+                break;
+            //主评论+未回复
+            // case 3:
+            //     return !data.isIReplied && data.article_id._id.toString() === data.pre_id.toString();
+            //     break;
+            // //主评论+未审核
+            // case 4:
+            //     return !data.state && data.article_id._id.toString() === data.pre_id.toString();
+            //     break;
+            // //主回复
+            // case 5:
+            //     return !data.isIReplied;
+            //     break;
+            // //未审核
+            // case 6:
+            //     return !data.state;
+            //     break;
+            default:
+                return true;
+                break;
+        }
+    };
+
+    //审核筛选
+    $scope.Condition_3;
+    $scope.ConditionFilter_3 = function (data) {
+        if (!$scope.Condition_3) {
+            return true;
+        }
+        switch (parseInt($scope.Condition_3)) {
+            case 0:
+                return true;
+                break;
             //未审核
-            case 6:
+            case 1:
                 return !data.state;
+                break;
+            //已审核
+            case 2:
+                return !!data.state;
                 break;
             default:
                 return true;
                 break;
-
         }
     };
 
@@ -898,7 +1097,7 @@ angular.module('xstApp')
  * Created by xiangsongtao on 16/6/29.
  */
 (function () {
-    angular.module('xstApp').controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state) {
+    angular.module('xstApp').controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', '$localStorage', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state, $localStorage) {
         if (!$rootScope.isLogin) {
             $state.go('home');
             return;
@@ -976,16 +1175,17 @@ angular.module('xstApp')
                     if (parseInt(response.code) === 1) {
                         $scope.textState = '成功!';
                         $log.debug(response.msg);
+
+                        //密码修改成功,需要提示用户重新登录,自动退出!
+                        $timeout(function () {
+                            $localStorage.$reset();
+                            $rootScope.isLogin = false;
+                            $state.go('login');
+                        }, 200, true);
                     } else {
                         $scope.textState = '失败!';
                         $log.error(response.msg);
                     }
-                },
-                complete: function complete() {
-                    $timeout(function () {
-                        $scope.myinfo.new_password = null;
-                        $scope.textState = 'Submit';
-                    }, 2000, true);
                 }
             });
         };
@@ -1198,66 +1398,6 @@ angular.module('xstApp')
  * Created by xiangsongtao on 16/6/29.
  */
 (function () {
-    angular.module('xstApp')
-    //登陆控制器
-    .controller('loginController', ['$scope', 'AJAX', 'API', '$localStorage', '$rootScope', '$state', function ($scope, AJAX, API, $localStorage, $rootScope, $state) {
-        if ($rootScope.isLogin) {
-            $state.go('home');
-        } else {
-            $scope.data = {
-                username: '',
-                password: ''
-            };
-            $scope.loginBtn = function () {
-                if (!$scope.data.username) {
-                    alert('请输入用户名');
-                    return;
-                }
-                if (!$scope.data.password) {
-                    alert('请输入用户名');
-                    return;
-                }
-                AJAX({
-                    method: 'post',
-                    url: API.login,
-                    data: $scope.data,
-                    success: function success(response) {
-                        if (parseInt(response.code) === 1) {
-                            //权限信息
-                            $localStorage.authorization = {
-                                token: response.token,
-                                time: new Date().getTime()
-                            };
-                            //我进行评论的信息
-                            $localStorage.commentAuth = {
-                                "commentUsername": API.MY,
-                                "commentEmail": API.EMAIL
-                            };
-                            $rootScope.isLogin = true;
-                            $state.go('home');
-                        } else {
-                            switch (parseInt(response.code)) {
-                                case 2:
-                                    alert("用户名或密码错误,请再检查!");
-                                    break;
-                                default:
-                                    alert("系统错误!");
-                                    break;
-                            }
-                        }
-                    },
-                    error: function error() {
-                        alert("系统错误!");
-                    }
-                });
-            };
-        }
-    }]);
-})();
-/**
- * Created by xiangsongtao on 16/6/29.
- */
-(function () {
     angular.module('xstApp');
 })();
 /**
@@ -1288,22 +1428,108 @@ angular.module('xstApp')
  */
 (function () {
     angular.module('xstApp')
+    //登陆控制器
+    .controller('loginController', ['$scope', 'AJAX', 'API', '$localStorage', '$rootScope', '$state', function ($scope, AJAX, API, $localStorage, $rootScope, $state) {
+        if ($rootScope.isLogin) {
+            $state.go('home');
+        } else {
+            $scope.data = {
+                username: '',
+                password: ''
+            };
+            $scope.loginBtn = function () {
+                if (!$scope.data.username) {
+                    $scope.errText = "请输入用户名!";
+                    // alert('请输入用户名');
+                    return;
+                }
+                if (!$scope.data.password) {
+                    $scope.errText = "请输入密码!";
+                    // alert('请输入用户名');
+                    return;
+                }
+                AJAX({
+                    method: 'post',
+                    url: API.login,
+                    data: $scope.data,
+                    success: function success(response) {
+                        if (parseInt(response.code) === 1) {
+                            //权限信息
+                            $localStorage.authorization = {
+                                token: response.token,
+                                time: new Date().getTime()
+                            };
+                            //我进行评论的信息
+                            $localStorage.commentAuth = {
+                                "commentUsername": API.MY,
+                                "commentEmail": API.EMAIL
+                            };
+                            $rootScope.isLogin = true;
+                            $state.go('home');
+                        } else {
+                            switch (parseInt(response.code)) {
+                                case 2:
+                                    $scope.errText = "用户名或密码错误,请再检查!";
+                                    break;
+                                default:
+                                    $scope.errText = "系统错误!";
+                                    break;
+                            }
+                        }
+                    },
+                    error: function error() {
+                        $scope.errText = "系统错误!";
+                        // alert("系统错误!");
+                    }
+                });
+            };
+
+            document.onkeydown = function (event) {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if (e && e.keyCode == 13) {
+                    // enter 键
+                    //要做的事情
+                    $scope.loginBtn();
+                }
+            };
+        }
+    }]);
+})();
+/**
+ * Created by xiangsongtao on 16/6/29.
+ */
+(function () {
+    angular.module('xstApp')
     //Detail控制器-catalogueName-type-id
     .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, AJAX, API, $localStorage, $timeout) {
 
-        //评论人的信息
-        $scope.commentUsername;
-        $scope.commentEmail;
-        //对文章进行评论的input
-        $scope.commentToArt;
-        //对评论进行评论的input内容
-        $scope.commentToComment;
+        $scope.chain = {
+            selectId: 'selectId',
+            main_state: 'default', //default,going,success,error
+            sub_state: 'default' };
 
+        //default,going,success,error
+        function changeState(isArt, state) {
+            if (isArt) {
+                $scope.chain.main_state = state;
+            } else {
+                $scope.chain.sub_state = state;
+            }
+        }
+
+        //评论人的信息
+        $scope.commentInfo = {
+            username: '',
+            email: ''
+        };
+        $scope.canComment = false;
+
+        //获取文章
         AJAX({
             method: 'get',
             url: API.getArticleById.replace('id', $stateParams.id),
             success: function success(response) {
-                console.log(response);
+                // console.log(response);
                 if (parseInt(response.code) === 1) {
                     $scope.article = response.data;
                     getCommentList($scope.article._id);
@@ -1312,34 +1538,48 @@ angular.module('xstApp')
             error: function error(err) {}
         });
 
+        //记录回复时间,间隔1min后才能回复。
+        var commentTime = void 0;
         //点击回复按钮触发动作
-        $scope.commentThisArtBtn = function (commentInfo) {
+        $scope.commentBtn = function (info, commentContent) {
+            changeState(!info.article_id, 'going');
 
-            console.log('commentInfo');
-            console.log(commentInfo);
+            // if (!!commentTime && new Date().getTime() - commentTime < 1000 * 60) {
+            //     alert("您评论过于平凡,请1min后再评论!")
+            //     return false;
+            // }
+            // commentTime = new Date().getTime();
+
             //如果有论人的信息,则不显示输入框
-            if (!!$scope.commentUsername && !!$scope.commentEmail) {
+            if (!!$scope.commentInfo.username && !!$scope.commentInfo.email) {
                 $scope.canComment = true;
                 $localStorage.commentAuth = {
-                    commentUsername: $scope.commentUsername,
-                    commentEmail: $scope.commentEmail
+                    commentUsername: $scope.commentInfo.username,
+                    commentEmail: $scope.commentInfo.email
                 };
-            }
-
-            if (!$scope.commentToArt) {
-                alert("评论内容不能为空");
+            } else {
+                changeState(!info.article_id, 'error');
                 return false;
             }
 
+            var article_id = void 0;
+            if (!info.article_id) {
+                article_id = info._id;
+                // console.log("这个是对文章的评论!")
+            } else {
+                    article_id = info.article_id;
+                    // console.log("这个是对评论的回复")
+                }
+
             var params = {
-                article_id: commentInfo._id,
-                pre_id: commentInfo._id,
+                article_id: article_id,
+                pre_id: info._id,
                 next_id: [],
-                name: $scope.commentUsername,
-                email: $scope.commentEmail,
+                name: $scope.commentInfo.username,
+                email: $scope.commentInfo.email,
                 time: new Date(),
-                content: $scope.commentToArt,
-                state: true,
+                content: commentContent,
+                state: false,
                 isIReplied: false
             };
 
@@ -1349,75 +1589,35 @@ angular.module('xstApp')
                 url: API.newComment,
                 data: params,
                 success: function success(response) {
-                    console.log(response);
+                    // console.log(response);
                     if (parseInt(response.code) === 1) {
-                        console.log("评论成功@@@!!!!");
-                        $scope.commentToArt = '';
-                        $scope.commentToComment = '';
-                        //    对评论的评论回复还需要隐藏评论框
-                        $('.comments__reply').removeClass('active');
+                        // console.log("评论成功@@@!!!!")
+
+                        changeState(!info.article_id, 'success');
+
+                        //对评论数++
+                        $scope.article.comment_num++;
 
                         //刷新
-                        getCommentList(commentInfo._id);
+                        getCommentList(article_id);
+                        if (info.article_id) {
+                            // 对评论的评论回复还需要隐藏评论框
+                            $timeout(function () {
+                                $scope.chain.selectId = '';
+                            }, 1000, true);
+                        }
+                    } else {
+                        changeState(!info.article_id, 'error');
                     }
                 },
-                error: function error(err) {}
-            });
-        };
-
-        $scope.$watch('commentToComment', function () {
-            console.log($scope.commentToComment);
-        });
-        //对评论进行评论
-        $scope.commentThisCommentBtn = function (commentInfo, content) {
-            // $scope.$apply();
-
-            console.log('commentInfo');
-            console.log(commentInfo + "--" + content);
-            //如果有论人的信息,则不显示输入框
-            if (!!$scope.commentUsername && !!$scope.commentEmail) {
-                $scope.canComment = true;
-                $localStorage.commentAuth = {
-                    commentUsername: $scope.commentUsername,
-                    commentEmail: $scope.commentEmail
-                };
-            }
-
-            if (!content) {
-                alert("评论内容不能为空");
-                return false;
-            }
-
-            var params = {
-                article_id: commentInfo.article_id,
-                pre_id: commentInfo._id,
-                next_id: [],
-                name: $scope.commentUsername,
-                email: $scope.commentEmail,
-                time: new Date(),
-                content: content,
-                state: true,
-                isIReplied: false
-            };
-
-            //send
-            AJAX({
-                method: 'post',
-                url: API.newComment,
-                data: params,
-                success: function success(response) {
-                    console.log(response);
-                    if (parseInt(response.code) === 1) {
-                        console.log("评论成功@@@!!!!");
-                        $scope.commentToComment = '';
-                        //    对评论的评论回复还需要隐藏评论框
-                        $('.comments__reply').removeClass('active');
-
-                        //刷新
-                        getCommentList(commentInfo.article_id);
-                    }
+                error: function error(err) {
+                    changeState(!info.article_id, 'error');
                 },
-                error: function error(err) {}
+                complete: function complete() {
+                    $timeout(function () {
+                        changeState(!info.article_id, 'default');
+                    }, 1000, true);
+                }
             });
         };
 
@@ -1428,15 +1628,15 @@ angular.module('xstApp')
             $this.toggleClass('active');
         };
 
-        //判断是否能评论
+        //首次进入判断是否能评论
         $scope.canComment = canComment();
         function canComment() {
             if (!!$localStorage.commentAuth) {
                 if ($scope.commentUsername && $scope.commentEmail) {
                     return true;
                 } else {
-                    $scope.commentUsername = $localStorage.commentAuth.commentUsername;
-                    $scope.commentEmail = $localStorage.commentAuth.commentEmail;
+                    $scope.commentInfo.username = $localStorage.commentAuth.commentUsername;
+                    $scope.commentInfo.email = $localStorage.commentAuth.commentEmail;
                     return true;
                 }
             } else {
@@ -1450,8 +1650,8 @@ angular.module('xstApp')
                 method: 'get',
                 url: API.getArticlesComments.replace('article_id', id),
                 success: function success(response) {
-                    console.log('-----response------');
-                    console.log(response);
+                    // console.log('-----response------')
+                    // console.log(response)
                     if (parseInt(response.code) === 1) {
                         $scope.commentList = response.data;
                     }
@@ -1502,10 +1702,10 @@ angular.module('xstApp')
 (function () {
     angular.module('xstApp')
     //TagList控制器
-    .controller('TagListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+    .controller('TagListController', ['$scope', '$http', 'API', '$state', function ($scope, $http, API, $state) {
         $http.get(API.getTagsListWithStructure).success(function (response) {
-            console.log("TagListController response");
-            console.log(response);
+            // console.log("TagListController response");
+            // console.log(response);
             if (parseInt(response.code) === 1) {
                 $scope.tagLists = response.data;
             }
@@ -1513,7 +1713,7 @@ angular.module('xstApp')
     }]).controller('findArticlesByTagController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
         var url = API.getArticlesWithTagId.replace('id', $stateParams.id);
         $http.get(url).success(function (response) {
-            console.log(response);
+            // console.log(response);
             if (parseInt(response.code) === 1) {
                 $scope.articleLists = response.data;
             }
@@ -1593,6 +1793,7 @@ angular.module('xstApp')
         })
         //    评论
         .state('admin.comment', {
+            cache: true,
             url: "/comments",
             templateUrl: 'web/tpl/admin.comment.tpl.html',
             controller: 'commentCtrl'

@@ -48,8 +48,9 @@
                     templateUrl: 'web/tpl/admin.article.tpl.html',
                     controller: 'articleCtrl'
                 })
-        //    评论
+                //    评论
                 .state('admin.comment', {
+                    cache:true,
                     url: "/comments",
                     templateUrl: 'web/tpl/admin.comment.tpl.html',
                     controller: 'commentCtrl'

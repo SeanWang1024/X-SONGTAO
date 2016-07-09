@@ -3,7 +3,7 @@
  */
 (function () {
     angular.module('xstApp')
-        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state) {
+        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', '$localStorage', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state, $localStorage) {
             if (!$rootScope.isLogin) {
                 $state.go('home');
                 return;
@@ -82,16 +82,17 @@
                         if (parseInt(response.code) === 1) {
                             $scope.textState = '成功!';
                             $log.debug(response.msg);
+
+                            //密码修改成功,需要提示用户重新登录,自动退出!
+                            $timeout(function () {
+                                $localStorage.$reset();
+                                $rootScope.isLogin = false;
+                                $state.go('login');
+                            }, 200, true);
                         } else {
                             $scope.textState = '失败!';
                             $log.error(response.msg);
                         }
-                    },
-                    complete: function () {
-                        $timeout(function () {
-                            $scope.myinfo.new_password = null;
-                            $scope.textState = 'Submit';
-                        }, 2000, true)
                     }
                 });
             };

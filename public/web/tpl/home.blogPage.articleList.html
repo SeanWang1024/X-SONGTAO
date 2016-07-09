@@ -1,5 +1,5 @@
 <article class="main-article animated fadeIn">
-    <section class="main-article-body">
+    <section class="main-article-body" ng-if="articleLists.length">
         <article class="article" ng-repeat="article in articleLists"  ui-sref="blog.detail({id:article._id})">
             <div class="article__header">
                 <h2 class="article__header--title" ng-bind="article.title"></h2>
@@ -31,9 +31,15 @@
                 </div>
             </div>
         </article>
-        <!--<div class="readMoreTo">-->
-            <!--<span> 以上为最新的10篇文章</span>-->
-        <!--</div>-->
     </section>
 </article>
 <!--</div>-->
+<!--无数据提示-->
+<div class="nodata" ng-if="!articleLists.length">
+    <div class="logo-left-box">
+        <h2 class="logo"><span class="blue">X</span><span class="white">-SONGTAO</span></h2>
+        <h3 class="blue notice">提示!</h3>
+        <p class="white">没有找到数据,~~~~(>_<)~~~~</p>
+    </div>
+    <img src="./web/img/employee.svg" alt="当前没有数据诶">
+</div>

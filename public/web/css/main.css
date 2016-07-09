@@ -342,6 +342,78 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 .hljs-strong {
   font-weight: bold; }
 
+.nodata {
+  padding: 20px;
+  display: -moz-flex;
+  display: flex;
+  -moz-justify-content: center;
+  justify-content: center;
+  -moz-align-items: center;
+  align-items: center;
+  -moz-flex-direction: column;
+  flex-direction: column;
+  height: 312px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  position: relative; }
+  .nodata .logo-left-box {
+    position: absolute;
+    left: 25px;
+    top: 25px;
+    color: #fff; }
+    .nodata .logo-left-box .logo {
+      margin-bottom: 5px; }
+    .nodata .logo-left-box .notice {
+      margin-top: 5px;
+      margin-bottom: 10px;
+      position: relative; }
+      .nodata .logo-left-box .notice::after {
+        content: '';
+        height: 3px;
+        width: 30px;
+        position: absolute;
+        background: #38b7ea;
+        left: 0;
+        bottom: -6px; }
+    .nodata .logo-left-box .blue {
+      color: #38b7ea; }
+    .nodata .logo-left-box .white {
+      color: #fff; }
+  .nodata img {
+    width: 200px;
+    height: 200px; }
+  .nodata::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    height: 70px;
+    background: #38b7ea; }
+
+#toaster-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 14;
+  display: -moz-flex;
+  display: flex;
+  -moz-justify-content: center;
+  justify-content: center;
+  -moz-align-items: center;
+  align-items: center;
+  transition: 0.2s opacity linear;
+  visibility: hidden;
+  opacity: 0; }
+  #toaster-container.active {
+    opacity: 1; }
+  #toaster-container.visible {
+    visibility: visible; }
+
 html {
   width: 100%;
   height: 100%;
@@ -979,14 +1051,24 @@ body {
         flex: 1;
         padding-left: 32px;
         height: 100%;
-        border-left: 1px solid #ddd; }
+        border-left: 1px solid #ddd;
+        list-style: square; }
         .yearBox .yearBox__content .monthBox .monthBox__content .monthBox__content__item {
           height: 28px;
           line-height: 28px;
           font-size: 16px;
           color: #565A5F;
           cursor: pointer;
-          list-style-type: square; }
+          list-style-type: square;
+          vertical-align: middle; }
+          .yearBox .yearBox__content .monthBox .monthBox__content .monthBox__content__item .monthBox__content__item-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+          .yearBox .yearBox__content .monthBox .monthBox__content .monthBox__content__item span {
+            vertical-align: middle;
+            display: inline-block;
+            max-width: 360px; }
           .yearBox .yearBox__content .monthBox .monthBox__content .monthBox__content__item:hover {
             color: #38b7ea; }
 
@@ -1117,7 +1199,8 @@ body {
   align-items: center;
   box-sizing: border-box;
   height: 100%;
-  background: transparent radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%); }
+  background: transparent radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+  position: relative; }
   .login-content .blue {
     color: #38b7ea; }
   .login-content .login-content-inner {
@@ -1136,25 +1219,41 @@ body {
       background-color: #49c8fb;
       float: right;
       margin: 0px auto 15px; }
-  .login-content .btn-x-songtao {
-    width: 100px;
-    background-color: #38b7ea;
-    transition: all ease 300ms;
-    color: #fff; }
-    .login-content .btn-x-songtao:hover {
-      color: #fff;
-      background-color: #49c8fb; }
+    .login-content .login-content-inner .btnGroup .errText {
+      color: #dd0600;
+      margin-right: 10px; }
+    .login-content .login-content-inner .btnGroup .btn-x-songtao {
+      width: 100px;
+      background-color: #38b7ea;
+      transition: all ease 300ms;
+      color: #fff; }
+      .login-content .login-content-inner .btnGroup .btn-x-songtao:hover {
+        color: #fff;
+        background-color: #49c8fb; }
 
 .paper {
   background-color: transparent;
   margin-bottom: 30px;
   border-radius: 4px;
   overflow: hidden; }
+  .paper.loading .paper__header h1 {
+    background: #eee; }
+  .paper.loading .paper__info .paper__info--span {
+    opacity: 0.3;
+    background: #fff; }
+  .paper.loading .paper__content .paper__content--inner {
+    background: url(../img/body_placeholder.png) no-repeat center top/cover;
+    min-height: 834px;
+    width: 100%; }
   .paper .paper__header {
     border: 1px solid transparent;
     padding: 35px 35px 0;
     background: #fff;
     text-align: right; }
+    .paper .paper__header h1 {
+      min-height: 52px;
+      width: 100%;
+      box-sizing: border-box; }
   .paper .paper__info {
     display: -moz-flex;
     display: flex;
@@ -1169,12 +1268,13 @@ body {
     .paper .paper__info .paper__info--span {
       color: #eee;
       margin-left: 20px;
-      font-size: 14px; }
+      font-size: 14px;
+      min-width: 70px; }
   .paper .paper__content {
     padding: 35px 35px 0;
     background: #fff; }
     .paper .paper__content .paper__content--inner {
-      padding: 5px 0; }
+      padding: 5px 0 40px; }
   .paper .paper__navBox {
     background-color: #fff; }
     .paper .paper__navBox .paper__navBox__inner {
@@ -1236,7 +1336,10 @@ body {
         padding: 3px 6px;
         position: relative;
         font-weight: 400;
-        vertical-align: baseline; }
+        vertical-align: baseline;
+        min-width: 30px;
+        min-height: 30px;
+        text-align: center; }
   .commentbox .commentBox__question {
     width: 100%;
     box-sizing: border-box;
@@ -1280,7 +1383,7 @@ body {
         justify-content: center;
         -moz-align-items: center;
         align-items: center;
-        font-size: 16px;
+        font-size: 20px;
         transition: all ease 200ms; }
         .commentbox .commentBox__question .commentBox__questionBox .commentBox__questionBox--reply:active, .commentbox .commentBox__question .commentBox__questionBox .commentBox__questionBox--reply.activated {
           background: #17a1d8; }
@@ -1360,12 +1463,16 @@ body {
           display: block;
           height: 0;
           opacity: 0;
-          overflow: hidden; }
+          overflow: hidden;
+          padding: 0; }
         .commentbox .commentbox__inner .comments .comments__reply.active .commentBox__question {
           display: block;
-          height: auto;
+          height: 50px;
           opacity: 1;
-          overflow: visible; }
+          overflow: visible;
+          margin-top: 10px; }
+          .commentbox .commentbox__inner .comments .comments__reply.active .commentBox__question.active {
+            height: 100px; }
         .commentbox .commentbox__inner .comments .comments__reply .comments__reply__each {
           padding: 5px;
           margin-bottom: 0;
@@ -1842,42 +1949,48 @@ body {
   .comments .title {
     width: 100%;
     color: #fff;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     text-align: left; }
   .comments .commentList .commentList--dropdown {
     display: -moz-flex;
     display: flex;
-    -moz-justify-content: flex-end;
-    justify-content: flex-end;
+    -moz-justify-content: space-between;
+    justify-content: space-between;
     -moz-align-items: center;
-    align-items: center; }
-    .comments .commentList .commentList--dropdown .commentList--dropdown-label {
-      color: #fff;
-      margin-right: 10px;
-      font-size: 16px; }
-    .comments .commentList .commentList--dropdown .commentList--dropdown-div {
-      margin-left: 10px; }
-      .comments .commentList .commentList--dropdown .commentList--dropdown-div button {
-        width: 160px; }
-      .comments .commentList .commentList--dropdown .commentList--dropdown-div .dropdown-menu {
-        width: 160px;
-        min-width: auto; }
-        .comments .commentList .commentList--dropdown .commentList--dropdown-div .dropdown-menu li {
-          text-align: center; }
-          .comments .commentList .commentList--dropdown .commentList--dropdown-div .dropdown-menu li a {
-            cursor: pointer; }
+    align-items: center;
+    margin-bottom: 10px; }
+    .comments .commentList .commentList--dropdown .commentList--dropdown-e {
+      display: -moz-flex;
+      display: flex;
+      -moz-justify-content: flex-end;
+      justify-content: flex-end;
+      -moz-align-items: center;
+      align-items: center; }
+      .comments .commentList .commentList--dropdown .commentList--dropdown-e .commentList--dropdown-label {
+        color: #38b7ea;
+        font-size: 14px; }
+      .comments .commentList .commentList--dropdown .commentList--dropdown-e .commentList--dropdown-div {
+        margin-left: 10px; }
+        .comments .commentList .commentList--dropdown .commentList--dropdown-e .commentList--dropdown-div button {
+          width: 120px; }
+        .comments .commentList .commentList--dropdown .commentList--dropdown-e .commentList--dropdown-div .dropdown-menu {
+          width: 120px;
+          min-width: auto; }
+          .comments .commentList .commentList--dropdown .commentList--dropdown-e .commentList--dropdown-div .dropdown-menu li {
+            text-align: center; }
+            .comments .commentList .commentList--dropdown .commentList--dropdown-e .commentList--dropdown-div .dropdown-menu li a {
+              cursor: pointer; }
   .comments .commentList .comments__ask {
     box-sizing: content-box;
     padding: 10px;
     margin-bottom: 5px;
     border-bottom: 1px solid #6f6f6f;
     position: relative; }
-    .comments .commentList .comments__ask.isReply .commentBox__questionBox {
-      display: block; }
     .comments .commentList .comments__ask:nth-last-child(1) {
       border-bottom: 1px solid transparent; }
     .comments .commentList .comments__ask .comments__ask__title {
       color: #fff;
+      margin-bottom: 10px;
       display: -moz-flex;
       display: flex;
       -moz-justify-content: space-between;
@@ -1889,7 +2002,12 @@ body {
         color: #fff;
         border-left: 4px solid #38b7ea;
         padding-left: 10px;
-        transition: all ease 200ms; }
+        transition: all ease 200ms;
+        max-width: 580px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0; }
         .comments .commentList .comments__ask .comments__ask__title h3:hover {
           color: #38b7ea; }
     .comments .commentList .comments__ask .comments__ask__header {
@@ -1904,50 +2022,19 @@ body {
         color: #ff9700; }
       .comments .commentList .comments__ask .comments__ask__header .alreadyReplied, .comments .commentList .comments__ask .comments__ask__header .checked {
         color: green; }
+      .comments .commentList .comments__ask .comments__ask__header a {
+        color: #ececec; }
     .comments .commentList .comments__ask .comments__ask__content {
       font-size: 14px;
       line-height: 150%;
       padding: 5px 0;
       color: #fff; }
-  .comments .commentList .commentBox__questionBox {
-    position: relative;
-    display: none;
-    height: 50px;
-    z-index: 10; }
-    .comments .commentList .commentBox__questionBox .commentBox__questionBox--input {
-      width: 100%;
-      border-radius: 5px;
-      border: 1px solid #38b7ea;
-      height: 100%;
-      padding-left: 20px;
-      padding-right: 78px; }
-      .comments .commentList .commentBox__questionBox .commentBox__questionBox--input::-webkit-input-placeholder {
-        color: #a8a8a8; }
-    .comments .commentList .commentBox__questionBox .commentBox__questionBox--reply {
-      position: absolute;
-      right: 0;
-      top: 0;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
-      height: 50px;
-      box-sizing: border-box;
-      width: 84px;
-      background: #38b7ea;
-      color: #fff;
-      padding: 0 18px;
-      font-size: 16px;
-      transition: all ease 200ms; }
-      .comments .commentList .commentBox__questionBox .commentBox__questionBox--reply:active, .comments .commentList .commentBox__questionBox .commentBox__questionBox--reply.activated {
-        background: #17a1d8; }
 
-.comment--replyBox .comment--replyBox--header {
-  font-size: 14px;
-  line-height: 130%;
-  padding: 5px 0;
-  color: #565A5F; }
-
-.comment--replyBox .comment--replyBox--content {
-  color: #565A5F; }
+.comment--replyBox {
+  font-size: 14px; }
+  .comment--replyBox .comment--replyBox-body .comment--replyBox--textarea textarea {
+    overflow-x: hidden;
+    resize: vertical; }
 
 /**
  * Created by xiangsongtao on 16/7/2.

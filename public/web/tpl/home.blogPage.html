@@ -3,19 +3,19 @@
         <div class="bg-right-innerBlock text-center clearfix">
             <!--img-->
             <div class="bg-right-innerBlock-myImg">
-                <img class="myInfo-box-shadow img-circle aboutme" width="100%" ng-src="{{myInfo.img_url | imgURl}}" alt="我的头像好像没加载出来诶..">
+                <img class="myInfo-box-shadow img-circle aboutme" width="100%"  ng-src="{{myInfo.img_url | imgURl}}" err-src="./web/img/employee.svg" alt="我的头像好像没加载出来诶..">
             </div>
             <!--info-->
             <div class="bg-right-innerBlock-myInfo">
                 <!--name-->
-                <h2 class="myInfo_name myInfo-shadow" ng-bind="myInfo.full_name"></h2>
+                <h2 class="myInfo_name myInfo-shadow" ng-bind="myInfo.full_name || '我的昵称'"></h2>
                 <!--Web Developer & Full Stack-->
-                <h4 class="myInfo_position myInfo-shadow" ng-bind="myInfo.position"></h4>
+                <h4 class="myInfo_position myInfo-shadow" ng-bind="myInfo.position || '我的职位'"></h4>
                 <!--location: Suzhou, China-->
                 <h5 class="myInfo_address myInfo-shadow">
-                    <span class="fa fa-map-marker"></span> {{myInfo.address}}
+                    <span class="fa fa-map-marker"></span> <span ng-bind="myInfo.address || '我的地址'"></span>
                 </h5>
-                <h5 class="myInfo_mood myInfo-shadow"><i class="fa fa-coffee"></i> {{myInfo.motto}}</h5>
+                <h5 class="myInfo_mood myInfo-shadow"><i class="fa fa-coffee"></i> <span ng-bind="myInfo.motto || '我的心情'"></span></h5>
                 <section class="bg-right-innerBlock-myInfo-nav myInfo-shadow">
                     <h5>
                         <span ui-sref="blog.articleList" ui-sref-active="active">最近更新</span>
@@ -48,7 +48,7 @@
         <!--saySomething-->
         <div class="saySomething myInfo-shadow">
             <div class="saySomething-inner">
-                <div class="saySomething-inner-word" ng-bind-html="myInfo.personal_state | toTrusted">
+                <div class="saySomething-inner-word" ng-bind-html="(myInfo.personal_state  || '关于我的一些介绍....') | toTrusted">
                 </div>
             </div>
         </div>
@@ -61,16 +61,16 @@
                     <div ui-view>
 
                         <!--loadingPage-->
-                        <div class="top">
-                            <div class="blackShadeInner text-center center-block">
-                                <section>
-                                    <i class="fa fa-spinner fa-spin fa-4x"></i>
-                                    <h3>小涛正在加载...</h3>
-                                    <span></span>
-                                    <small>just a moment!</small>
-                                </section>
-                            </div>
-                        </div>
+                        <!--<div class="top">-->
+                            <!--<div class="blackShadeInner text-center center-block">-->
+                                <!--<section>-->
+                                    <!--<i class="fa fa-spinner fa-spin fa-4x"></i>-->
+                                    <!--<h3>小涛正在加载...</h3>-->
+                                    <!--<span></span>-->
+                                    <!--<small>just a moment!</small>-->
+                                <!--</section>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <!--loadingPage end-->
                     </div>
                     <!--blogPage.具体内容的区域 end-->

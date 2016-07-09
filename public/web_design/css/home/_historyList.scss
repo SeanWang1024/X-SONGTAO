@@ -80,6 +80,7 @@
         padding-left: 32px;
         height: 100%;
         border-left: 1px solid #ddd;
+        list-style: square;
         .monthBox__content__item {
           height: 28px;
           line-height: 28px;
@@ -87,6 +88,22 @@
           color: $base-word-color;
           cursor: pointer;
           list-style-type: square;
+          //overflow: hidden;
+          //@include display-flex;
+          //@include justify-content(flex-start);
+          //@include align-items(flex-start);
+          vertical-align: middle;
+          .monthBox__content__item-title{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+          }
+          span{
+            vertical-align: middle;
+            display: inline-block;
+            max-width:360px;
+          }
           &:hover {
             color: $base-theme-color;
           }

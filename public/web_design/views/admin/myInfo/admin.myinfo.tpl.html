@@ -79,17 +79,17 @@
                             <label>用户名/Username</label>
                         </div>
                         <div class="col-sm-12" ng-class="{true:'has-error',false:''}[auths.password.$error.required]">
-                            <input type="text" class="form-control input-sm col-sm-12 inputContent"
+                            <input type="password" class="form-control input-sm col-sm-12 inputContent"
                                    placeholder="旧密码/Old Password" name="password" ng-model="myinfo.password" required>
                             <label>旧密码/Old Password</label>
                         </div>
                         <div class="col-sm-12" ng-class="{true:'has-error',false:''}[auths.new_password.$error.required]">
-                            <input type="text" class="form-control input-sm col-sm-12 inputContent"
+                            <input type="password" class="form-control input-sm col-sm-12 inputContent"
                                    placeholder="新密码/New Password" name="new_password" ng-model="myinfo.new_password" required>
                             <label>新密码/New Password</label>
                         </div>
-                        <div class="buttonBox" ng-init="textState = 'Submit'">
-                            <button ng-disabled="!auths.$valid || !!submitText" ng-click="changeAuthorizationInfo()" class="btn btn-danger">确认</button>
+                        <div class="buttonBox" ng-init="textState = 'Submit'"  data-toggle="modal" data-target="#logoutBox">
+                            <button ng-disabled="!auths.$valid || !!submitText"  class="btn btn-danger">确认</button>
                             <span class="stateText" ng-bind="textState">Submit</span>
                         </div>
                     </form>
@@ -114,17 +114,34 @@
                         <td ng-bind="item.login_time | date:'yyyy/MM/dd HH:mm:ss a'">登录时间</td>
                     </tr>
                     </tbody>
-
                 </table>
             </div>
-
-
         </div>
-
-
     </div>
-
 </div>
 
+
+
+<!--弹出层-修改密码需要重新登录-->
+<div class="modal fade" id="logoutBox" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-logout"></i> 退出确认/LOGOUT</h4>
+            </div>
+            <div class="modal-body">
+                <h3 class="text-center deleteConfirmText">修改密码需要重新登录!</h3>
+            </div>
+            <div class="modal-footer">
+                <span class="submitText" ng-bind="submitText"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button ng-disabled="!!submitText" type="button" data-dismiss="modal" ng-click="changeAuthorizationInfo()" class="btn btn-danger">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 

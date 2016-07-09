@@ -226,9 +226,10 @@ module.exports = {
 
     },
     getByArticleId: function (req, res, next) {
-        Comments.find({article_id: req.params.article_id, pre_id: req.params.article_id})
+        Comments.find({article_id: req.params.article_id, pre_id: req.params.article_id, state: true})
             .populate({
                 path: "next_id",
+                match:{state:true},
                 options: {sort: {time: -1}}
             })
             .sort('-time')
@@ -391,17 +392,17 @@ module.exports = {
         // Comments.$where('this.article_id == this.pre_id')
         // Comments
         // .where('isIReplied', false)
-        Comments.find().where('state', true).populate({
+        Comments.find().populate({
             path: "article_id",
             select: {title: 1}
         }).exec(function (err, commentList) {
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": "comment to articles list get success!",
-                    "data": commentList
-                })
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "comment to articles list get success!",
+                "data": commentList
             })
+        })
     }
 };
 

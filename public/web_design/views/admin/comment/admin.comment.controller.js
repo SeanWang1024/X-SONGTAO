@@ -30,53 +30,53 @@ angular.module('xstApp')
 
 
         //进行评论
-        $scope.isSubmitReply = false;
+        // $scope.isSubmitReply = false;
         //评论的内容
         $scope.comment_info = {
-            content: '',
+            content: ''
         };
-        $scope.comment = function (item, $event) {
-            // let target = $($event.currentTarget).parents('.comments__ask');
-            // target.siblings().removeClass('isReply');
-            // target.toggleClass('isReply');
+        $scope.comment = function (item) {
             $scope.replyBox = item;
         }
-        $scope.commentThis = function ($event, item) {
-            $scope.isSubmitReply = true;
+        $scope.confirmAddComment = function (item) {
+            // $scope.isSubmitReply = true;
 
             //进行评论的逻辑处理,我对此的评论
-            // console.log($scope.comment_info.content)
+            // console.log('评论内容:');
+            // console.log($scope.comment_info.content);
             let params = {
                 article_id: item.article_id._id,
                 pre_id: item._id,
                 next_id: [],
-                name: "我",
-                email: "280304286@163.com",
+                name: API.MY,
+                email: API.EMAIL,
                 time: new Date(),
                 content: $scope.comment_info.content,
+                //这里是增加对主评论的子评论,
+                // 既然是我的评论那我没有道理继续评论的理由,
+                // 故对自评论显示我已评论,我的评论,审核状态为true
+                // 但是主评论需要手动设置
                 isIReplied: true,
                 state: true
             }
-            // console.log(params)
             AJAX({
                 method: 'post',
                 url: API.postComment,
                 data: params,
                 success: function (response) {
-                    // console.log('response');
-                    // console.log(response);
                     if (parseInt(response.code) === 1) {
-                        // $scope.commentList = response.data;
-                        // console.log(response.data);
+                        $log.debug("回复成功: " + response);
+                        //将主评论设为我已评论
                         changeCommentReplyState(item._id);
                     }
+                },
+                error:function (response) {
+                    $log.debug("回复失败: " + response);
+                },
+                complete: function () {
+                    $scope.comment_info.content;
                 }
             });
-
-            $timeout(function () {
-                $scope.isSubmitReply = false;
-                $($event.currentTarget).parents('.comments__ask').toggleClass('isReply')
-            }, 1000, true)
         }
 
         //    删除评论
@@ -91,11 +91,7 @@ angular.module('xstApp')
                 method: 'delete',
                 url: API.delComment.replace('id', delCommId),
                 success: function (response) {
-                    // console.log('response');
-                    // console.log(response);
                     if (parseInt(response.code) === 1) {
-                        // $scope.commentList = response.data;
-                        // console.log(response.data);
                         //刷新文章列表
                         getComments();
                     }
@@ -116,11 +112,7 @@ angular.module('xstApp')
                     _id: _id
                 },
                 success: function (response) {
-                    // console.log('response');
-                    // console.log(response);
                     if (parseInt(response.code) === 1) {
-                        // $scope.commentList = response.data;
-                        // console.log(response.data);
                         //刷新文章列表
                         $log.debug("状态改变成功")
                         // getComments();
@@ -129,12 +121,13 @@ angular.module('xstApp')
             });
         };
 
-        $scope.Condition;
-        $scope.ConditionFilter = function (data) {
-            if (!$scope.Condition) {
+        //子主评论筛选
+        $scope.Condition_1;
+        $scope.ConditionFilter_1 = function (data) {
+            if (!$scope.Condition_1) {
                 return true;
             }
-            switch (parseInt($scope.Condition)) {
+            switch (parseInt($scope.Condition_1)) {
                 case 0:
                     return true;
                     break;
@@ -146,28 +139,75 @@ angular.module('xstApp')
                 case 2:
                     return data.article_id._id.toString() !== data.pre_id.toString();
                     break;
-                //主评论+未回复
-                case 3:
-                    return !data.isIReplied && data.article_id._id.toString() === data.pre_id.toString();
+                default:
+                    return true
                     break;
-                //主评论+未审核
-                case 4:
-                    return !data.state && data.article_id._id.toString() === data.pre_id.toString();
+            }
+        }
+
+        //回复筛选
+        $scope.Condition_2;
+        $scope.ConditionFilter_2 = function (data) {
+            if (!$scope.Condition_2) {
+                return true;
+            }
+            switch (parseInt($scope.Condition_2)) {
+                case 0:
+                    return true;
                     break;
-                //主回复
-                case 5:
+                //未回复
+                case 1:
                     return !data.isIReplied;
                     break;
+                //已回复
+                case 2:
+                    return !!data.isIReplied;
+                    break;
+                //主评论+未回复
+                // case 3:
+                //     return !data.isIReplied && data.article_id._id.toString() === data.pre_id.toString();
+                //     break;
+                // //主评论+未审核
+                // case 4:
+                //     return !data.state && data.article_id._id.toString() === data.pre_id.toString();
+                //     break;
+                // //主回复
+                // case 5:
+                //     return !data.isIReplied;
+                //     break;
+                // //未审核
+                // case 6:
+                //     return !data.state;
+                //     break;
+                default:
+                    return true
+                    break;
+            }
+        }
+
+
+        //审核筛选
+        $scope.Condition_3;
+        $scope.ConditionFilter_3 = function (data) {
+            if (!$scope.Condition_3) {
+                return true;
+            }
+            switch (parseInt($scope.Condition_3)) {
+                case 0:
+                    return true;
+                    break;
                 //未审核
-                case 6:
+                case 1:
                     return !data.state;
+                    break;
+                //已审核
+                case 2:
+                    return !!data.state;
                     break;
                 default:
                     return true
                     break;
-
             }
-
         }
 
 

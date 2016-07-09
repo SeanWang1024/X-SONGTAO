@@ -6,6 +6,7 @@
   box-sizing: border-box;
   height: 100%;
   background: transparent radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+  position: relative;
   .blue{
     color:$base-theme-color;
   }
@@ -27,18 +28,31 @@
       float: right;
       margin: 0px auto 15px;
     }
-  }
-  //登录按钮
-  .btn-x-songtao {
-    width: 100px;
-    background-color: $base-theme-color;
-    transition: all ease 300ms;
-    color:#fff;
-    &:hover {
-      color: #fff;
-      background-color: #49c8fb;
+
+
+    .btnGroup{
+      .errText{
+        color:$base-red-color;
+        margin-right:10px;
+
+      }
+      //登录按钮
+      .btn-x-songtao {
+        width: 100px;
+        background-color: $base-theme-color;
+        transition: all ease 300ms;
+        color:#fff;
+        &:hover {
+          color: #fff;
+          background-color: #49c8fb;
+        }
+      }
     }
+
+
   }
+
+
 }
 
 

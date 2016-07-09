@@ -14,11 +14,13 @@
                 };
                 $scope.loginBtn = function () {
                     if (!$scope.data.username) {
-                        alert('请输入用户名');
+                        $scope.errText = "请输入用户名!";
+                        // alert('请输入用户名');
                         return
                     }
                     if (!$scope.data.password) {
-                        alert('请输入用户名');
+                        $scope.errText = "请输入密码!";
+                        // alert('请输入用户名');
                         return
                     }
                     AJAX({
@@ -42,18 +44,27 @@
                             } else {
                                 switch (parseInt(response.code)) {
                                     case 2:
-                                        alert("用户名或密码错误,请再检查!");
+                                        $scope.errText = "用户名或密码错误,请再检查!";
                                         break;
                                     default:
-                                        alert("系统错误!");
+                                        $scope.errText = "系统错误!";
                                         break;
                                 }
                             }
                         },
                         error: function () {
-                            alert("系统错误!");
+                            $scope.errText = "系统错误!";
+                            // alert("系统错误!");
                         }
                     });
+                };
+
+                document.onkeydown=function(event){
+                    var e = event || window.event || arguments.callee.caller.arguments[0];
+                    if(e && e.keyCode==13){ // enter 键
+                        //要做的事情
+                        $scope.loginBtn();
+                    }
                 };
             }
         }])

@@ -15,15 +15,21 @@
                     <li class="monthBox__content__item"
                         ng-repeat="article in monthBox.data track by $index"
                         ui-sref="blog.detail({id:article._id})">
-                        <span ng-bind="article.title"></span>&ensp;
-                        <!--<small>-->
-                            (阅读数:<span ng-bind="article.read_num"></span>,
-                            评论数:<span ng-bind="article.comment_num"></span>)
-                        <!--</small>-->
-
+                        <span class="monthBox__content__item-title" ng-bind="article.title"></span>&ensp;
+                        <span> <span>(阅读数:</span><span ng-bind="article.read_num"></span>
+                           <span> ,评论数:</span><span ng-bind="article.comment_num"></span><span>)</span></span>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
 </article>
+<!--无数据提示-->
+<div class="nodata" ng-if="!historyLists.length">
+    <div class="logo-left-box">
+        <h2 class="logo"><span class="blue">X</span><span class="white">-SONGTAO</span></h2>
+        <h3 class="blue notice">提示!</h3>
+        <p class="white">没有找到数据,~~~~(>_<)~~~~</p>
+    </div>
+    <img src="./web/img/employee.svg" alt="当前没有数据诶">
+</div>

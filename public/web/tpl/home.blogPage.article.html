@@ -1,7 +1,7 @@
 <article class="main-article animated fadeIn">
     <section class="main-article-body">
 
-        <div class="paper">
+        <div class="paper" ng-class="{true:'loaded',false:'loading'}[!!article]">
             <section class="paper__header">
                 <h1 ng-bind="article.title"></h1>
             </section>
@@ -29,88 +29,88 @@
                 <!--page-->
             </section>
             <!--the end-->
-            <section class="paper__navBox">
-                <div class="paper__navBox__inner">
-                    <!--<div>-&#45;&#45; The End -&#45;&#45;</div>-->
-                    <!--<div class="pager-prev">-->
-                        <!--<span>上一篇</span>-->
-                    <!--</div>-->
-                    <!--<div class="pager-next">-->
-                        <!--<span>下一篇</span>-->
-                    <!--</div>-->
-                </div>
-            </section>
-            <!--评论-->
-
-
+            <!--<section class="paper__navBox">-->
+                <!--<div class="paper__navBox__inner">-->
+                    <!--&lt;!&ndash;<div>-&#45;&#45; The End -&#45;&#45;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="pager-prev">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span>上一篇</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="pager-next">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span>下一篇</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--</div>-->
+            <!--</section>-->
         </div>
-
         <section class="commentbox">
 
             <!--标题-->
             <div class="commentbox__header">
-                <h3><span class="commentbox__header--Comments">Comments</span><span class="commentbox__header--count" ng-bind="commentList.length">16</span></h3>
+                <h3><span class="commentbox__header--Comments">Comments</span><span class="commentbox__header--count" ng-bind="article.comment_num">0</span></h3>
             </div>
 
             <!--提问题-->
             <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
                 <!--问题盒子-->
                 <div class="commentBox__questionBox">
-                    <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToArt">
-                    <button class="btn commentBox__questionBox--reply" ng-click="commentThisArtBtn(article)" ng-disabled="!commentToArt">
-                        <span>评论</span>
+                    <input ng-focus="chain.selectId=''" class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentContent">
+                    <button class="btn commentBox__questionBox--reply" ng-click="commentBtn(article,commentContent);commentContent=''"
+                            ng-disabled="!commentContent || !commentInfo.username || !commentInfo.email">
+                       <i class="fa " ng-class="{'default':'fa-comments','going':'fa-spinner fa-spin','success':'fa-check','error':'fa-close'}[chain.main_state]"></i>
                     </button>
                 </div>
                 <!--个人信息-->
                 <div class="commentBox__info">
                     <div class="commentBox__info--input">
                         <label>昵称:</label>
-                        <input type="text" placeholder="请输入昵称!" ng-model="commentUsername">
+                        <input type="text" placeholder="请输入昵称!" ng-model="commentInfo.username">
                     </div>
                     <div class="commentBox__info--input ">
                         <label>邮箱: </label>
-                        <input type="text" placeholder="请输入邮箱!" ng-model="commentEmail">
+                        <input type="text" placeholder="请输入邮箱!" ng-model="commentInfo.email">
                     </div>
                 </div>
             </div>
 
             <!--问题盒子-->
+
             <div class="commentbox__inner">
-                <div class="comments" ng-repeat="comment in commentList track by $index">
+                <div class="comments" ng-repeat="comment in commentList track by $index" ng-init="toggle=false">
+                    <!--{{comment._id}}{{'&#45;&#45;'}}{{chain.selectId ==comment._id}}{{'&#45;&#45;'}}{{toggle}}{{'&#45;&#45;'}}{{chain.selectId}}-->
                     <div class="comments__ask">
                         <div class="comments__ask__header">
-                            <span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>&ensp;·&ensp;<span class="reply" ng-click="commentToComemntBtn($event)">回复</span>
+                            <!--<span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>&ensp;·&ensp;<span class="reply" ng-click="commentToComemntBtn($event)">回复</span>-->
+                            <span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>&ensp;·&ensp;<span class="reply" ng-click="chain.selectId=comment._id;toggle=!toggle;">回复</span>
                         </div>
                         <div class="comments__ask__content">
                             <span ng-bind="comment.content"></span>
                         </div>
                     </div>
-                    <div class="comments__reply">
+                    <div class="comments__reply" ng-class="{true:'active',false:''}[(chain.selectId ==comment._id  && toggle) || (toggle = false)]">
                         <!--提问题-->
                         <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
                             <!--问题盒子-->
                             <div class="commentBox__questionBox">
-                                <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentToComment">
-                                <button class="btn commentBox__questionBox--reply" ng-click="commentThisCommentBtn(comment,commentToComment)" ng-disabled="!commentToComment">
-                                    <span>评论</span>
+                                <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentContent">
+                                <button class="btn commentBox__questionBox--reply" ng-click="commentBtn(comment,commentContent);commentContent='';" ng-disabled="!commentContent || !commentInfo.username || !commentInfo.email">
+                                    <i class="fa " ng-class="{'default':'fa-comments','going':'fa-spinner fa-spin','success':'fa-check','error':'fa-close'}[chain.sub_state]"></i>
                                 </button>
                             </div>
                             <!--个人信息-->
                             <div class="commentBox__info">
                                 <div class="commentBox__info--input">
                                     <label>昵称:</label>
-                                    <input type="text" placeholder="请输入昵称!" ng-model="commentUsername">
+                                    <input type="text" placeholder="请输入昵称!" ng-model="commentInfo.username">
                                 </div>
                                 <div class="commentBox__info--input ">
                                     <label>邮箱: </label>
-                                    <input type="text" placeholder="请输入邮箱!" ng-model="commentEmail">
+                                    <input type="text" placeholder="请输入邮箱!" ng-model="commentInfo.email">
                                 </div>
                             </div>
                         </div>
 
                         <div class="comments__reply__each" ng-repeat="reply in comment.next_id track by $index">
                             <div class="comments__reply__header">
-                                <span class="name" ng-bind="reply.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>
+                                <span class="name" ng-bind="reply.name"></span>&ensp;·&ensp;<span am-time-ago="reply.time" ></span>
                             </div>
                             <div class="comments__reply__content">
                                 <span ng-bind="reply.content"></span>

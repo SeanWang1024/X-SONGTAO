@@ -3,80 +3,60 @@
   .title {
     width: 100%;
     color: #fff;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     text-align: left;
   }
 
   .commentList {
     .commentList--dropdown {
       @include display-flex;
-      @include justify-content(flex-end);
+      @include justify-content(space-between);
       @include align-items(center);
+      margin-bottom:10px;
+      .commentList--dropdown-e{
+        @include display-flex;
+        @include justify-content(flex-end);
+        @include align-items(center);
 
-      .commentList--dropdown-label {
-        color: #fff;
-        margin-right: 10px;
-        font-size: 16px;
-      }
-      .commentList--dropdown-div {
-        margin-left: 10px;
-        button{
-          width: 160px;
+        .commentList--dropdown-label {
+          color: $base-theme-color;
+          //margin-right: 10px;
+          font-size: 14px;
+          //margin-left:10px;
         }
-        .dropdown-menu{
-          width: 160px;
-          min-width: auto;
-          li{
-            text-align: center;
-            a{
-              cursor: pointer;
+        .commentList--dropdown-div {
+          margin-left: 10px;
+          button{
+            width: 120px;
+          }
+          .dropdown-menu{
+            width: 120px;
+            min-width: auto;
+            li{
+              text-align: center;
+              a{
+                cursor: pointer;
+              }
             }
+
           }
 
         }
-
       }
+
     }
     .comments__ask {
       box-sizing: content-box;
       padding: 10px;
       margin-bottom: 5px;
-      //cursor: pointer;
       border-bottom: 1px solid #6f6f6f;
       position: relative;
-      &.isReply {
-        .commentBox__questionBox {
-          display: block;
-        }
-      }
-
       &:nth-last-child(1) {
         border-bottom: 1px solid transparent;
       }
-
-      //&:after {
-      //  content: '';
-      //  position: absolute;
-      //  bottom: 0;
-      //  left: 0;
-      //  width: 100%;
-      //  height: 0;
-      //  border-bottom: 1px solid #6f6f6f;
-      //}
-
-      &:hover {
-        //.reply {
-        //  color: $base-theme-color-o;
-        //  font-weight: bold;
-        //}
-        //.del {
-        //  color: #ff0047;
-        //  font-weight: bold;
-        //}
-      }
       .comments__ask__title {
         color: #fff;
-
+        margin-bottom:10px;
         @include display-flex;
         @include justify-content(space-between);
         @include align-items(center);
@@ -86,6 +66,12 @@
           border-left: 4px solid $base-theme-color;
           padding-left: 10px;
           transition: all ease 200ms;
+          max-width: 580px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-bottom:0;
+
           &:hover {
             color: $base-theme-color;
 
@@ -115,6 +101,9 @@
         .alreadyReplied, .checked {
           color: green;
         }
+        a{
+          color: #ececec;
+        }
       }
       .comments__ask__content {
         font-size: 14px;
@@ -124,70 +113,24 @@
         //cursor: pointer;
       }
     }
-    .commentBox__questionBox {
-      position: relative;
-      display: none;
-      height: 50px;
-      z-index: 10;
-      .commentBox__questionBox--input {
-        width: 100%;
-        border-radius: 5px;
-        border: 1px solid $base-theme-color;
-        height: 100%;
-        padding-left: 20px;
-        padding-right: 78px;
-        &::-webkit-input-placeholder {
-          color: #a8a8a8;
-        }
-      }
-      .commentBox__questionBox--reply {
-
-        position: absolute;
-        right: 0;
-        top: 0;
-        border-bottom-right-radius: 5px;
-        border-top-right-radius: 5px;
-
-        //cursor: pointer;
-
-        height: 50px;
-        box-sizing: border-box;
-        width: 84px;;
-
-        background: $base-theme-color;
-        color: #fff;
-        //height: 100%;
-        padding: 0 18px;
-        //box-sizing: content-box;
-        //@include display-flex;
-        //@include justify-content(center);
-        //@include align-items(center);
-        font-size: 16px;
-
-        transition: all ease 200ms;
-        &:active,
-        &.activated {
-          background: darken($base-theme-color, 10%);
-        }
-      }
-    }
   }
 
 }
 
 .comment--replyBox{
-  .comment--replyBox--header{
-    font-size: 14px;
-    line-height: 130%;
-    padding: 5px 0;
-    color: $base-word-color;
-  }
-  .comment--replyBox--content{
-    color: $base-word-color;
-  }
-  .comment--replyBox--textarea{
 
+  font-size: 14px;
+  .comment--replyBox-body{
+    .comment--replyBox--textarea{
+      textarea{
+        overflow-x: hidden;
+        resize: vertical;
+      }
+
+    }
   }
+
 }
+
 
 

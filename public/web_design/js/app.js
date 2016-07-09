@@ -11,6 +11,7 @@
         .factory('API', function () {
             const url = "http://localhost:8088";
             const MY_INFO_ID = '576b95155fce2dfd3874e738';
+            //admin对评论进行回复的信息
             const MY = '我';
             const EMAIL = '280304286@163.com';
             return {

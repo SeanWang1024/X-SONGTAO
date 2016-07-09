@@ -47,7 +47,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="article in articleLists | orderBy:predicate:reverse">
+        <tr ng-repeat="article in articleLists | orderBy:predicate:reverse track by $index" class="animated fadeIn">
             <td ng-bind="$index+1"></td>
             <td ng-bind="article.title"></td>
             <td ng-bind="article.publish_time | date: 'yyyy/MM/dd'"></td>
@@ -65,8 +65,16 @@
                 <button data-toggle="modal" data-target="#delArticle" ng-click="delArtBtn(article._id)" class="btn btn-danger btn-sm"><i class="fa fa-bitbucket"></i></button>
             </td>
         </tr>
+
+
         </tbody>
     </table>
+
+    <!--无数据提示-->
+    <div class="nodata" ng-if="!articleLists.length">
+        <img src="web/img/employee.svg" alt="当前没有数据诶">
+        <p class="content">当前没有数据诶!</p>
+    </div>
 </div>
 
 <!--弹出层-删除-->
