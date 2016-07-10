@@ -4,12 +4,12 @@
 (function () {
     angular.module('xstApp')
     //Detail控制器-catalogueName-type-id
-        .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage', '$timeout', function ($scope, $stateParams, AJAX, API, $localStorage, $timeout) {
+        .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage', '$timeout', '$verification', '$interval', function ($scope, $stateParams, AJAX, API, $localStorage, $timeout, $verification, $interval) {
 
             $scope.chain = {
                 selectId: 'selectId',
-                main_state: 'default',//default,going,success,error
-                sub_state: 'default',//default,going,success,error
+                main_state: 'default',//default,going,success,error,email,clock
+                sub_state: 'default',//default,going,success,error,email,clock
             };
 
             function changeState(isArt, state) {
@@ -44,30 +44,56 @@
             });
 
 
-            //记录回复时间,间隔1min后才能回复。
+            //记录回复时间,间隔30s后才能回复。
             let commentTime;
             //点击回复按钮触发动作
             $scope.commentBtn = function (info, commentContent) {
                 changeState(!info.article_id, 'going');
 
-                // if (!!commentTime && new Date().getTime() - commentTime < 1000 * 60) {
-                //     alert("您评论过于平凡,请1min后再评论!")
-                //     return false;
-                // }
-                // commentTime = new Date().getTime();
+                if (!!commentTime && new Date().getTime() - commentTime < 1000 * 30) {
+                    var a = false;
+                    $interval(function () {
+                        if (a) {
+                            a = false;
+                            changeState(!info.article_id, 'clock');
+                        } else {
+                            a = true;
+                            changeState(!info.article_id, 'error');
+                        }
+                    }, 500, 6, true);
+                    $timeout(function () {
+                        changeState(!info.article_id, 'default');
+                    }, 3000, true);
+                    return false;
+                }
+                commentTime = new Date().getTime();
 
 
-                //如果有论人的信息,则不显示输入框
-                if (!!$scope.commentInfo.username && !!$scope.commentInfo.email) {
+                //如果有论人的信息,则不显示输入框 $verification
+                if (!!$scope.commentInfo.username && !!$scope.commentInfo.email && $verification.isEmail($scope.commentInfo.email)) {
+
                     $scope.canComment = true;
                     $localStorage.commentAuth = {
                         commentUsername: $scope.commentInfo.username,
                         commentEmail: $scope.commentInfo.email
                     }
                 } else {
-                    changeState(!info.article_id, 'error');
+                    var a = false;
+                    $interval(function () {
+                        if (a) {
+                            a = false;
+                            changeState(!info.article_id, 'email');
+                        } else {
+                            a = true;
+                            changeState(!info.article_id, 'error');
+                        }
+                    }, 500, 6, true);
+                    $timeout(function () {
+                        changeState(!info.article_id, 'default');
+                    }, 3000, true);
                     return false;
                 }
+
 
                 let article_id;
                 if (!info.article_id) {

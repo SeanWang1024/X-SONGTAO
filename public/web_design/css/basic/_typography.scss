@@ -36,7 +36,8 @@ h1, h2, h3, h4, h5, h6,
   font-weight: $headings-font-weight;
   font-family: $headings-font-family;
   line-height: $headings-line-height;
-
+  //user-select: none;
+  //-webkit-user-select: none;
   small {
     font-weight: normal;
     line-height: 1;

@@ -4,10 +4,6 @@
 (function () {
     angular.module('xstApp')
         .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', '$localStorage', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state, $localStorage) {
-            if (!$rootScope.isLogin) {
-                $state.go('home');
-                return;
-            }
             //获取我的信息
             AJAX({
                 method: 'get',

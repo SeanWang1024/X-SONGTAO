@@ -8,16 +8,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="web/css/common.css">
-  <link rel="stylesheet" href="web/css/common.admin.css">
-  <link rel="stylesheet" href="web/css/main.css">
+  <link rel="stylesheet" href="web/css/common_00807bff8b.css">
+  <link rel="stylesheet" href="web/css/common.admin_6b3a87699d.css">
+  <link rel="stylesheet" href="web/css/main_61ecca70fc.css">
 
 </head>
-<body ng-controller="indexController" ng-class="{true:'isLogin',false:''}[isLogin]">
-<!--[if lt IE 10]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-  your browser</a> to improve your experience.</p>
-<![endif]-->
+<body ng-controller="indexController" ng-class="{true:'isLogin',false:''}[isLogin]" ng-init="isShowAboutMe=false">
 <div class="bigBox clearfix">
   <!--左边nav-->
   <div class="bg-left">
@@ -54,25 +50,25 @@
           <!--<span class="hidden-md hidden-lg hidden-xs">阅读模式</span>-->
         <!--</span>-->
 
-        <span ng-if="isLogin" ui-sref="admin.myInfo" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
-              data-placement="auto right" title="我的信息">
+        <span ng-if="isLogin" ui-sref="admin.myInfo" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn hidden-xs"
+              data-toggle="tooltip" data-placement="right" title="我的信息">
           <i class="fa fa-user fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的信息</span>
         </span>
 
-        <span ng-if="isLogin" ui-sref="admin.tags" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.tags" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn hidden-xs" data-toggle="tooltip"
                      data-placement="auto right" title="我的标签">
           <i class="fa fa-tag fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的标签</span>
         </span>
 
-        <span ng-if="isLogin" ui-sref="admin.articleManager" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.articleManager" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn hidden-xs" data-toggle="tooltip"
               data-placement="auto right" title="我的文章">
           <i class="fa fa-list fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的文章</span>
         </span>
 
-        <span ng-if="isLogin" ui-sref="admin.comment" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="tooltip"
+        <span ng-if="isLogin" ui-sref="admin.comment" ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow admin_btn hidden-xs" data-toggle="tooltip"
               data-placement="auto right" title="我的评论">
           <i class="fa fa-comments fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">我的评论</span>
@@ -84,14 +80,15 @@
           <!--<span class="hidden-md hidden-lg hidden-xs">我的图片</span>-->
         <!--</span>-->
 
-        <span ng-if="isLogin" class="st-leftNav-top-each text-overflow admin_btn" data-toggle="modal" data-target="#logout" data-toggle="tooltip"
+        <span ng-if="isLogin" class="st-leftNav-top-each text-overflow admin_btn" ng-click="logout()" data-toggle="tooltip"
               data-placement="auto right" title="退出">
           <i class="fa fa-sign-out fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">退出</span>
         </span>
 
 
-        <span  ng-if="!isLogin" ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow" data-toggle="tooltip" data-placement="auto right" title="登录">
+        <span  ng-if="!isLogin" ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow"
+               data-toggle="tooltip" data-placement="right" title="登录">
           <i class="fa fa-sign-in fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">登录</span>
         </span>
@@ -101,7 +98,7 @@
   </div>
   <!--右边内容-->
   <!--<div class="bg-right" ui-view>-->
-  <div class="bg-right" ui-view>
+  <div class="bg-right" ui-view="">
     <!--blogPage-内容-->
     <!--loadingPage-->
     <!--<div class="blackShade loading">-->
@@ -173,9 +170,11 @@
   </div>
 </div>
 <!--loadingPage end-->
+<script src="web/config.js"></script>
 <script src="web/js/common.js"></script>
 <script src="web/js/common.admin.js"></script>
 <script src="web/js/main.js"></script>
+
 
 </body>
 </html>

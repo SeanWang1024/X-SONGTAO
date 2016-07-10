@@ -1,54 +1,48 @@
 /**
  * Created by xiangsongtao on 16/2/22.
  */
-angular.module('xstApp')
-//myInfo的控制器
-    .controller('articleListCtrl', ['AJAX', 'API', '$scope', '$log', '$rootScope', '$state', function (AJAX, API, $scope, $log, $rootScope, $state) {
-        if (!$rootScope.isLogin) {
-            $state.go('home');
-            return;
-        }
-        getArticles();
-        function getArticles() {
+(function () {
+    angular.module('xstApp')
+    //myInfo的控制器
+        .controller('articleListCtrl', ['AJAX', 'API', '$scope', '$log', function (AJAX, API, $scope, $log) {
+
             $scope.isLoaded = false;
-            return AJAX({
+            //获取文章列表
+            AJAX({
                 method: 'get',
                 url: API.getArticleList,
                 success: function (response) {
-                    // console.log(response);
                     if (parseInt(response.code) === 1) {
                         $scope.articleLists = response.data;
-                        // console.log($scope.articleLists);
+                        $log.debug("文章列表获取成功!");
                     }
+                },
+                error:function () {
+                    $log.error("文章列表获取失败!");
                 },
                 complete:function () {
                     $scope.isLoaded = true;
                 }
             });
-        }
 
-
-        let deleteArticleId;
-        $scope.delArtBtn = function (_id) {
-            deleteArticleId = _id;
-        }
-        $scope.confirmDelArtBtn = function () {
-            AJAX({
-                method: 'delete',
-                url: API.deleteArt.replace('id', deleteArticleId),
-                success: function (response) {
-                    // console.log('response');
-                    // console.log(response);
-                    if (parseInt(response.code) === 1) {
-                        // $scope.commentList = response.data;
-                        // console.log(response.data);
-                        //刷新文章列表
-                        getArticles();
+            let deleteArticle;
+            $scope.delArtBtn = function (article) {
+                deleteArticle = article;
+            };
+            $scope.confirmDelArtBtn = function () {
+                AJAX({
+                    method: 'delete',
+                    url: API.deleteArt.replace('id', deleteArticle._id),
+                    success: function (response) {
+                        if (parseInt(response.code) === 1) {
+                            //刷新文章列表
+                            $scope.articleLists.splice($scope.articleLists.indexOf(deleteArticle),1);
+                        }
                     }
-                }
-            });
-        }
-    }]);
+                });
+            }
+        }]);
+})();
 
 
 

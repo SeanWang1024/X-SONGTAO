@@ -16,10 +16,10 @@
 
                     //如果失败
                     element.on('error', function () {
-                        console.log('--------------')
-                        console.log(attrs.errSrc )
-                        console.log(attrs.src )
-                        console.log(attrs.src != attrs.errSrc)
+                        // console.log('--------------')
+                        // console.log(attrs.errSrc )
+                        // console.log(attrs.src )
+                        // console.log(attrs.src != attrs.errSrc)
                         if (!!attrs.errSrc && attrs.src != attrs.errSrc) {
                             attrs.$set('src', attrs.errSrc);
                         }else{

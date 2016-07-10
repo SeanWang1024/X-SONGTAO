@@ -3,7 +3,7 @@
  */
 (function () {
     angular.module('xstApp')
-        .factory("timestampToDate", function () {
+        .factory("timestampToDate", [function () {
             return function (timestamp) {
                 let timestampInt = parseInt(timestamp);
                 if (timestampInt.toString().length === 13) {
@@ -14,8 +14,8 @@
                     return new Date();
                 }
             }
-        })
-        .filter("toEnMonth", ['timestampToDate', function (timestampToDate) {
+        }])
+        .filter("toEnMonth", [function () {
             return function (value) {
                 // var date = timestampToDate(value);
                 // let month = parseInt(value);

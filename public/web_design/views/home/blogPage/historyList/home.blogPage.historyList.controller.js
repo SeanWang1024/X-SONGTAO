@@ -7,7 +7,7 @@
         .controller('HistoryListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
             $scope.isLoaded = false;
             $http.get(API.getArticleHistoryWithStructure).success(function (response) {
-                console.log(response);
+                // console.log(response);
                 if (parseInt(response.code) === 1) {
                     $scope.historyLists = response.data;
                 }

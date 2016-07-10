@@ -4,7 +4,7 @@
 (function () {
     angular.module('xstApp')
     //TagList控制器
-        .controller('TagListController', ['$scope', '$http', 'API', '$state', function ($scope, $http, API, $state) {
+        .controller('TagListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
             $scope.isLoaded = false;
             $http.get(API.getTagsListWithStructure).success(function (response) {
                 // console.log("TagListController response");

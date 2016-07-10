@@ -55,7 +55,7 @@
                     <input ng-focus="chain.selectId=''" class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentContent">
                     <button class="btn commentBox__questionBox--reply" ng-click="commentBtn(article,commentContent);commentContent=''"
                             ng-disabled="!commentContent || !commentInfo.username || !commentInfo.email">
-                       <i class="fa " ng-class="{'default':'fa-comments','going':'fa-spinner fa-spin','success':'fa-check','error':'fa-close'}[chain.main_state]"></i>
+                       <i class="fa fa-fw" ng-class="{'default':'fa-comments','going':'fa-spinner fa-spin','success':'fa-check','error':'fa-close','email':'fa-envelope','clock':'fa-clock-o'}[chain.main_state]"></i>
                     </button>
                 </div>
                 <!--个人信息-->
@@ -92,7 +92,7 @@
                             <div class="commentBox__questionBox">
                                 <input class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentContent">
                                 <button class="btn commentBox__questionBox--reply" ng-click="commentBtn(comment,commentContent);commentContent='';" ng-disabled="!commentContent || !commentInfo.username || !commentInfo.email">
-                                    <i class="fa " ng-class="{'default':'fa-comments','going':'fa-spinner fa-spin','success':'fa-check','error':'fa-close'}[chain.sub_state]"></i>
+                                    <i class="fa fa-fw" ng-class="{'default':'fa-comments','going':'fa-spinner fa-spin','success':'fa-check','error':'fa-close','email':'fa-envelope','clock':'fa-clock-o'}[chain.sub_state]"></i>
                                 </button>
                             </div>
                             <!--个人信息-->

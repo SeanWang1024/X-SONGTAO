@@ -7,11 +7,8 @@
 (function () {
     angular.module('xstApp')
         .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-            $urlRouterProvider
-                .when("/admin/articleManager", "/admin/articleManager/articleList");
-            // .otherwise("/");
+            $urlRouterProvider.when("/admin/articleManager", "/admin/articleManager/articleList");
             $stateProvider
-
             //修改我的信息
                 .state('admin', {
                     url: "/admin",

@@ -1,10 +1,13 @@
 /*文章盒子*/
 .article {
+  user-select: none;
+  -webkit-user-select: none;
   box-sizing: border-box;
   margin-bottom: 30px;
   cursor: pointer;
   border-radius: 4px;
   overflow: hidden;
+
   &:hover .article__header .article__header--title {
     color: $base-theme-color;
     &:after {

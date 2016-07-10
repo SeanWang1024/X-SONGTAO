@@ -24,7 +24,7 @@ background:transparent;
   &.isLogin{
 
     .admin_btn{
-      display:block!important;
+      display:block;
     }
   }
   .admin_btn{
@@ -126,11 +126,14 @@ background:transparent;
 }
 
 .bg-right-imgBox {
+  -webkit-user-select: none;
+  user-select: none;
   padding: 0;
   height: 100%;
   z-index: 9;
   transition: all ease 500ms;
   display: flex;
+
 }
 
 .bg-right-content {
@@ -147,7 +150,7 @@ background:transparent;
   box-sizing: border-box;
   overflow: auto;
   position: relative;
-  padding-bottom: 64px;
+  padding-bottom: 40px;
 }
 
 .bg-right-innerBlock {
@@ -160,6 +163,8 @@ background:transparent;
   border-radius: 5px;
   transform: translate3d(0, 0, 0);
   transition: all ease 500ms;
+  user-select: none;
+  -webkit-user-select: none;
 
 }
 
@@ -173,6 +178,7 @@ background:transparent;
 }
 
 .bg-right-innerBlock-myInfo {
+  -webkit-user-select: none;
   .myInfo_name {
     color: #fff;
     margin: 10px 0;
@@ -243,6 +249,8 @@ background:transparent;
   color: #fff;
   opacity: 0;
   box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .saySomething-inner {
@@ -417,6 +425,7 @@ background:transparent;
 
 
 .contentContentBox {
+
   z-index: 7;
   margin-top: 15px;
   position: relative;

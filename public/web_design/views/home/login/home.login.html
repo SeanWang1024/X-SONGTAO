@@ -4,7 +4,7 @@
             <h1><span class="blue">X</span>-SONGTAO</h1>
             <h4><span class="blue">后台</span>管理</h4>
             <div class="divider"></div>
-            <div class="form-horizontal">
+            <div class="form-horizontal" ng-keydown="keydown($event)">
                 <div class="form-group">
                     <div class="col-sm-12">
                         <input ng-keydown="errText=''" class="form-control" id="username" type="text" name="username" ng-model="data.username" placeholder="用户名" autofocus>

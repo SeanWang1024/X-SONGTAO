@@ -39,6 +39,8 @@
                                     "commentUsername": API.MY,
                                     "commentEmail": API.EMAIL
                                 };
+                                //开启tooltip
+                                $rootScope.tooltip();
                                 $rootScope.isLogin = true;
                                 $state.go('home');
                             } else {
@@ -59,8 +61,8 @@
                     });
                 };
 
-                document.onkeydown=function(event){
-                    var e = event || window.event || arguments.callee.caller.arguments[0];
+                $scope.keydown = function ($event) {
+                    var e = $event || window.$event || arguments.callee.caller.arguments[0];
                     if(e && e.keyCode==13){ // enter 键
                         //要做的事情
                         $scope.loginBtn();

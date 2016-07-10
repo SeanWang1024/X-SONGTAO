@@ -8,7 +8,7 @@
             $scope.isLoaded = false;
             let url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
             $http.get(url).success(function (response) {
-                console.log(response);
+                // console.log(response);
                 if (parseInt(response.code) === 1) {
                     $scope.articleLists = response.data;
                 }
@@ -17,6 +17,5 @@
             }).finally(function () {
                 $scope.isLoaded = true;
             });
-
         }])
 })();
