@@ -10,6 +10,7 @@ angular.module('xstApp')
         }
         getArticles();
         function getArticles() {
+            $scope.isLoaded = false;
             return AJAX({
                 method: 'get',
                 url: API.getArticleList,
@@ -19,6 +20,9 @@ angular.module('xstApp')
                         $scope.articleLists = response.data;
                         // console.log($scope.articleLists);
                     }
+                },
+                complete:function () {
+                    $scope.isLoaded = true;
                 }
             });
         }

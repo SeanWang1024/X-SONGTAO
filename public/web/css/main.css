@@ -391,7 +391,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
     bottom: 0;
     width: 10px;
     height: 70px;
-    background: #38b7ea; }
+    background: #38b7ea;
+    border-bottom-right-radius: 5px; }
 
 #toaster-container {
   position: absolute;

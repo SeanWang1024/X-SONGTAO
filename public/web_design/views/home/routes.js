@@ -8,7 +8,6 @@
     angular.module('xstApp')
         .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.when("/blog", "/blog/articleList").otherwise("/");
-
             $stateProvider
             /**
              * 首页

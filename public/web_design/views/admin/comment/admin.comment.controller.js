@@ -14,6 +14,7 @@ angular.module('xstApp')
          */
         getComments();
         function getComments() {
+            $scope.isLoaded = false;
             return AJAX({
                 method: 'get',
                 url: API.getCommentToArticleList,
@@ -24,6 +25,9 @@ angular.module('xstApp')
                         $scope.commentList = response.data;
                         // console.log($scope.commentList);
                     }
+                },
+                complete:function () {
+                    $scope.isLoaded = true;
                 }
             });
         }

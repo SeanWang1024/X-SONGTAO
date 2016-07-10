@@ -5,10 +5,13 @@
     /**
      * 配置文件
      * */
-        .run(function (amMoment) {
+        .run([function (amMoment) {
             amMoment.changeLocale('Zh-cn');
-        })
-        .factory('API', function () {
+        }])
+        .run(['$rootScope','$location',function ($rootScope,$location) {
+
+        }])
+        .factory(['API', function () {
             const url = "http://localhost:8088";
             const MY_INFO_ID = '576b95155fce2dfd3874e738';
             //admin对评论进行回复的信息
@@ -91,13 +94,13 @@
                 //    删除评论 delete
                 delComment: `${url}/api/comment/id`,
 
-            //    新增评论
+                //    新增评论
                 newComment: `${url}/api/comment`,
 
 
             }
 
-        })
+        }])
         .config(['markedProvider', function (markedProvider) {
             // hljs.initHighlightingOnLoad();
             markedProvider.setOptions({
@@ -114,6 +117,11 @@
                 }
             });
         }])
+        //html5的路由模式,去掉#,无要在开头设置<base href="/" />
+        .config(['$locationProvider', function ($locationProvider) {
+            $locationProvider.html5Mode(true);
+        }])
+
 })();
 
 

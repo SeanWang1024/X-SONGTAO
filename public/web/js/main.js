@@ -5,9 +5,9 @@
     /**
      * 配置文件
      * */
-    .run(function (amMoment) {
+    .run([function (amMoment) {
         amMoment.changeLocale('Zh-cn');
-    }).factory('API', function () {
+    }]).run(['$rootScope', '$location', function ($rootScope, $location) {}]).factory(['API', function () {
         var url = "http://localhost:8088";
         var MY_INFO_ID = '576b95155fce2dfd3874e738';
         //admin对评论进行回复的信息
@@ -93,7 +93,7 @@
             newComment: url + '/api/comment'
 
         };
-    }).config(['markedProvider', function (markedProvider) {
+    }]).config(['markedProvider', function (markedProvider) {
         // hljs.initHighlightingOnLoad();
         markedProvider.setOptions({
             renderer: new marked.Renderer(),
@@ -108,6 +108,10 @@
                 return hljs.highlightAuto(code).value;
             }
         });
+    }])
+    //html5的路由模式,去掉#,无要在开头设置<base href="/" />
+    .config(['$locationProvider', function ($locationProvider) {
+        $locationProvider.html5Mode(true);
     }]);
 })();
 
@@ -827,6 +831,7 @@ angular.module('xstApp')
     }
     getArticles();
     function getArticles() {
+        $scope.isLoaded = false;
         return AJAX({
             method: 'get',
             url: API.getArticleList,
@@ -836,6 +841,9 @@ angular.module('xstApp')
                     $scope.articleLists = response.data;
                     // console.log($scope.articleLists);
                 }
+            },
+            complete: function complete() {
+                $scope.isLoaded = true;
             }
         });
     }
@@ -878,6 +886,7 @@ angular.module('xstApp')
      */
     getComments();
     function getComments() {
+        $scope.isLoaded = false;
         return AJAX({
             method: 'get',
             url: API.getCommentToArticleList,
@@ -888,6 +897,9 @@ angular.module('xstApp')
                     $scope.commentList = response.data;
                     // console.log($scope.commentList);
                 }
+            },
+            complete: function complete() {
+                $scope.isLoaded = true;
             }
         });
     }
@@ -1228,6 +1240,7 @@ angular.module('xstApp')
      */
     getTags();
     function getTags() {
+        $scope.isLoaded = false;
         return AJAX({
             method: 'get',
             url: API.getTagsList,
@@ -1237,6 +1250,9 @@ angular.module('xstApp')
                     $scope.tagLists = response.data;
                     console.log($scope.tagLists);
                 }
+            },
+            complete: function complete() {
+                $scope.isLoaded = true;
             }
         });
     }
@@ -1667,17 +1683,15 @@ angular.module('xstApp')
     angular.module('xstApp')
     //ArticleList控制器
     .controller('ArticleListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $scope.isLoaded = false;
         var url = API.newUpdateArticle.replace("from", API.ArticleFrom).replace("to", API.ArticleTo);
         $http.get(url).success(function (response) {
             console.log(response);
             if (parseInt(response.code) === 1) {
                 $scope.articleLists = response.data;
             }
-        }).error(function (erroInfo, status) {
-            // $(".blackShade.error").addClass("show");
-            // $(".blackShade.error h3").text("哎呦,好像出错了!");
-            // $(".blackShade.error span").html(erroInfo);
-            // $(".blackShade.error small").text("状态码:" + status);
+        }).error(function (erroInfo, status) {}).finally(function () {
+            $scope.isLoaded = true;
         });
     }]);
 })();
@@ -1688,12 +1702,15 @@ angular.module('xstApp')
     angular.module('xstApp')
     //HistoryList控制器
     .controller('HistoryListController', ['$scope', '$http', 'API', function ($scope, $http, API) {
+        $scope.isLoaded = false;
         $http.get(API.getArticleHistoryWithStructure).success(function (response) {
             console.log(response);
             if (parseInt(response.code) === 1) {
                 $scope.historyLists = response.data;
             }
-        }).error(function (erroInfo, status) {});
+        }).error(function (erroInfo, status) {}).finally(function () {
+            $scope.isLoaded = true;
+        });
     }]);
 })();
 /**
@@ -1703,21 +1720,27 @@ angular.module('xstApp')
     angular.module('xstApp')
     //TagList控制器
     .controller('TagListController', ['$scope', '$http', 'API', '$state', function ($scope, $http, API, $state) {
+        $scope.isLoaded = false;
         $http.get(API.getTagsListWithStructure).success(function (response) {
             // console.log("TagListController response");
             // console.log(response);
             if (parseInt(response.code) === 1) {
                 $scope.tagLists = response.data;
             }
-        }).error(function (erroInfo, status) {});
+        }).error(function (erroInfo, status) {}).finally(function () {
+            $scope.isLoaded = true;
+        });
     }]).controller('findArticlesByTagController', ['$scope', '$stateParams', '$http', 'API', function ($scope, $stateParams, $http, API) {
         var url = API.getArticlesWithTagId.replace('id', $stateParams.id);
+        $scope.isLoaded = false;
         $http.get(url).success(function (response) {
             // console.log(response);
             if (parseInt(response.code) === 1) {
                 $scope.articleLists = response.data;
             }
-        }).error(function (erroInfo, status) {});
+        }).error(function (erroInfo, status) {}).finally(function () {
+            $scope.isLoaded = true;
+        });;
     }]);
 })();
 /**
@@ -1810,7 +1833,6 @@ angular.module('xstApp')
 (function () {
     angular.module('xstApp').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.when("/blog", "/blog/articleList").otherwise("/");
-
         $stateProvider
         /**
          * 首页

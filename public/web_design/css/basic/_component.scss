@@ -11,6 +11,7 @@
   margin-bottom: 30px;
   margin-top: 30px;
   position: relative;
+  //display: none;
   .logo-left-box {
     position: absolute;
     left: 25px;
@@ -57,6 +58,7 @@
     width: 10px;
     height: 70px;
     background:$base-theme-color;
+    border-bottom-right-radius: 5px;
   }
 }
 

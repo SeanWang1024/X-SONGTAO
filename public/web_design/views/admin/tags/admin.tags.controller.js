@@ -13,6 +13,7 @@ angular.module('xstApp')
          */
         getTags();
         function getTags() {
+            $scope.isLoaded = false;
             return AJAX({
                 method: 'get',
                 url: API.getTagsList,
@@ -22,6 +23,9 @@ angular.module('xstApp')
                         $scope.tagLists = response.data;
                         console.log($scope.tagLists);
                     }
+                },
+                complete:function () {
+                    $scope.isLoaded = true;
                 }
             });
         }
