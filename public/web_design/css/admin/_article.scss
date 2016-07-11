@@ -223,14 +223,18 @@
     height: 100%;
     resize: none;
     overflow: hidden;
+    font-size: 16px;
+    line-height: 1.6;
   }
   .textarea {
+    font-size: 16px;
+    line-height: 1.6;
     z-index:999;
     display: block;
     width: 100%;
     padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.42857143;
+    //font-size: 14px;
+    //line-height: 1.42857143;
     color: #555;
     background-color: transparent;
     background-image: none;

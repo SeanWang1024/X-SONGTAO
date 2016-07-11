@@ -3,20 +3,27 @@
  */
 (function () {
     angular.module('xstApp')
-        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', '$localStorage', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state, $localStorage) {
+        .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', '$localStorage', '$autoTextarea', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state, $localStorage, $autoTextarea) {
+
+            
             //获取我的信息
             AJAX({
                 method: 'post',
                 url: API.getMyInfoWithOriginal,
-                data:{
-                    _id:API.MY_INFO_ID
+                data: {
+                    _id: API.MY_INFO_ID
                 },
                 success: function (response) {
                     if (parseInt(response.code) === 1) {
                         $scope.myinfo = response.data;
+                        //重新计算textarea的高度
+                        $timeout(function () {
+                            resizeTextarea();
+                        },0,true);
+
                     }
                 },
-                error:function (err) {
+                error: function (err) {
                     $log.error(err)
                 }
             });
@@ -118,6 +125,23 @@
                     $scope.save(true);
                 }
             });
+
+
+            //textare自动提升高度
+
+            let $TextArea = document.getElementById('personalState__textarea');
+            // resizeTextarea();
+            $scope.$watch('myinfo.personal_state', function () {
+                if (!!$scope.myinfo && $scope.myinfo.personal_state) {
+                    resizeTextarea();
+                }
+            });
+
+            function resizeTextarea() {
+                $autoTextarea($TextArea, 10);
+            }
+
+
         }]);
 })();
 

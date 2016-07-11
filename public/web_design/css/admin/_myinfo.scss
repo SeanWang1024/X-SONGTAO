@@ -108,6 +108,7 @@
         .personalState__textarea {
           width: 100%;
           padding: 0 5px;
+          position: relative;
           textarea {
             background-color: #fff;
             color: #333;
@@ -122,6 +123,7 @@
             overflow-x: hidden;
             resize: none;
             outline: none;
+            transition: all ease 200ms;
           }
         }
       }

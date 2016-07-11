@@ -15,7 +15,7 @@
   -webkit-user-select:none;
   -webkit-user-select: none;
   //min-height:500px;
-
+  min-height: calc(100% - 100px);
   .adminBox-content-header h1 {
     font-family: "Dosis", arial, tahoma, verdana;
     display: inline-block;
