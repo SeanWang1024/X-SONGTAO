@@ -50,7 +50,7 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 
 这里主要讲述如何在你的本地启动X-SONGTAO项目。在本机开发的过程中遇到的问题真的很少，但是一部署到服务器，问题就出来了：域名解析、Nginx设置、FTP设置、Nodejs/Mongodb安装、数据库配置连接等问题接踵而至，不过这些问题分析下都能在网上找到解决办法，不算难。到目前为止，遇到的问题就都自己解决了，虽然多花点时间，也需要总结下，希望以后再遇到这类问题能再少花点时间！
 
-####环境配置
+#### 环境配置
 
 1. CentOS x64操作系统；
 2. Nodejs(6.0.0+)/npm/Mongodb安装(自行google)；
@@ -117,8 +117,14 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 	
 
 
-8. public/web目录是最终生成好的spa目录，如果希望对X-SONGTAO进行二次修改，请在web_design进行操作，操作之前，也请安装好web_design目录下的package.json中的各类依赖。项目Gulp文为gulpfile.babel.js，执行DEVELOPMENT任务，访问localhost:8080就能访问到项目。
+8. public/web目录是最终生成好的spa目录，如果希望对X-SONGTAO进行二次修改，请在web_design进行操作，操作之前，也请安装好web_design目录下的package.json中的各类依赖。项目Gulp文为gulpfile.babel.js，执行DEVELOPMENT任务，新生成的文件放置到web目录下。
 
+
+#### 启动
+
+
+- 进入X-SONGTAO文件夹，输入`node ./bin/www`,访问localhost:8080就能访问到项目。
+- 也可以使用pm2启动：`pm2 start /x-songtao/bin/www -n x-songtao -i max;pm2 logs`,顺便监听启动时log日志。
 
 
 
@@ -170,7 +176,7 @@ API接口文档（前方高能误入）
 ---
 
 
-###前提说明
+### 前提说明
 
 首先，所有的api请求都会都会进行权限验证，目前对以下五种请求及路径会直接通过：
 
@@ -186,13 +192,13 @@ GET、/register、/login、/imgupload、POST-/comment
 | authorization | token {{token}} | 
 
 
-###补充说明 
+### 补充说明 
 
 - 具体的API请参考目录：app/routes/api.routes.js文件。  
 - mongodb表结构请参考目录：app/config/mongoose.js文件。 
 
 
-###API参数通用格式说明
+### API参数通用格式说明
 
 	
 - code：1-成功；2~5-失败；8-数据库查找错误；9-非admin用户；10-token错误或超时（（Token 2h内有效）; 
@@ -205,7 +211,7 @@ GET、/register、/login、/imgupload、POST-/comment
 	
 
 
-###User接口相关
+### User接口相关
 
 - 注册接口
 
@@ -415,7 +421,7 @@ resopnse code:
 
 
 
-###Tags接口相关
+### Tags接口相关
 
 - 获取全部Tags信息接口（用于后台列表查看）
 
@@ -563,7 +569,7 @@ resopnse code:
 ```
 
 
-###Articles接口相关
+### Articles接口相关
 
 - 获取全部Articles信息接口（后台页面需要）
 
@@ -787,7 +793,7 @@ resopnse code:
 ```
 
 
-###Comments接口相关
+### Comments接口相关
 
 - 获取全部Comments信息接口
 
