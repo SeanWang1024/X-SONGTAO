@@ -23,8 +23,7 @@
             };
             //保存操作
             $scope.save = function (value) {
-                // console.log(changedValue)
-                // console.log(value)
+
                 if (changedValue !== value) {
                     AJAX({
                         method: 'put',
@@ -36,13 +35,13 @@
                             address: $scope.myinfo.address,
                             motto: $scope.myinfo.motto,
                             personal_state: $scope.myinfo.personal_state,
-                            img_url: $scope.myinfo.img_url,
+                            img_url: $scope.myinfo.img_url
                         },
                         success: function (response) {
                             if (parseInt(response.code) === 1) {
                                 $log.debug(response.msg);
                             } else {
-                                alert("我的信息修改失败: " + response.msg);
+                                // alert("我的信息修改失败: " + response.msg);
                                 $log.error(response.msg);
                             }
                         }
@@ -110,8 +109,8 @@
             dropzone.on('success', function (file, response) {
                 if (parseInt(response.code) === 1) {
                     $scope.myinfo.img_url = response.data;
-                    isChanged = true;
-                    $scope.save();
+                    changedValue = false;
+                    $scope.save(true);
                 }
             });
         }]);

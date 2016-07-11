@@ -207,6 +207,7 @@ module.exports = {
         })
     },
     edit: function (req, res, next) {
+        console.log("sdfesdfsdf---------------------------")
         Users.findOne({_id: req.body._id}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
@@ -232,7 +233,6 @@ module.exports = {
                 if (req.body.is_admin !== undefined) {
                     user.is_admin = req.body.is_admin
                 }
-
                 user.save();
                 res.status(200);
                 res.send({

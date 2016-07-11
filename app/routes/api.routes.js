@@ -33,7 +33,8 @@ let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 router.all('*', function (req, res, next) {
     let method = req.method.toLocaleLowerCase();
     let path = req.path.toString();
-    if (method === 'get' || path.includes('register') || path.includes('login')|| path.includes('upload')|| path.includes('comment')) {
+    console.log(path);
+    if (method === 'get' || path.includes('register') || path.includes('login') || path.includes('upload') || (method === 'post' && path.includes('comment'))) {
         return next();
     } else {
         let authorization = req.get("authorization");
@@ -92,7 +93,7 @@ router.post('/imgupload', multipartMiddleware, function (req, res, next) {
                 return next();
             }
             let arr = req.files.uploadImg.originalFilename.split('.');
-            let suffix = arr[arr.length-1];
+            let suffix = arr[arr.length - 1];
 
             //新建文件名
             let fileName = `${Date.parse(new Date())}.${suffix}`;
@@ -178,7 +179,7 @@ router.post('/comment', CommentController.add);
 //修改,基本不用
 router.put('/comment', CommentController.edit);
 //根据文章id查询其评论的数组(用于详细的文章调取评论接口)
-router.get('/article/comments/:article_id',CommentController.getByArticleId);
+router.get('/article/comments/:article_id', CommentController.getByArticleId);
 //delete(用于后台删除评论)
 router.delete('/comment/:id', CommentController.delete);
 //checkComments

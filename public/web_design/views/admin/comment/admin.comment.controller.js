@@ -4,7 +4,7 @@
 (function () {
     angular.module('xstApp')
     //myInfo的控制器
-        .controller('commentCtrl', ['AJAX', 'API', '$scope', '$log', '$timeout', '$rootScope', '$state', function (AJAX, API, $scope, $log, $timeout, $rootScope, $state) {
+        .controller('commentCtrl', ['AJAX', 'API', '$scope', '$log', '$q', function (AJAX, API, $scope, $log, $q) {
             /*
              * 写入页面信息
              */
@@ -15,14 +15,12 @@
                     method: 'get',
                     url: API.getCommentToArticleList,
                     success: function (response) {
-                        // console.log('response');
-                        // console.log(response);
+                        // console.log(response)
                         if (parseInt(response.code) === 1) {
                             $scope.commentList = response.data;
-                            // console.log($scope.commentList);
                         }
                     },
-                    complete:function () {
+                    complete: function () {
                         $scope.isLoaded = true;
                     }
                 });
@@ -58,42 +56,44 @@
                     // 但是主评论需要手动设置
                     isIReplied: true,
                     state: true
-                }
-                AJAX({
-                    method: 'post',
-                    url: API.postComment,
-                    data: params,
-                    success: function (response) {
-                        if (parseInt(response.code) === 1) {
-                            $log.debug("回复成功: " + response);
-                            //将主评论设为我已评论
-                            changeCommentReplyState(item._id);
+                };
+                //将主评论设为我已评论
+                changeCommentReplyState(item._id).then(function () {
+                    AJAX({
+                        method: 'post',
+                        url: API.postComment,
+                        data: params,
+                        success: function (response) {
+                            if (parseInt(response.code) === 1) {
+                                $log.debug("回复成功: " + response);
+                                //刷新文章列表
+                                getComments();
+                            }
+                        },
+                        error: function (response) {
+                            $log.debug("回复失败: " + response);
                         }
-                    },
-                    error:function (response) {
-                        $log.debug("回复失败: " + response);
-                    },
-                    complete: function () {
-                        $scope.comment_info.content;
-                    }
-                });
+                    });
+                }).finally(function () {
+                    $scope.comment_info.content = "";
+                })
             }
 
             //    删除评论
-            let delCommId;
-            $scope.delbtn = function (id) {
-                delCommId = id;
-
+            let delComm;
+            $scope.delbtn = function (item) {
+                delComm = item;
             };
             $scope.confirmDelCommBtn = function () {
-                // console.log('delete:' + delCommId);
                 AJAX({
                     method: 'delete',
-                    url: API.delComment.replace('id', delCommId),
+                    url: API.delComment.replace('id', delComm._id),
                     success: function (response) {
+                        // console.log(response )
                         if (parseInt(response.code) === 1) {
                             //刷新文章列表
-                            getComments();
+                            $scope.commentList.splice($scope.commentList.indexOf(delComm), 1);
+                            // getComments();
                         }
                     }
                 });
@@ -105,7 +105,8 @@
             // function changeAuthState
             $scope.changeAuthState = function (_id) {
                 // console.log(_id)
-                return AJAX({
+                let defer = $q.defer();
+                AJAX({
                     method: 'post',
                     url: API.changeAuthState,
                     data: {
@@ -115,10 +116,13 @@
                         if (parseInt(response.code) === 1) {
                             //刷新文章列表
                             $log.debug("状态改变成功")
-                            // getComments();
+                            defer.resolve()
+                        } else {
+                            defer.reject();
                         }
                     }
                 });
+                return defer.promise;
             };
 
             //子主评论筛选
@@ -133,11 +137,11 @@
                         break;
                     //主评论
                     case 1:
-                        return data.article_id._id.toString() === data.pre_id.toString();
+                        return !!data.article_id ? data.article_id._id.toString() === data.pre_id.toString() : false;
                         break;
                     //子评论
                     case 2:
-                        return data.article_id._id.toString() !== data.pre_id.toString();
+                        return !!data.article_id ? data.article_id._id.toString() !== data.pre_id.toString() : true;
                         break;
                     default:
                         return true
@@ -214,28 +218,25 @@
             //如果对用户的文章评论进行了评论,则标记此评论为已阅读
             //此接口只对我有效
             function changeCommentReplyState(_id) {
+                let defer = $q.defer();
                 let params = {
                     _id: _id
-                }
-                return AJAX({
+                };
+                AJAX({
                     method: 'post',
                     url: API.changeCommentReplyState,
                     data: params,
                     success: function (response) {
-                        // console.log('response');
-                        // console.log(response);
                         if (parseInt(response.code) === 1) {
-                            // $scope.commentList = response.data;
-                            // console.log(response.data);
-                            //刷新文章列表
-                            getComments();
+
+                            defer.resolve();
+                        } else {
+                            defer.reject();
                         }
                     }
                 });
-
+                return defer.promise;
             }
-
-
         }]);
 })();
 

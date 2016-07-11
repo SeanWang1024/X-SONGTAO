@@ -82,27 +82,22 @@
             $scope.publishBtn = function () {
                 $scope.article.state = true;
                 $scope.isPublishing = true;
-                // console.log('collectEditedArtInfo')
-                // console.log(collectEditedArtInfo())
-
                 saveArticle(collectEditedArtInfo()).then(function (data) {
-                    $timeout(function () {
-                        $scope.isPublishing = false;
-                    }, 1000, true)
+                    history.back();
+                    $scope.isPublishing = false;
+                },function () {
+                    $scope.isPublishing = false;
                 })
-
             };
             //保存草稿
             $scope.isDrafting = false;
             $scope.draftBtn = function () {
                 $scope.article.state = false;
                 $scope.isDrafting = true;
-                // console.log('collectEditedArtInfo')
-                // console.log(collectEditedArtInfo())
                 saveArticle(collectEditedArtInfo()).then(function (data) {
-                    $timeout(function () {
-                        $scope.isDrafting = false;
-                    }, 1000, true)
+                    $scope.isDrafting = false;
+                },function () {
+                    $scope.isDrafting = false;
                 })
             }
 
@@ -115,6 +110,8 @@
                         success: function (response) {
                             if (parseInt(response.code) === 1) {
                                 resolve(response);
+                            }else{
+                                reject();
                             }
                         }
                     });

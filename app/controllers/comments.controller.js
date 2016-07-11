@@ -155,7 +155,7 @@ module.exports = {
                         article.save();
                         resolve();
                     } else {
-                        reject();
+                        resolve('article non-exist!');
                     }
                 });
             })
@@ -208,13 +208,7 @@ module.exports = {
                             "msg": `pre comment non-exist or error!`
                         });
                     })
-                }, function () {
-                    res.status(200);
-                    res.send({
-                        "code": "2",
-                        "msg": `article non-exist!`
-                    });
-                });
+                })
             } else {
                 res.status(200);
                 res.send({

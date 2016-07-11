@@ -35,10 +35,18 @@
                                     time: new Date().getTime()
                                 };
                                 //我进行评论的信息
-                                $localStorage.commentAuth = {
-                                    "commentUsername": API.MY,
-                                    "commentEmail": API.EMAIL
-                                };
+                                if($scope.data.username.indexOf("visitor") !== -1){
+                                    $localStorage.commentAuth = {
+                                        "commentUsername": "Visitor",
+                                        "commentEmail": "visitor@email.com"
+                                    };
+                                }else{
+                                    $localStorage.commentAuth = {
+                                        "commentUsername": API.MY,
+                                        "commentEmail": API.EMAIL
+                                    };
+                                }
+
                                 //开启tooltip
                                 $rootScope.tooltip();
                                 $rootScope.isLogin = true;

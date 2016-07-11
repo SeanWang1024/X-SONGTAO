@@ -103,6 +103,7 @@
   //border-top: 3px solid $base-theme-color;
   border-bottom: 3px solid $base-theme-color;
   position: relative;
+  overflow: hidden;
   &::after {
     content: '';
     position: absolute;
@@ -163,6 +164,7 @@
       height: 100px;
       .commentBox__info {
         transform: translateY(50px);
+        opacity:1;
       }
     }
     .commentBox__questionBox {
@@ -217,12 +219,14 @@
       width: 100%;
       z-index: 1;
       transition: all ease 200ms;
+      opacity:0;
       .commentBox__info--input {
         flex: 1;
         @include display-flex;
         @include justify-content(center);
         @include align-items(center);
         color: #eee;
+
         label {
           margin-right: 10px;
 

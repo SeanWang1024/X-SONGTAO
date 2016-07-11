@@ -41,6 +41,7 @@
                         } else if (parseInt(response.data.code) == 9) {
                             //需要补充,如果code为9,则代表用户没有访问权限,
                             alert("您代表用户组没有修改权限!");
+                            httpParams.success && httpParams.success(response.data);
                         } else {
                             httpParams.success && httpParams.success(response.data);
                         }
