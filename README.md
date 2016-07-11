@@ -18,7 +18,6 @@ X-SONGTAO Blog项目
 项目结构
 ---
 ```
-
 |-app  					//后台代码
 |----config  			//数据库配置文件
 |----controllers  		//api路由请求处理文件
@@ -38,8 +37,6 @@ X-SONGTAO Blog项目
 |--------views  		//spa的tpl+controllers+routers（前后台页面分别存放）
 |-app.js  
 |-package.json  
-
-  
 ```
 
 项目框架
@@ -84,7 +81,6 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
     	"personal_state":"你的自我介绍",
     	"img_url":"http://你的头像地址"
 	}
-	
 	```
 	
 	**成功的返回结果如下：** 
@@ -114,7 +110,6 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
     		]
   		}
 	}
-	
 	```
 	
 	**参数说明：**  
@@ -144,7 +139,6 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 ```
 username:visitor
 password:visitor
-
 ```
 
 
@@ -173,7 +167,6 @@ password:visitor
 |-我的图片（未开发）
 |-退出			//清空个人信息
 |---------------  
-
 ```
 
 未开发的部分会之后进行，放在第三期。
@@ -189,7 +182,6 @@ API文档
 
 ```
 GET、/register、/login、/imgupload、POST-/comment
-
 ```
 
 **请求前，请在head中添加token信息，格式如下：**
@@ -252,7 +244,6 @@ resopnse:
 resopnse code:
 1-success;
 2=username already exist;
-
 ```
 
 - 登录接口
@@ -274,7 +265,6 @@ resopnse:
 resopnse code:
 1-success;
 2=username or password error;
-
 ```
 
 - 密码修改接口
@@ -298,7 +288,6 @@ resopnse code:
 1-success;
 2=psw not right;
 3=user non-exist;
-
 ```
 
 - 获取全部user信息接口
@@ -323,7 +312,6 @@ resopnse:
 }
 resopnse code:
 1-success;
-
 ```
 
 
@@ -348,7 +336,6 @@ resopnse:
 resopnse code:
 1-success;
 2=user non-exist;
-
 ```
 
 - 获取某个user信息接口（后台需要）
@@ -372,7 +359,6 @@ resopnse:
 resopnse code:
 1-success;
 2=user non-exist;
-
 ```
 
 - 修改信息接口
@@ -399,7 +385,6 @@ resopnse:
 resopnse code:
 1-success;
 2=user non-exist;
-
 ```
 
 - 删除某个user信息接口
@@ -418,7 +403,6 @@ resopnse:
 }
 resopnse code:
 1-success;
-
 ```
 
 
@@ -446,7 +430,6 @@ resopnse:
 }
 resopnse code:
 1-success;
-
 ```
 
 - 获取全部Tags信息接口（具有特殊数据结构，用于前台标签库）
@@ -475,7 +458,6 @@ resopnse:
 }
 resopnse code:
 1-success;
-
 ```
 
 
@@ -498,7 +480,6 @@ resopnse:
 }
 resopnse code:
 1-success;
-
 ```
 
 - 新增Tags信息接口
@@ -526,8 +507,6 @@ resopnse:
 resopnse code:
 1-success;
 2-tag already exist;
-
-
 ```
 
 
@@ -558,7 +537,6 @@ resopnse code:
 1-success;
 2-tag non-exist or params error;
 3-tag name exist, please use another one!;
-
 ```
 
 
@@ -574,7 +552,6 @@ resopnse:
 }
 resopnse code:
 1-success;
-
 ```
 
 
