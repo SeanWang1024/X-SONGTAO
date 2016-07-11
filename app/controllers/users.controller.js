@@ -11,7 +11,7 @@ let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 let marked = require('marked');
 module.exports = {
     register: function (req, res, next) {
-        let user_ip = req.ip.split(":")[3];
+        let user_ip = req.headers.host;
         Users.findOne({username: req.body.username}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
