@@ -1,6 +1,5 @@
 _config.yml
 .idea
-www
 *.zip
 *.txt
 node_modules
