@@ -24,7 +24,7 @@ X-SONGTAO Blog项目
 |----utils  			//通用工具类文件
 |----views  			//页面模板文件（当前只有错误页面的，首页会转向public/web/index.html下）
 |-bin  					//nodejs启动文件
-|-public  				//nodejs启动文件  
+|-public  				//静态资源文件  
 |----uploads  			//上传文件夹
 |----web  				//前台代码-spa设计目标文件
 |----web_design  		//前台代码-spa设计源文件
