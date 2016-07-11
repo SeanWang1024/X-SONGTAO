@@ -70,6 +70,10 @@
         height: 100%;
         text-align: center;
         width: 24%;
+        -ms-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         h3 {
           color: #565A5F;
           padding-right: 20px;

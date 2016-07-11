@@ -58,13 +58,13 @@
                             angular.element(document.getElementById('addTag')).modal('hide');
                             $timeout(function () {
                                 $scope.submitText = null;
-                            }, 0, true);
+                            }, 2000, true);
                         } else {
                             //操作提示
                             $scope.submitText = '新增失败, 标签名称已存在!';
                             $timeout(function () {
                                 $scope.submitText = null;
-                            }, 0, true);
+                            }, 2000, true);
 
                             $log.error(response.msg);
                         }
@@ -97,7 +97,7 @@
                             angular.element(document.getElementById('editTag')).modal('hide');
                             $timeout(function () {
                                 $scope.submitText = null;
-                            }, 0, true);
+                            }, 2000, true);
                         } else {
                             //操作提示
                             switch (parseInt(response.code)) {
@@ -113,7 +113,7 @@
                             }
                             $timeout(function () {
                                 $scope.submitText = null;
-                            }, 0, true);
+                            }, 2000, true);
                             $log.error(response.msg);
                         }
                     }
@@ -142,13 +142,13 @@
                             angular.element(document.getElementById('delTag')).modal('hide');
                             $timeout(function () {
                                 $scope.submitText = null;
-                            }, 0, true);
+                            }, 2000, true);
                         } else {
                             //操作提示
                             $scope.submitText = '删除失败!';
                             $timeout(function () {
                                 $scope.submitText = null;
-                            }, 0, true);
+                            }, 2000, true);
                             $log.error(response.msg);
                         }
                     }
