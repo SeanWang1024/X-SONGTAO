@@ -56,7 +56,7 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 1. CentOS x64操作系统；
 2. Nodejs(6.0.0+)/npm/Mongodb安装(自行google)；
 3. pm2（项目启动管理）、n（Nodejs版本管理）安装；
-4. 进入项目根根目录执行`npm install` ,安装各种npm_module；
+4. 进入项目根根目录执行`npm install` ,安装各种npm的module；
 5. 进入app/config/config.js修改数据库配置信息
 6. 进入public/web/config.js修改web的配置信息，详情如下：
 	- url: API访问根目录（http://xiangsongtao.com）
