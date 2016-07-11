@@ -1,0 +1,166 @@
+<div class="tags animated fadeIn">
+    <!--column title-->
+    <h3 class="title">
+        <i class="fa fa-fw fa-lg fa-tag"></i> 标签管理 / <span class="blue">TAGS</span>
+    </h3>
+    <!--增加-->
+    <div class="btnBox text-right">
+        <button data-toggle="modal" data-target="#addTag" ng-click="addNewTagBtn()" class="btn btn-success"><i class="fa fa-plus"></i></button>
+    </div>
+    <div class="tableScrollBox">
+        <div class="table-body">
+            <table class="table table-condensed" id="table" ng-init="predicate = 'create_time';reverse=false">
+                <thead>
+                <tr class="text-center">
+                    <th>#</th>
+                    <th ng-click="predicate = 'name'; reverse=!reverse">
+                        标签名称/Name
+                    <span ng-if="predicate == 'name'">
+                        <i ng-if="!reverse" class="fa fa-caret-up"></i>
+                        <i ng-if="reverse" class="fa fa-caret-down"></i>
+                    </span>
+                    </th>
+                    <th ng-click="predicate = 'catalogue_name'; reverse=!reverse">
+                        分类名称/Cat.
+                        <span ng-if="predicate == 'catalogue_name'">
+                        <i ng-if="!reverse" class="fa fa-caret-up"></i>
+                        <i ng-if="reverse" class="fa fa-caret-down"></i>
+                    </span>
+                    </th>
+                    <th ng-click="predicate = 'used_num'; reverse=!reverse">引用数/Quote
+                    <span ng-if="predicate == 'used_num'">
+                        <i ng-if="!reverse" class="fa fa-caret-up"></i>
+                        <i ng-if="reverse" class="fa fa-caret-down"></i>
+                    </span></th>
+                    <th ng-click="predicate = 'create_time'; reverse=!reverse">创建时间/C.T.
+                    <span ng-if="predicate == 'create_time'">
+                        <i ng-if="!reverse" class="fa fa-caret-up"></i>
+                        <i ng-if="reverse" class="fa fa-caret-down"></i>
+                    </span>
+                    </th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <!--<colgroup></colgroup>-->
+                <tbody>
+                <tr ng-repeat="tag in tagLists | orderBy:predicate:reverse track by $index">
+                    <td ng-bind="$index+1"></td>
+                    <!--<td ng-bind="tag._id" style="display: none;"></td>-->
+                    <td ng-bind="tag.name"></td>
+                    <td ng-bind="tag.catalogue_name"></td>
+                    <td ng-bind="tag.used_num"></td>
+                    <td ng-bind="tag.create_time | date:'yyyy/MM/dd HH:mm:ss'"></td>
+                    <td>
+                        <button data-toggle="modal" data-target="#editTag" ng-click="editTagBtn(tag)" class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+                        <button data-toggle="modal" data-target="#delTag" ng-click="delTagBtn(tag._id)" class="btn btn-danger btn-sm"><i class="fa fa-bitbucket"></i></button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--无数据提示-->
+            <div class="nodata  animated fadeIn" ng-if="!tagLists.length && isLoaded">
+                <div class="logo-left-box">
+                    <h2 class="logo"><span class="blue">X</span><span class="white">-SONGTAO</span></h2>
+                    <h3 class="blue notice">提示!</h3>
+                    <p class="white">没有找到数据,~~~~(>_<)~~~~</p>
+                </div>
+                <img src="./web/img/employee.svg" alt="employee">
+            </div>
+
+            <!--加载提示-->
+            <div class="nodata  animated fadeIn" ng-if="!isLoaded">
+                <div class="logo-left-box">
+                    <h2 class="logo"><span class="blue">X</span><span class="white">-SONGTAO</span></h2>
+                    <h3 class="blue notice">提示!</h3>
+                    <p class="white">正在加载,O(∩_∩)O稍等~</p>
+                </div>
+                <img src="./web/img/employee.svg" alt="employee">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--弹出层-增加-->
+<div class="modal fade" id="addTag" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus-square"></i> 增加标签/ADDTAGS</h4>
+            </div>
+            <div class="modal-body">
+                <form name="addTags">
+                    <div class="form-group" ng-class="{true:'has-error',false:''}[addTags.tagname.$error.required]">
+                        <label class="control-label">标签名/Name</label>
+                        <input type="text" class="form-control" name="tagname" ng-model="newTag.name" placeholder="请输入标签名称" required>
+                    </div>
+                    <div class="form-group" ng-class="{true:'has-error',false:''}[addTags.catname.$error.required]">
+                        <label class="control-label">分类名/Cat.</label>
+                        <input type="text" class="form-control" name="catname" ng-model="newTag.catalogue_name" placeholder="请输入分类名称" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="submitText" ng-bind="submitText"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button ng-disabled="!addTags.$valid || !!submitText" ng-click="confirmSaveNewTagBtn()" id="saveTags" type="button" class="btn btn-success">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--弹出层-修改-->
+<div class="modal fade" id="editTag" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-pencil"></i> 修改标签/EDITTAGS</h4>
+            </div>
+            <div class="modal-body">
+                <form name="editTags">
+                    <div class="form-group" ng-class="{true:'has-error',false:''}[editTags.tagname.$error.required]">
+                        <label class="control-label">标签名/TagName:</label>
+                        <input type="text" class="form-control" name="tagname" ng-model="editTag.name" required>
+                    </div>
+                    <div class="form-group" ng-class="{true:'has-error',false:''}[editTags.catname.$error.required]">
+                        <label class="control-label">分类名/Cat.Name:</label>
+                        <input type="text" class="form-control" name="catname" ng-model="editTag.catalogue_name" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="submitText" ng-bind="submitText"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button ng-disabled="!editTags.$valid || !!submitText" ng-click="confirmEditTagBtn()" type="button" class="btn btn-success">
+                    修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--弹出层-删除-->
+<div class="modal fade" id="delTag" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-bitbucket"></i> 删除标签/DELTAGS</h4>
+            </div>
+            <div class="modal-body">
+                <h3 class="text-center deleteConfirmText">确认删除此标签?</h3>
+            </div>
+            <div class="modal-footer">
+                <span class="submitText" ng-bind="submitText"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button ng-disabled="!!submitText" type="button" ng-click="confirmDelTagBtn()" class="btn btn-danger">
+                    删除
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

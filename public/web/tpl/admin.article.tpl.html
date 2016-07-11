@@ -1,0 +1,63 @@
+<div class="articleEdit animated fadeIn">
+    <!--column title-->
+    <h3 class="title">
+        <i class="fa fa-fw fa-lg fa-list"></i> 文章编辑 / <span class="blue">ARTICLE-EDIT</span>
+    </h3>
+    <section class="mainSection">
+        <div class="editSection">
+            <div class="inputBox">
+                <div class="inputBox__input">
+                    <form class="form-inline title_form" name="titleBox">
+                        <div class="form-group" ng-class="{true:'has-error',false:''}[titleBox.title.$error.required]">
+                            <label for="artTitle">文章标题</label>
+                            <input type="text" name="title" ng-model="article.title" class="form-control" id="artTitle" placeholder="请输入文章标题" required>
+                        </div>
+                    </form>
+                    <form class="form-inline other_form" name="timeBox">
+                        <div class="form-group" ng-class="{true:'has-error',false:''}[timeBox.time.$error.required]">
+                            <label for="publish_time">发布时间</label>
+                            <ng-bs3-datepicker id="publish_time" name="time"
+                                               class="form-control other_form--input"
+                                               ng-model="date"
+                                               language="zh-CN"
+                                               date-format="YYYY/MM/DD HH:mm:ss" required></ng-bs3-datepicker>
+                        </div>
+                        <div class="form-group">
+                            <label for="tags">添加标签</label>
+                            <multiselect id="tags" name="tags" class="form-control multiselect other_form--input"
+                                         show-unselect-all="true" selection-limit="3" display-prop="name"
+                                         options="options" default-text="选择标签" ng-model="selection" id-prop="_id">
+                            </multiselect>
+                        </div>
+                    </form>
+                </div>
+                <div class="inputBox__btn">
+                    <div class="inputBox__btn--submit">
+                        <button class="btn btn-success" ng-click="publishBtn()" ng-disabled="isPublishing || !titleBox.$valid || !timeBox.$valid">
+                            <i class="fa fa-2x" ng-class="{true:'fa-spinner fa-spin',false:'fa-rocket'}[isPublishing]"></i>
+                            <div>发布</div>
+                        </button>
+                    </div>
+                    <div class="inputBox__btn--other">
+                        <button ng-click="previewBtn()" class="btn btn-info">
+                            显示预览
+                            <i class="fa" ng-class="{true:'fa-angle-double-left',false:'fa-angle-double-right'}[isPreview]"></i>
+                        </button>
+                        <button class="btn btn-default" ng-click="draftBtn()" ng-disabled="isDrafting || !titleBox.$valid || !timeBox.$valid">保存草稿
+                            <i class="fa " ng-class="{true:'fa-spinner fa-spin',false:'fa-save'}[isDrafting]"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="textaresBox textaresBox_input">
+                <textarea id="textarea" ng-model="article.content" class="form-control textarea"></textarea>
+                <!--<div ng-keyup="refreshContent($event)" ng-bind="article.content" class=textarea id="textarea" contenteditable="true"></div>-->
+            </div>
+        </div>
+        <div class="previewSection">
+            <div class="block"></div>
+            <div class="textaresBox textaresBox_preview">
+                <div ng-bind-html="article.content_marked | toTrusted" class="textarea" id="textareaPreview"></div>
+            </div>
+        </div>
+    </section>
+</div>
