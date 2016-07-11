@@ -302,8 +302,7 @@ module.exports = {
                     res.status(200);
                     res.send({
                         "code": "1",
-                        "msg": "comment create success, pre comment edit success!",
-                        "data": comment
+                        "msg": "comment create success, pre comment edit success!"
                     });
                 }, function () {
                     res.status(200);
@@ -316,8 +315,7 @@ module.exports = {
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "comment create success!",
-                    "data": comment
+                    "msg": "comment create success!"
                 });
             }
         }, function () {
@@ -344,8 +342,7 @@ module.exports = {
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "comment isIReplied change success!",
-                    "data": comment
+                    "msg": "comment isIReplied change success!"
                 });
             } else {
                 res.status(200);
@@ -370,8 +367,7 @@ module.exports = {
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "comment state change success!",
-                    "data": comment
+                    "msg": "comment state change success!"
                 });
             } else {
                 res.status(200);

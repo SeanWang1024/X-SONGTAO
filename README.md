@@ -195,7 +195,7 @@ GET、/register、/login、/imgupload、POST-/comment
 - 具体的API请参考目录：app/routes/api.routes.js文件。
 
 - mongodb表结构请参考目录：app/config/mongoose.js文件。
-- 通用code说明：1-成功；2~5-失败；8-数据库查找错误；9-非admin用户；10-token错误或超时（2h内有效）;
+- 通用code说明：1-成功；2~5-失败；8-数据库查找错误；9-非admin用户；10-token错误或超时（Token 2h内有效）;
 
 ###User相关
 
@@ -781,12 +781,205 @@ resopnse code:
 
 ###Comments相关
 
+- 获取全部Comments信息接口
+
+```
+method: get
+url:/comments
+resopnse:
+{
+  "code": "1",
+  "msg": "comments list",
+  "data": [
+    {
+      "_id": "_id",
+      "article_id": "article_id",
+      "pre_id": "pre_id",
+      "name": "我",
+      "email": "280304286@163.com",
+      "time": "time",
+      "content": "content",
+      "isIReplied": true,
+      "state": true,
+      "next_id": []
+    }
+  ]
+}
+resopnse code:
+1-success;
+```
 
 
+- 增加comment的接口
+
+```
+method: post
+url:/comment
+data:
+{
+    "article_id": "article_id",
+    "pre_id": "pre_id", 
+    "next_id": [],
+    "name": "name",
+    "email": "email@email.com",
+    "time": "time",
+    "content": "content",
+    "ip": "ip",
+    "isIReplied":false,
+    "state": false
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "comment create success!",
+  "data": {
+    "article_id": "article_id",
+    "pre_id": "pre_id", 
+    "next_id": [],
+    "name": "name",
+    "email": "email@email.com",
+    "time": "time",
+    "content": "content",
+    "ip": "ip",
+    "isIReplied":false,
+    "state": false
+    "_id": "_id",
+  }
+}
+resopnse code:
+1-success;
+2-article non-exist;
+```
+
+- 根据文章id查询其评论的数组
+
+```
+method: get
+url:/article/comments/:article_id
+resopnse:
+{
+  "code": "1",
+  "msg": "comment to articles list get success!",
+  "data": [{
+    "article_id": "article_id",
+    "pre_id": "pre_id", 
+    "next_id": [],
+    "name": "name",
+    "email": "email@email.com",
+    "time": "time",
+    "content": "content",
+    "ip": "ip",
+    "isIReplied":false,
+    "state": false
+    "_id": "_id",
+      "next_id": [
+        {
+          "_id": "_id",
+          "article_id": "article_id",
+          "pre_id": "pre_id",
+          "name": "我",
+          "email": "280304286@163.com",
+          "time": "time",
+          "content": "content",
+          "isIReplied": true,
+          "state": true,
+          "next_id": []
+        }
+      ]
+  }
+}
+resopnse code:
+1-success;
+2-article non-exist;
+```
+
+- 删除评论
+
+```
+method: delete
+url:/comment/:id
+resopnse:
+{
+  "code": "1",
+  "msg": "delete success, comment_num && pre_comment has removed!"
+}
+resopnse code:
+1-success;
+2-comment non-exist;
+```
 
 
+- 修改评论状态（审核、未审核）
 
-相关文档
+```
+method: post
+url:/changeCommentAuthState
+data:
+{
+    "_id": "_id"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "comment state change success!"
+}
+resopnse code:
+1-success;
+2-comment non-exist;
+```
+
+- 修改admin对评论的回复状态（我是否回复）
+
+```
+method: post
+url:/changeCommentReplyState
+data:
+{
+    "_id": "_id"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "comment isIReplied change success!"
+}
+resopnse code:
+1-success;
+2-comment non-exist;
+```
+
+- 后台展示评论列表，包含评论文章的title
+
+```
+method: get
+url:/commentToArticleList
+resopnse:
+{
+  "code": "1",
+  "msg": "comment to articles list get success!",
+  "data": [
+    {
+      "_id": "_id",
+      "article_id": {
+        "_id": "_id",
+        "title": "title"
+      },
+      "pre_id": "pre_id",
+      "name": "name",
+      "email": "email@163.com",
+      "time": "time",
+      "content": "content",
+      "isIReplied": true,
+      "state": true,
+      "next_id": []
+   }
+ ]
+}
+resopnse code:
+1-success;
+```
+
+
+参考文档
 ===
 
 - [MongooseAPI参考手册](http://www.nodeclass.com/api/mongoose.html)
