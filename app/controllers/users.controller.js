@@ -106,8 +106,7 @@ module.exports = {
                     res.status(200);
                     res.send({
                         "code": "1",
-                        "msg": "user password change success, you should re-login!",
-                        "data": user
+                        "msg": "user password change success, you should re-login!"
                     });
                     // res.redirect('/#/login');
                 } else {
@@ -128,7 +127,7 @@ module.exports = {
         });
     },
     getAll: function (req, res, next) {
-        Users.find({}, function (err, users) {
+        Users.find({},{'_id':0,'username':0,'password':0,'is_admin':0,'login_info':0,'__v':0}, function (err, users) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -142,7 +141,7 @@ module.exports = {
     },
     //用于home显示
     getById: function (req, res, next) {
-        Users.findOne({_id: req.params.id}, function (err, user) {
+        Users.findOne({_id: req.params.id},{'_id':0,'username':0,'password':0,'is_admin':0,'login_info':0,'__v':0}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -168,7 +167,7 @@ module.exports = {
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "user list",
+                    "msg": "user info",
                     "data": user
                 })
             } else {
@@ -183,7 +182,7 @@ module.exports = {
     },
     //原始的个人信息,可以二次修改
     getByIdWithOriginal: function (req, res, next) {
-        Users.findOne({_id: req.params.id}, function (err, user) {
+        Users.findOne({_id: req.params.id},{'_id':0,'username':0,'password':0,'is_admin':0,'login_info':0,'__v':0}, function (err, user) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -237,8 +236,7 @@ module.exports = {
                 res.status(200);
                 res.send({
                     "code": "1",
-                    "msg": "user update success!",
-                    "data":user
+                    "msg": "user update success!"
                 });
             }
         });

@@ -40,9 +40,12 @@
                             $rootScope.confirmLogout();
                         } else if (parseInt(response.data.code) == 9) {
                             //需要补充,如果code为9,则代表用户没有访问权限,
-                            alert("您代表用户组没有修改权限!");
+                            alert("您代表用户组没有修改权限! code:9");
                             httpParams.success && httpParams.success(response.data);
-                        } else {
+                        } if (parseInt(response.data.code) == 8) {
+                            //需要补充,如果code为8,则数据库查找错误,
+                            alert("后台服务错误,请联系后台管理人员! code:8");
+                        }else {
                             httpParams.success && httpParams.success(response.data);
                         }
                     },

@@ -10,6 +10,8 @@ X-SONGTAO Blog项目
 
 项目第二版重写了60%的代码，至于为什么不用成熟的博客框架而自己写一个是因为我想练练手，将现在已掌握的技术用在博客中，在博客构建时也能遇到工作中遇不到的问题，另外再检查自己技术上的不足。与此同时，开博后希望自己每周至少一篇博文总结。
 
+**目前X-SONGTAO已上线，访问地址：[X-SONGTAO](http://xiangsongtao.com)**
+
 > 题外话: 问题能找到解决办法都不算难，希望在技术路上的你能沉着分析问题并面对各种挑战！
 
 
@@ -118,7 +120,7 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 	**参数说明：**  
 	> API返回数据的通用格式
 	
-	- code：1-成功；2~5-失败；9-非admin用户；10-token错误或超时（2h内有效）;
+	- code：1-成功；2~5-失败；8-数据库查找错误；9-非admin用户；10-token错误或超时（2h内有效）;
 	- msg: 服务器返回接口信息;
 	- token: 修改数据的接口权限令牌，只有在head中携带此token才能访问特定API（只在注册和登录返回）
 	- data: 服务器返回数据
@@ -132,13 +134,464 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 
 
 
-文档
+参观者账号
 ---
 
 
-1. 参观者账号
-    - username:visitor
-    - password:visitor
+> 目前参观者账号能浏览整个网站的内容，但是不可以做增删改的操作
 
-2. 需求文档（主要是我的需求）
-3. API文档（还在编辑）
+
+```
+username:visitor
+password:visitor
+
+```
+
+
+
+
+需求文档
+---
+
+
+因为是我自己的博客，主要是展示自己的成长记录所以包含以下模块：
+
+```
+|----前台页面---- 
+|-index  		//展示自己的签名			
+|-博客  
+|-----最近更新	//最近更新的10篇文章，文章可点击浏览，且能评论（评论需要admin的审核）
+|-----时光机		//按照年到月的排序，点击文章标题能浏览具体文章
+|-----标签库		//标签根据类别分类，点击标签能找到相同标签的文章列表
+|-图片墙（未开发）//以轮播的形式按照主题分类，点击主题能浏览内部全部照片
+|-登录			//token写入，评论基本信息写入
+|----后台页面----  			
+|-我的信息		//修改我的信息，包含头像 
+|-我的标签  		//标签的增删改查			
+|-我的文章		//文章列表的增删改查，文章编辑使用markdown，并能实时预览
+|-我的评论		//评论的增删改查，包含回复、审核、删除等操作
+|-我的图片（未开发）
+|-退出			//清空个人信息
+|---------------  
+
+```
+
+未开发的部分会之后进行，放在第三期。
+
+
+
+API文档
+---
+
+
+
+首先，所有的api请求都会都会进行权限验证，目前对以下五种请求及路径会直接通过：
+
+```
+GET、/register、/login、/imgupload、POST-/comment
+
+```
+
+**请求前，请在head中添加token信息，格式如下：**
+
+
+|      key      |       value     |
+| ------------- | --------------- |
+| authorization | token {{token}} | 
+
+
+- 具体的API请参考目录：app/routes/api.routes.js文件。
+
+- mongodb表结构请参考目录：app/config/mongoose.js文件。
+- 通用code说明：1-成功；2~5-失败；8-数据库查找错误；9-非admin用户；10-token错误或超时（2h内有效）;
+
+###User相关
+
+- 注册接口
+
+```
+method: post
+url:/register
+data:
+{
+    "username": "username",
+    "password": "password",
+    "is_admin":"true",
+    "full_name":"X-SONGTAO",
+    "position":"前端工程师&&Nodejs",
+    "address":"江苏-苏州",
+    "motto":"全栈工程师薪水如何？没15k我不考虑。",
+    "personal_state":"各位好，我是X-SONGTAO！",
+    "img_url":"http://your.head.img"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "user added and login success!",
+  "token": "token",
+  "data": {
+    "username": "username",
+    "password": "password",
+    "is_admin": true,
+    "full_name": "X-SONGTAO",
+    "position": "前端工程师&&Nodejs",
+    "address": "江苏-苏州",
+    "motto": "全栈工程师薪水如何？没15k我不考虑。",
+    "personal_state": "各位好，我是X-SONGTAO！",
+    "img_url": "http://your.head.img",
+    "_id": "_id",
+    "login_info": [
+      {
+        "login_time": "login_time",
+        "login_ip": "login_ip",
+        "_id": "_id"
+      }
+    ]
+  }
+}
+resopnse code:
+1-success;
+2=username already exist;
+
+```
+
+- 登录接口
+
+```
+method: post
+url:/login
+data:
+{
+    "username": "username",
+    "password": "password"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "login success! please use token to access!",
+  "token": "token"
+}
+resopnse code:
+1-success;
+2=username or password error;
+
+```
+
+- 密码修改接口
+
+```
+method: post
+url:/change_password
+data:
+{
+    "_id": "_id",
+    "username": "username",
+    "password": "password",
+    "new_password": "new_password"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "user password change success, you should re-login!"
+}
+resopnse code:
+1-success;
+2=psw not right;
+3=user non-exist;
+
+```
+
+- 获取全部user信息接口
+
+```
+method: get
+url:/users
+resopnse:
+{
+  "code": "1",
+  "msg": "user list",
+  "data": [
+    {
+      "position": "position",
+      "address": "address",
+      "motto": "motto",
+      "img_url": "img_url",
+      "personal_state": "personal_state",
+      "full_name": "full_name"
+    }
+ ]
+}
+resopnse code:
+1-success;
+
+```
+
+
+- 获取某个user信息接口（前台需要）
+
+```
+method: get
+url:/users/id
+resopnse:
+{
+  "code": "1",
+  "msg": "user info",
+  "data": {
+      "position": "position",
+      "address": "address",
+      "motto": "motto",
+      "img_url": "img_url",
+      "personal_state": "personal_state",//原始格式 HTML
+      "full_name": "full_name"
+  }
+}
+resopnse code:
+1-success;
+2=user non-exist;
+
+```
+
+- 获取某个user信息接口（后台需要）
+
+```
+method: get
+url:/users/original/id
+resopnse:
+{
+  "code": "1",
+  "msg": "user info",
+  "data": {
+      "position": "position",
+      "address": "address",
+      "motto": "motto",
+      "img_url": "img_url",
+      "personal_state": "personal_state",//原始格式 Markdown
+      "full_name": "full_name"
+  }
+}
+resopnse code:
+1-success;
+2=user non-exist;
+
+```
+
+- 修改信息接口
+
+```
+method: put
+url:/user
+data:
+{
+    "_id":"_id",
+    "full_name":"full_name",
+    "position":"position",
+    "is_admin":true,
+    "address":"address",
+    "motto":"motto",
+    "personal_state":"personal_state",//Markdown 格式
+    "img_url":"img_url"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "user update success!"
+}
+resopnse code:
+1-success;
+2=user non-exist;
+
+```
+
+- 删除某个user信息接口
+
+```
+method: delete
+url:/users/id
+resopnse:
+{
+  "code": "1",
+  "msg": "user info",
+  "data": {
+		"code": "1",
+        "msg":"user ${_id} delete success!"
+  }
+}
+resopnse code:
+1-success;
+
+```
+
+
+
+###Tags相关
+
+- 获取全部Tags信息接口（用于后台列表查看）
+
+```
+method: get
+url:/tags
+resopnse:
+{
+  "code": "1",
+  "msg": "find tag all success!",
+  "data": [
+    {
+      "_id": "_id",
+      "name": "name",
+      "catalogue_name": "catalogue_name",
+      "create_time": "create_time",
+      "used_num": 0
+    }
+  ]
+}
+resopnse code:
+1-success;
+
+```
+
+- 获取全部Tags信息接口（具有特殊数据结构，用于前台标签库）
+
+```
+method: get
+url:/tags_with_structure
+resopnse:
+{
+  "code": "1",
+  "msg": "find tag all success!",
+  "data": [
+    {
+      "name": "cataName",
+      "data": [
+        {
+          "_id": "_id",
+          "name": "name",
+          "catalogue_name": "catalogue_name",
+          "create_time": "create_time",
+          "used_num": 0
+        }
+      ]
+    }
+  ]
+}
+resopnse code:
+1-success;
+
+```
+
+
+- 获取某个Tags信息接口
+
+```
+method: get
+url:/tag/id
+resopnse:
+{
+  "code": "1",
+  "msg": "tag find success!",
+  "data": {
+    "_id": "_id",
+    "name": "name",
+    "catalogue_name": "catalogue_name",
+    "create_time": "create_time",
+    "used_num": 0
+  }
+}
+resopnse code:
+1-success;
+
+```
+
+- 新增Tags信息接口
+
+```
+method: post
+url:/tag
+data:
+{
+    "name":"name",
+    "catalogue_name":"catalogue_name"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "tags add success!",
+  "data": {
+    "name": "name",
+    "catalogue_name": "catalogue_name",
+    "used_num": 0,
+    "create_time": "create_time",
+    "_id": "5783382ac84cf4861527386e"
+  }
+}
+resopnse code:
+1-success;
+2-tag already exist;
+
+
+```
+
+
+- 修改Tags信息接口
+
+```
+method: put
+url:/tag
+data:
+{
+    "_id":"_id",
+    "name":"name",
+    "catalogue_name":"catalogue_name"
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "tag edit success!",
+  "data": {
+    "_id": "_id",
+    "name": "name",
+    "catalogue_name": "catalogue_name",
+    "create_time": "create_time",
+    "used_num": 0
+  }
+}
+resopnse code:
+1-success;
+2-tag non-exist or params error;
+3-tag name exist, please use another one!;
+
+```
+
+
+- 删除某个Tag接口
+
+```
+method: delete
+url:/tag/id
+resopnse:
+{
+  "code": "1",
+  "msg": "tag delete success!"
+}
+resopnse code:
+1-success;
+
+```
+
+
+###Articles相关
+
+
+
+###Comments相关
+
+
+
+
+
+
+相关文档
+===
+
+- [MongooseAPI参考手册](http://www.nodeclass.com/api/mongoose.html)
+- [Mongoose的Population连表操作](http://www.tuicool.com/articles/73UBRb6)
+
