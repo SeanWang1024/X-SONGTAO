@@ -147,10 +147,6 @@ router.delete('/tag/:id', TagsController.delete);
 /**
  * Article 相关
  * */
-//增加,增加的同时对标签使用num++
-// router.post('/article', ArticleController.add);
-//根据id修改/增加,增加的同时对标签使用num++
-router.post('/article', ArticleController.postArt);
 //查找全部,进行分页设置(api测试)
 router.get('/articles', ArticleController.getAll);
 //分页查找文章,进行分页设置/^\/commits\/(\w+)(?:\.\.(\w+))?$/
@@ -158,6 +154,12 @@ router.get(/^\/articles\/(\d+)_(\d+)/, ArticleController.getAllWithPages);
 //根据id查找
 router.get('/article/:id', ArticleController.getById);
 router.get('/article/raw/:id', ArticleController.getRawById);
+
+//增加,增加的同时对标签使用num++
+// router.post('/article', ArticleController.add);
+//根据id修改/增加,增加的同时对标签使用num++
+router.post('/article', ArticleController.postArt);
+
 //根据id删除
 router.delete('/article/:id', ArticleController.delete);
 //查询历史记录

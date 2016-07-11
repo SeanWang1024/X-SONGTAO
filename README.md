@@ -173,7 +173,7 @@ password:visitor
 
 
 
-API文档
+API接口文档
 ---
 
 
@@ -557,6 +557,226 @@ resopnse code:
 
 ###Articles相关
 
+- 获取全部Articles信息接口（后台页面需要）
+
+```
+method: get
+url:/articles
+resopnse:
+{
+  "code": "1",
+  "msg": "article list get success!",
+  "data": [
+    {
+      "_id": "_id",
+      "title": "title",
+      "publish_time": "publish_time",
+      "read_num": 26,
+      "comment_num": 4,
+      "state": true,
+      "tags": []//标签列表
+    }
+  ]
+}
+resopnse code:
+1-success;
+```
+
+
+- 获取全部Articles信息接口，具有分页restful（前台-最近更新）
+
+```
+method: get
+url:/articles/from_to
+resopnse:
+{
+  "code": "1",
+  "msg": "article list get success!",
+  "data": [
+    {
+      "_id": "_id",
+      "title": "title",
+      "publish_time": "publish_time",
+      "read_num": 26,
+      "comment_num": 4,
+      "state": true,
+      "content": "content",//这里为纯文本摘要模式
+      "tags": []//标签列表
+    }
+  ]
+}
+resopnse code:
+1-success;
+```
+
+- 获取某个Article的信息接口（具体文章，前台文章展示）
+
+```
+method: get
+url:/article/id
+resopnse:
+{
+  "code": "1",
+  "msg": "get aurticle success! but get comment need other request to {{url}}/api/article/comments/:id",
+  "data": {
+    "_id": "_id",
+    "title": "title",
+    "publish_time": "publish_time",
+    "read_num": 29,
+    "comment_num": 4,
+    "state": true,
+    "content": "<p>content</p>\n",//HTML格式
+    "tags": []
+  }
+}
+resopnse code:
+1-success;
+2-article non-exist!;
+```
+
+
+- 获取某个Article的信息接口（文章源码，后台文章修改）
+
+```
+method: get
+url:/article/raw/id
+resopnse:
+{
+  "code": "1",
+  "msg": "get aurticle success! but get comment need other request to {{url}}/api/article/comments/:id",
+  "data": {
+    "_id": "_id",
+    "title": "title",
+    "publish_time": "publish_time",
+    "read_num": 29,
+    "comment_num": 4,
+    "state": true,
+    "content": "content",//Markdown格式
+    "tags": []
+  }
+}
+resopnse code:
+1-success;
+2-article non-exist!;
+```
+
+
+- 删除某个文章接口
+
+```
+method: delete
+url:/article/id
+resopnse:
+{
+  "code": "1",
+  "msg": "article delete success!"
+}
+resopnse code:
+1-success;
+2-article non-exist!;
+```
+
+
+- 文章修改新增接口
+
+```
+method: post
+url:/article
+data:
+{
+    "title": "title", 
+    "publish_time": publish_time,
+    "read_num": 0,
+    "comment_num": 0,
+    "tags": ["_id","_id","_id"],
+    "state": true,
+    "content": "content"//Markdown源码
+}
+resopnse:
+{
+  "code": "1",
+  "msg": "article add/edit success!"
+}
+resopnse code:
+1-success;
+2-article non-exist!;
+```
+
+- 获取文章历史记录(这部分用在-时光机页面)
+
+```
+method: get
+url:/article_history
+resopnse:
+{
+  "code": "1",
+  "msg": "article history find success!",
+  "data": [
+    {
+      "year": 2016,
+      "data": [
+        {
+          "month": 7,
+          "data": [
+            {
+              "_id": "_id",
+              "title": "title",
+              "publish_time": "publish_time",
+              "read_num": 29,
+              "comment_num": 4,
+              "state": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2013,
+      "data": [
+        {
+          "month": 4,
+          "data": [
+            {
+              "_id": "_id",
+              "title": "title",
+              "publish_time": "publish_time",
+              "read_num": 29,
+              "comment_num": 4,
+              "state": true
+            },
+            {
+              "_id": "_id",
+              "title": "title",
+              "publish_time": "publish_time",
+              "read_num": 29,
+              "comment_num": 4,
+              "state": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+resopnse code:
+1-success;
+```
+
+
+- 根据tag id查找文章列表(这部分用在-标签库)
+
+```
+method: get
+url:/article_tag/id
+resopnse:
+{
+  "code": "1",
+  "msg": "find article by tag_id success!",
+  "data": []
+}
+resopnse code:
+1-success;
+```
 
 
 ###Comments相关

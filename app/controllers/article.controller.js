@@ -47,40 +47,40 @@ function findTagById(tags, id) {
 
 module.exports = {
     //增加,增加的同时对标签使用num++
-    add: function (req, res, next) {
-        let {title, publish_time, tags, state, content} =  req.body;
-        let article = new Articles({
-            title,
-            publish_time,
-            read_num: 0,
-            comment_num: 0,
-            comment_id: "",
-            tags,
-            state,
-            content
-        });
-        article.save();
-        //tag used_num ++
-        for (let tag_id of article.tags) {
-            Tags.findOne({_id: tag_id}, function (err, tag) {
-                if (!!tag) {
-                    tag.used_num++;
-                    tag.save();
-                }
-            })
-        }
-
-        res.status(200);
-        res.send({
-            "code": "1",
-            "msg": "article add success!",
-            "data": article
-        });
-    },
+    // add: function (req, res, next) {
+    //     let {title, publish_time, tags, state, content} =  req.body;
+    //     let article = new Articles({
+    //         title,
+    //         publish_time,
+    //         read_num: 0,
+    //         comment_num: 0,
+    //         comment_id: "",
+    //         tags,
+    //         state,
+    //         content
+    //     });
+    //     article.save();
+    //     //tag used_num ++
+    //     for (let tag_id of article.tags) {
+    //         Tags.findOne({_id: tag_id}, function (err, tag) {
+    //             if (!!tag) {
+    //                 tag.used_num++;
+    //                 tag.save();
+    //             }
+    //         })
+    //     }
+    //
+    //     res.status(200);
+    //     res.send({
+    //         "code": "1",
+    //         "msg": "article add success!",
+    //         "data": article
+    //     });
+    // },
     //对标签使用num进行处理
     postArt: function (req, res, next) {
-        console.log('req.body._id')
-        console.log(req.body._id)
+        // console.log('req.body._id')
+        // console.log(req.body._id)
         if (!!req.body._id) {
             //id存在-->修改操作
             Articles.findOne({_id: req.body._id}, function (err, article) {
@@ -181,7 +181,7 @@ module.exports = {
      */
     getAll: function (req, res, next) {
         //查找文章
-        Articles.find({}, function (err, docs) {
+        Articles.find({},{'content':0}, function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -354,7 +354,7 @@ module.exports = {
                     res.send({
                         "code": "1",
                         "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
-                        "data": article,
+                        "data": article
                     });
                 });
             } else {
