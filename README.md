@@ -70,7 +70,7 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 	**发送的请求参数如下：**
 	
 	```
-	url: {{url}}/api/register
+	url:/api/register
 	header:Content-Type   application/json; charset=utf-8
 	{
     	"username": "登录用户名",
@@ -211,7 +211,7 @@ GET、/register、/login、/imgupload、POST-/comment
 
 ```
 method: post
-url:/register
+url:/api/register
 data:
 {
     "username": "username",
@@ -258,7 +258,7 @@ resopnse code:
 
 ```
 method: post
-url:/login
+url:/api/login
 data:
 {
     "username": "username",
@@ -279,7 +279,7 @@ resopnse code:
 
 ```
 method: post
-url:/change_password
+url:/api/change_password
 data:
 {
     "_id": "_id",
@@ -302,7 +302,7 @@ resopnse code:
 
 ```
 method: get
-url:/users
+url:/api/users
 resopnse:
 {
   "code": "1",
@@ -327,7 +327,7 @@ resopnse code:
 
 ```
 method: get
-url:/users/id
+url:/api/users/id
 resopnse:
 {
   "code": "1",
@@ -350,7 +350,7 @@ resopnse code:
 
 ```
 method: get
-url:/users/original/id
+url:/api/users/original/id
 resopnse:
 {
   "code": "1",
@@ -373,7 +373,7 @@ resopnse code:
 
 ```
 method: put
-url:/user
+url:/api/user
 data:
 {
     "_id":"_id",
@@ -399,7 +399,7 @@ resopnse code:
 
 ```
 method: delete
-url:/users/id
+url:/api/users/id
 resopnse:
 {
   "code": "1",
@@ -421,7 +421,7 @@ resopnse code:
 
 ```
 method: get
-url:/tags
+url:/api/tags
 resopnse:
 {
   "code": "1",
@@ -444,7 +444,7 @@ resopnse code:
 
 ```
 method: get
-url:/tags_with_structure
+url:/api/tags_with_structure
 resopnse:
 {
   "code": "1",
@@ -473,7 +473,7 @@ resopnse code:
 
 ```
 method: get
-url:/tag/id
+url:/api/tag/id
 resopnse:
 {
   "code": "1",
@@ -494,7 +494,7 @@ resopnse code:
 
 ```
 method: post
-url:/tag
+url:/api/tag
 data:
 {
     "name":"name",
@@ -522,7 +522,7 @@ resopnse code:
 
 ```
 method: put
-url:/tag
+url:/api/tag
 data:
 {
     "_id":"_id",
@@ -552,7 +552,7 @@ resopnse code:
 
 ```
 method: delete
-url:/tag/id
+url:/api/tag/id
 resopnse:
 {
   "code": "1",
@@ -569,7 +569,7 @@ resopnse code:
 
 ```
 method: get
-url:/articles
+url:/api/articles
 resopnse:
 {
   "code": "1",
@@ -595,7 +595,7 @@ resopnse code:
 
 ```
 method: get
-url:/articles/from_to
+url:/api/articles/from_to
 resopnse:
 {
   "code": "1",
@@ -621,7 +621,7 @@ resopnse code:
 
 ```
 method: get
-url:/article/id
+url:/api/article/id
 resopnse:
 {
   "code": "1",
@@ -647,7 +647,7 @@ resopnse code:
 
 ```
 method: get
-url:/article/raw/id
+url:/api/article/raw/id
 resopnse:
 {
   "code": "1",
@@ -673,7 +673,7 @@ resopnse code:
 
 ```
 method: delete
-url:/article/id
+url:/api/article/id
 resopnse:
 {
   "code": "1",
@@ -689,7 +689,7 @@ resopnse code:
 
 ```
 method: post
-url:/article
+url:/api/article
 data:
 {
     "title": "title", 
@@ -714,7 +714,7 @@ resopnse code:
 
 ```
 method: get
-url:/article_history
+url:/api/article_history
 resopnse:
 {
   "code": "1",
@@ -775,7 +775,7 @@ resopnse code:
 
 ```
 method: get
-url:/article_tag/id
+url:/api/article_tag/id
 resopnse:
 {
   "code": "1",
@@ -793,7 +793,7 @@ resopnse code:
 
 ```
 method: get
-url:/comments
+url:/api/comments
 resopnse:
 {
   "code": "1",
@@ -822,7 +822,7 @@ resopnse code:
 
 ```
 method: post
-url:/comment
+url:/api/comment
 data:
 {
     "article_id": "article_id",
@@ -863,7 +863,7 @@ resopnse code:
 
 ```
 method: get
-url:/article/comments/:article_id
+url:/api/article/comments/:article_id
 resopnse:
 {
   "code": "1",
@@ -905,7 +905,7 @@ resopnse code:
 
 ```
 method: delete
-url:/comment/:id
+url:/api/comment/:id
 resopnse:
 {
   "code": "1",
@@ -921,7 +921,7 @@ resopnse code:
 
 ```
 method: post
-url:/changeCommentAuthState
+url:/api/changeCommentAuthState
 data:
 {
     "_id": "_id"
@@ -940,7 +940,7 @@ resopnse code:
 
 ```
 method: post
-url:/changeCommentReplyState
+url:/api/changeCommentReplyState
 data:
 {
     "_id": "_id"
@@ -959,7 +959,7 @@ resopnse code:
 
 ```
 method: get
-url:/commentToArticleList
+url:/api/commentToArticleList
 resopnse:
 {
   "code": "1",

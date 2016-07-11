@@ -18,17 +18,17 @@ body {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
-  font-family: 'PingHei', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
-background:transparent;
+  font-family: $font-family-sans-serif;
+  background: transparent;
   //background: transparent radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
-  &.isLogin{
+  &.isLogin {
 
-    .admin_btn{
-      display:block;
+    .admin_btn {
+      display: block;
     }
   }
-  .admin_btn{
-    display:none;
+  .admin_btn {
+    display: none;
   }
 }
 
@@ -51,6 +51,7 @@ background:transparent;
   display: block;
   position: relative;
 }
+
 //左边总导航
 .bg-left {
   position: fixed;
@@ -422,8 +423,6 @@ background:transparent;
   color: $base-theme-color;
 }
 
-
-
 .contentContentBox {
 
   z-index: 7;
@@ -451,13 +450,6 @@ background:transparent;
   white-space: nowrap;
   font-size: 14px;
 }
-
-
-
-
-
-
-
 
 /*黑色遮罩*/
 .blackShade {
@@ -511,14 +503,6 @@ background:transparent;
 .aboutme {
   cursor: pointer;
 }
-
-
-
-
-
-
-
-
 
 /*logo*/
 .siteLogo {

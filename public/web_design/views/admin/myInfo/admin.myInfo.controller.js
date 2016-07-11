@@ -6,13 +6,18 @@
         .controller('myInfoCtrl', ['$scope', 'AJAX', 'API', '$log', '$verification', '$timeout', '$rootScope', '$state', '$localStorage', function ($scope, AJAX, API, $log, $verification, $timeout, $rootScope, $state, $localStorage) {
             //获取我的信息
             AJAX({
-                method: 'get',
+                method: 'post',
                 url: API.getMyInfoWithOriginal,
+                data:{
+                    _id:API.MY_INFO_ID
+                },
                 success: function (response) {
                     if (parseInt(response.code) === 1) {
                         $scope.myinfo = response.data;
-                        // console.log($scope.myinfo);
                     }
+                },
+                error:function (err) {
+                    $log.error(err)
                 }
             });
 

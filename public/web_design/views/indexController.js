@@ -4,7 +4,7 @@
 (function () {
     angular.module('xstApp')
     //主页
-        .controller('indexController', ['$scope', '$rootScope', '$localStorage', '$state', '$log', '$timeout','$window', function ($scope, $rootScope, $localStorage, $state, $log, $timeout,$window) {
+        .controller('indexController', ['$scope', '$rootScope', '$localStorage', '$state', '$log', '$timeout', '$window', '$location', function ($scope, $rootScope, $localStorage, $state, $log, $timeout, $window, $location) {
             //初始化
             $rootScope.isLogin = false;
 
@@ -21,11 +21,17 @@
             $rootScope.$on('$locationChangeStart', function (event, url) {
                 // $rootScope.isLogin 判断当前是否登录
                 // 如果访问的后台地址,如果未登录则跳转到首页
+                // console.log('当前访问路径:' + url)
+                // console.log('当前是否登录:' + !$rootScope.isLogin)
                 if (url.toString().indexOf('admin') > 0 && !$rootScope.isLogin) {
-                    $log.debug('----您还未登陆,请登录!----');
-                    $state.go('login')
+                    $rootScope.relogin();
                 }
             });
+
+            $rootScope.relogin = function () {
+                $location.url('/login')
+                console.log('----您还未登陆,请登录!----');
+            };
 
 
             //退出操作
@@ -35,13 +41,13 @@
             $rootScope.confirmLogout = function () {
                 $localStorage.$reset();
                 $rootScope.isLogin = false;
-                $state.go('home');
+                $location.url('/home');
                 //开启tooltip
                 $rootScope.tooltip();
             };
             $rootScope.tooltip = tooltip;
 
- 
+
             tooltip();
             function tooltip() {
                 return $timeout(function () {
