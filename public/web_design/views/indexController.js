@@ -51,16 +51,21 @@
             tooltip();
             function tooltip() {
                 return $timeout(function () {
-                    if (document.documentElement.clientWidth < 991) {
+                    let clientWidth = parseInt(document.documentElement.clientWidth);
+                    if (clientWidth < 768) {
+
+                    } else if (clientWidth < 991 && clientWidth > 768) {
                         $('[data-toggle="tooltip"]').tooltip({
                             trigger: 'hover',
                             placement: 'bottom'
                         });
+                        return true;
                     } else {
                         $('[data-toggle="tooltip"]').tooltip({
                             trigger: 'hover',
                             placement: 'right'
                         });
+                        return true;
                     }
                 }, 300, true);
 

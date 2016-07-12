@@ -1,4 +1,4 @@
-<div class="container-fulid bigScreen animated fadeIn" ng-class="{true:'lockScreen',false:''}[isShowAboutMe]">
+<div class="blogPageBox container-fulid bigScreen animated fadeIn" ng-class="{true:'lockScreen',false:''}[isShowAboutMe]">
     <div class="col-lg-4  bg-right-imgBox col-md-12 hidden-xs"  ng-class="{true:'bg-right-imgBox-showMe',false:''}[isShowAboutMe]">
         <div class="bg-right-innerBlock text-center clearfix">
             <!--img-->
@@ -78,15 +78,12 @@
         <!--footer-->
         <footer class="contentFooterBox">
             <div class="contentFooterBox-inner">
-                <div class="footer-info text-overflow">
-                    <p><i class="fa fa-copyright"></i> 2016 All Rights Reserved.Designed by Songtao.渝ICP备16000583号.
-                    </p>
-                </div>
+                <div class="footer-info text-overflow"  ng-include="'web/tpl/copyright.footer.tpl.html'"></div>
                 <div class="footer-support text-overflow hidden-xs">
                     <span>Supported By: </span>
                     <a>Angularjs</a>
                     <a>jQuery</a>
-                    <a>vuejs</a>
+                    <!--<a>vuejs</a>-->
                     <a>gulp</a>
                     <a>ES6</a>
                     <a>Nodejs</a>
@@ -100,6 +97,7 @@
 </div>
 
 
+<!--加我qq、微信的modal-->
 <div class="modal fade" id="socialContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

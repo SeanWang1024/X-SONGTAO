@@ -2,9 +2,17 @@
 @media (min-width: 1200px) {
   /*调整footer显示不全的问题*/
   .bg-right-contentInner {
+    overflow: auto;
     //padding-top: 30px;
     /*margin-top: -45px;*/
   }
+  .bigScreen{
+    overflow: hidden;
+  }
+  //.adminBox{
+  //  overflow-y:scroll;
+  //  height:100%;
+  //}
 
   /*n内容框的位置*/
   .bg-right-imgBox {
@@ -47,7 +55,9 @@
     right:0;
     //padding-left: 30px;
     transform: translate3d(0, 0, 0);
+    overflow: hidden;
   }
+
 
   .bg-right-imgBox-showMe ~ .bg-right-content {
     position: absolute;
@@ -88,12 +98,12 @@
     color: #fff;
 
   }
-  .contentInnerBox{
+  //.contentInnerBox{
     /*margin-left:10%;*/
-  }
+  //}
 
 }
-@media (min-width: 1200px) {
+//@media (min-width: 1200px) {
   /*>1200px时,滚动后contentNavBox加上contentNavBox-fixed的class*/
   //.contentNavBox-1200-fixed{
   //
@@ -102,12 +112,12 @@
   //.contentNavBox-1200-navShow{
   //  background:rgba(0,0,0,0.4);
   //}
-  .contentFooterBox{
-    //left:15px;
-  }
-}
-@media (min-width: 1200px) {
-  .blackShadeInnerBox {
-    margin-left: -45px;
-  }
-}
+  //.contentFooterBox{
+  //  //left:15px;
+  //}
+//}
+//@media (min-width: 1200px) {
+//  .blackShadeInnerBox {
+//    margin-left: -45px;
+//  }
+//}

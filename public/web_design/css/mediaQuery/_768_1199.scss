@@ -5,7 +5,7 @@
     width: 720px;
     max-width: inherit;
     box-sizing: content-box;
-    overflow: visible;
+    overflow-y: visible;
     transform: translate3d(0, 0, 0);
     display: flex;
     justify-content:center;
@@ -65,7 +65,7 @@
   .bg-right-innerBlock-myInfo-follow {
     //height: 75px;
     //position: absolute;
-    overflow: visible;
+    overflow-y: visible;
     //bottom: 0;
     display: flex;
     justify-content:center;

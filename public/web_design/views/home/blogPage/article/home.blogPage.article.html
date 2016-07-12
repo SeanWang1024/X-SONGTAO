@@ -8,7 +8,7 @@
             <section class="paper__info">
                 <div class="paper__info--span">
                     <i class="fa fa-calendar"></i>
-                    <span ng-bind="article.publish_time | date: 'yyyy-MM-dd'"></span>
+                    <span am-time-ago="article.publish_time"></span>
                 </div>
                 <div class="paper__info--span">
                     <i class="fa fa-book"></i>
@@ -20,7 +20,7 @@
                     评论数
                     <span ng-bind="article.comment_num"></span>
                 </div>
-                <div class="paper__info--span" ng-repeat="tag in article.tags">
+                <div class="paper__info--span hidden-xs" ng-repeat="tag in article.tags">
                     <i class="fa fa-tag"></i> <span ng-bind="tag"></span>
                 </div>
             </section>
@@ -49,7 +49,7 @@
             </div>
 
             <!--提问题-->
-            <div class="commentBox__question" ng-class="{true:'',false:'active'}[canComment]">
+            <div class="commentBox__question  hidden-xs" ng-class="{true:'',false:'active'}[canComment]">
                 <!--问题盒子-->
                 <div class="commentBox__questionBox">
                     <input ng-focus="chain.selectId=''" class="commentBox__questionBox--input" type="text" placeholder="我要说几句" ng-model="commentContent">
@@ -79,7 +79,7 @@
                     <div class="comments__ask">
                         <div class="comments__ask__header">
                             <!--<span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>&ensp;·&ensp;<span class="reply" ng-click="commentToComemntBtn($event)">回复</span>-->
-                            <span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span>&ensp;·&ensp;<span class="reply" ng-click="chain.selectId=comment._id;toggle=!toggle;">回复</span>
+                            <span class="name" ng-bind="comment.name"></span>&ensp;·&ensp;<span am-time-ago="comment.time" ></span><span class="hidden-xs">&ensp;·&ensp;<span class="reply" ng-click="chain.selectId=comment._id;toggle=!toggle;">回复</span></span>
                         </div>
                         <div class="comments__ask__content">
                             <span ng-bind="comment.content"></span>

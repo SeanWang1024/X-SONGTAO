@@ -1,13 +1,11 @@
 @media (max-width: 991px) and (min-width: 768px) {
-  .bigScreen {
-    padding-top: 45px;
-  }
+
 
   .st-leftNav-top-each {
     margin-right: 15px;
   }
   .bg-right-content {
-    overflow: inherit;
+    //overflow: inherit;
     height: auto;
     /* min-height: 600px; */
     min-height: calc(100% - 270px);

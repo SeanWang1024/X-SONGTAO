@@ -2,7 +2,7 @@
 .nodata {
   padding: 20px;
   @include display-flex;
-  @include justify-content(center);
+  @include justify-content(flex-end);
   @include align-items(center);
   @include flex-direction(column);
   height: 312px;

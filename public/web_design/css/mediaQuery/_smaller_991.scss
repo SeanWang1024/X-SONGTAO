@@ -5,6 +5,10 @@
     padding-left: 0px;
   }
 
+  .indexBox {
+    padding-top: 45px;
+  }
+
   /*平板模式下,设置中间img的高度*/
   .bg-right-imgBox {
     height: 270px;
@@ -47,11 +51,11 @@
 }
 @media (max-width: 991px) {
   .bg-right {
-    overflow: visible;
+    overflow-y: visible;
   }
 
   .bigBox {
-    overflow: scroll;
+    //overflow-y: scroll;
   }
 
 }

@@ -9,7 +9,7 @@
                 <div class="article__info">
                     <div class="article__info--each">
                         <i class="fa fa-calendar"></i>
-                        <span ng-bind="article.publish_time | date: 'yyyy-MM-dd'"></span>
+                        <span am-time-ago="article.publish_time"></span>
                     </div>
                     <div class="article__info--each">
                         <i class="fa fa-book"></i>
@@ -21,12 +21,12 @@
                         评论数
                         <span class="article-comment" ng-bind="article.comment_num"></span>
                     </div>
-                    <div class="article__info--each" ng-repeat="tag in article.tags">
+                    <div class="article__info--each hidden-xs" ng-repeat="tag in article.tags">
                         <i class="fa fa-tag"></i> <span ng-bind="tag"></span>
                     </div>
                 </div>
 
-                <div class="arrticle__readmore">
+                <div class="arrticle__readmore hidden-xs">
                     <span>阅读更多</span>
                 </div>
             </div>

@@ -7,10 +7,17 @@
   <meta name="description" content="X-SONGTAO的个人博客,前端技术分享,全栈开发,MEAN,Angualrjs,Mongodb,Nodejs,阿里云">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
   <link rel="shortcut icon" href="/favicon.ico">
   <link rel="stylesheet" href="web/css/common_00807bff8b.css">
   <link rel="stylesheet" href="web/css/common.admin_6b3a87699d.css">
-  <link rel="stylesheet" href="web/css/main_d8cb954160.css">
+  <link rel="stylesheet" href="web/css/main_94263234e3.css">
+  <link rel="shortcut icon" href="img/vivoCity.ico">
+
+  <link rel="apple-touch-icon-precomposed" href="/favicon.ico">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
 
 </head>
 <body ng-controller="indexController" ng-class="{true:'isLogin',false:''}[isLogin]" ng-init="isShowAboutMe=false">
@@ -87,7 +94,7 @@
         </span>
 
 
-        <span  ng-if="!isLogin" ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow"
+        <span  ng-if="!isLogin" ui-sref="login"  ui-sref-active="st-leftNav-top-each-active" class="st-leftNav-top-each text-overflow hidden-xs"
                data-toggle="tooltip" data-placement="right" title="登录">
           <i class="fa fa-sign-in fa-lg"></i>
           <span class="hidden-md hidden-lg hidden-xs">登录</span>
@@ -98,60 +105,11 @@
   </div>
   <!--右边内容-->
   <!--<div class="bg-right" ui-view>-->
-  <div class="bg-right" ui-view="">
-    <!--blogPage-内容-->
-    <!--loadingPage-->
-    <!--<div class="blackShade loading">-->
-      <!--<div class="blackShadeInner text-center center-block">-->
-        <!--<section class="blackShadeInnerBox">-->
-          <!--<i class="fa fa-spinner fa-spin fa-inverse fa-4x"></i>-->
-          <!--<h3>小涛正在加载...</h3>-->
-          <!--<span></span>-->
-          <!--<small>just a moment!</small>-->
-        <!--</section>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--loadingPage end-->
-
-
-  </div>
+  <div class="bg-right" ui-view=""></div>
 
 
 </div>
-
-
-<!--<div class="modal fade" id="articleImg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
-  <!--<div class="modal-dialog modal-lg" role="document">-->
-    <!--<div class="modal-content">-->
-      <!--<div class="modal-body">-->
-        <!--<img width="100%" class="article-img" src="" alt="展示的图片">-->
-      <!--</div>-->
-      <!--<div class="modal-footer">-->
-        <!--<i class="fa fa-paper-plane"></i>-->
-        <!--<span class="article-title"></span>-->
-        <!--<span class="article-position"></span>-->
-        <!--<span class="article-time"></span>-->
-
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
-
-
-<!--loadingPage-->
-<div class="blackShade error">
-  <div class="blackShadeInner text-center center-block">
-    <section>
-      <i class="fa fa-exclamation-triangle fa-inverse fa-4x"></i>
-      <h3></h3>
-      <span></span>
-      <small></small>
-    </section>
-  </div>
-</div>
-
 <!--退出的弹层-->
-<!--弹出层-删除-->
 <div class="modal fade" id="logout" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -169,12 +127,15 @@
     </div>
   </div>
 </div>
-<!--loadingPage end-->
+
+
 <script src="web/config.js"></script>
 <script src="web/js/common_af12cf4236.js"></script>
 <script src="web/js/common.admin_393a17dfb1.js"></script>
-<script src="web/js/main_0218a74cfc.js"></script>
+<script src="web/js/main_7b0e3f9eed.js"></script>
 
 
 </body>
 </html>
+
+

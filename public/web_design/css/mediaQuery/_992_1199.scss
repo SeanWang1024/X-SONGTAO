@@ -10,7 +10,7 @@
   }
   /*平板模式下,全局body具有滚动属性*/
   .bg-right-content {
-    overflow: inherit;
+    //overflow: inherit;
     height: auto;
     /*min-height: 600px;*/
     min-height: calc(100% - 270px);
@@ -35,7 +35,13 @@
 /*所以监听这三种状态的滚动进行设置*/
 @media (min-width: 992px) and (max-width: 1199px) {
   .bg-right {
-    overflow: scroll;
+
+
   }
+  //.blogPageBox{
+  //  overflow-y: scroll;
+  //}
+
+
 }
 
