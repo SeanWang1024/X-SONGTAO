@@ -205,10 +205,10 @@ gulp.task('js:main', function () {
             break;
     }
 });
+
 gulp.task('js:config', function () {
     return gulp.src(`${PATH.SRC}/config.js`).pipe(gulp.dest(`${PATH.DIST}`));
 });
-
 
 gulp.task('move:images', function () {
     var stream = gulp.src([
@@ -257,9 +257,9 @@ gulp.task("watch", function () {
     // // gulp.watch(`${PATH.SRC}/fonts/*.*`, ['move:fonts']);
     // gulp.watch(`${PATH.SRC}/lib/**/*.css`, ['css:common']);
     gulp.watch(`${PATH.SRC}/css/**/*.scss`, ['css:main']);
-    // gulp.watch(`${PATH.SRC}/lib/**/*.js`, ['js:common']);
-    gulp.watch(`${PATH.SRC}/js/**/*.js`, ['js:main']);
-    gulp.watch(`${PATH.SRC}/views/**/*.js`, ['js:main']);
+    // gulp.watch(`${PATH.SRC}/lib/**/*.js`, ['js:common','js:config']);
+    gulp.watch(`${PATH.SRC}/js/**/*.js`, ['js:main','js:config']);
+    gulp.watch(`${PATH.SRC}/views/**/*.js`, ['js:main','js:config']);
     // // gulp.watch(`${PATH.SRC}/img/**/*.*`, ['move:images']);
     gulp.watch(`${PATH.SRC}/index.html`, ['move:index']);
 });

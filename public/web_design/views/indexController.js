@@ -29,8 +29,14 @@
             });
 
             $rootScope.relogin = function () {
-                $location.url('/login')
-                console.log('----您还未登陆,请登录!----');
+                $timeout(function () {
+                    $location.url('/login');
+                    $localStorage.$reset();
+                    $rootScope.isLogin = false;
+                    //开启tooltip
+                    $rootScope.tooltip();
+                    console.log('----您还未登陆,请登录!----');
+                }, 200, true);
             };
 
 
@@ -39,11 +45,13 @@
                 angular.element(document.getElementById('logout')).modal();
             };
             $rootScope.confirmLogout = function () {
-                $localStorage.$reset();
-                $rootScope.isLogin = false;
-                $location.url('/home');
-                //开启tooltip
-                $rootScope.tooltip();
+                $timeout(function () {
+                    $localStorage.$reset();
+                    $rootScope.isLogin = false;
+                    $location.url('/home');
+                    //开启tooltip
+                    $rootScope.tooltip();
+                }, 200, true);
             };
             $rootScope.tooltip = tooltip;
 

@@ -127,7 +127,7 @@ module.exports = {
         });
     },
     getAll: function (req, res, next) {
-        Users.find({},{'_id':0,'username':0,'password':0,'is_admin':0,'login_info':0,'__v':0}, function (err, users) {
+        Users.find({},{'username':0,'password':0,'is_admin':0,'login_info':0,'__v':0}, function (err, users) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
