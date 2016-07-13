@@ -176,12 +176,15 @@ body {
 
 .bg-right-innerBlock-myImg {
   width: 100%;
+  margin-bottom: 30px;
+  img {
+    width: 160px;
+    height: 160px;
+    -webkit-user-select: none;
+  }
+  -webkit-user-select: none;
 }
 
-.bg-right-innerBlock-myImg img {
-  width: 160px;
-  height: 160px;
-}
 
 .bg-right-innerBlock-myInfo {
   -webkit-user-select: none;
