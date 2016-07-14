@@ -1,6 +1,5 @@
 X-SONGTAO Blog项目
 ===
-
 项目起源
 ---
 
@@ -117,14 +116,8 @@ X-SONGTAO使用的是MEAN框架（Mongodb+Express+Angular+Nodejs），这个是�
 	
 
 
-8. public/web目录是最终生成好的spa目录，如果希望对X-SONGTAO进行二次修改，请在web_design进行操作，操作之前，也请安装好web_design目录下的package.json中的各类依赖。项目Gulp文为gulpfile.babel.js，执行DEVELOPMENT任务，新生成的文件放置到web目录下。
+8. public/web目录是最终生成好的spa目录，如果希望对X-SONGTAO进行二次修改，请在web_design进行操作，操作之前，也请安装好web_design目录下的package.json中的各类依赖。项目Gulp文为gulpfile.babel.js，执行DEVELOPMENT任务，访问localhost:8080就能访问到项目。
 
-
-#### 启动
-
-
-- 进入X-SONGTAO文件夹，输入`node ./bin/www`,访问localhost:8080就能访问到项目。
-- 也可以使用pm2启动：`pm2 start /x-songtao/bin/www -n x-songtao -i max;pm2 logs`,顺便监听启动时log日志。
 
 
 
