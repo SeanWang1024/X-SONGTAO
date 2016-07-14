@@ -908,7 +908,6 @@ body {
 
 .bg-right-innerBlock-myImg {
   width: 100%;
-  margin-bottom: 30px;
   -webkit-user-select: none; }
   .bg-right-innerBlock-myImg img {
     width: 160px;
@@ -2734,6 +2733,8 @@ body {
     -ms-flex-align: center;
     -ms-grid-row-align: center;
     align-items: center; }
+    .bg-right-imgBox .bg-right-innerBlock-myImg {
+      margin-bottom: 30px; }
   .bg-right-imgBox-showMe {
     width: 100% !important;
     /*height: 100% !important;*/
@@ -2913,4 +2914,6 @@ body {
     /*min-height: 487px;*/ }
   /*平板模式下,内容区的nav变为relative*/
   .blogPageBox {
-    overflow-y: scroll; } }
+    overflow-y: scroll; }
+    .blogPageBox::-webkit-scrollbar {
+      display: none; } }

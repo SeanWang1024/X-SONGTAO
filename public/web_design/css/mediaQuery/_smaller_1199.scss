@@ -37,6 +37,20 @@
 
   .blogPageBox{
     overflow-y: scroll;
+    &::-webkit-scrollbar {
+      //opacity:0;
+      display: none;
+      //position: relative;
+
+      //position: absolute;
+      //right:0;
+      //top:0;
+      //height:100%;
+      //width: 15px;
+      //z-index:10;
+      //width:10px;
+      //height:10px;
+    }
 
 
   }
