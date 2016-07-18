@@ -316,6 +316,7 @@
             height: 50px;
             opacity: 1;
             overflow: visible;
+            -webkit-overflow-scrolling:touch;
             //height: 100px;
             margin-top: 10px;
             &.active{

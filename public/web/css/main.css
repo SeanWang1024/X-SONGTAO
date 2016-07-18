@@ -599,6 +599,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   display: block;
   width: 100%;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   word-break: normal;
   word-break: keep-all; }
 
@@ -758,6 +759,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   padding: 0;
   margin: 0;
   overflow: visible;
+  -webkit-overflow-scrolling: touch;
   line-height: inherit;
   word-wrap: normal;
   background-color: transparent;
@@ -860,11 +862,13 @@ body {
   box-sizing: border-box;
   width: 100%;
   overflow: visible;
-  font-size: 16px; }
+  font-size: 16px;
+  -webkit-overflow-scrolling: touch; }
   .main-article .main-article-body {
     padding: 20px 0;
     position: relative;
-    overflow: visible; }
+    overflow: visible;
+    -webkit-overflow-scrolling: touch; }
 
 .bg-right-imgBox {
   -webkit-user-select: none;
@@ -962,6 +966,7 @@ body {
   -ms-flex-align: center;
   align-items: center;
   overflow: visible;
+  -webkit-overflow-scrolling: touch;
   text-align: left;
   font-size: 16px;
   line-height: 22px;
@@ -1889,6 +1894,7 @@ body {
           height: 50px;
           opacity: 1;
           overflow: visible;
+          -webkit-overflow-scrolling: touch;
           margin-top: 10px; }
           .commentbox .commentbox__inner .comments .comments__reply.active .commentBox__question.active {
             height: 100px; }
@@ -1921,6 +1927,7 @@ body {
 
 .adminBox {
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
   height: 100%; }
   .adminBox .adminBox-content {
     width: 780px;
@@ -2534,6 +2541,7 @@ body {
     max-width: inherit;
     box-sizing: content-box;
     overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
     transform: translate3d(0, 0, 0);
     display: -ms-flexbox;
     display: flex;
@@ -2579,6 +2587,7 @@ body {
         left: -8px; }
   .bg-right-innerBlock-myInfo-follow {
     overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: center;
@@ -2613,6 +2622,7 @@ body {
     /*width: 720px;*/
     height: 300px;
     overflow: inherit;
+    -webkit-overflow-scrolling: touch;
     opacity: 1;
     /*transform: scale(1);*/
     /*transform-origin: top center;*/
@@ -2679,7 +2689,8 @@ body {
     position: absolute;
     top: 270px; }
   .bg-right-contentInner {
-    overflow: inherit; }
+    overflow: inherit;
+    -webkit-overflow-scrolling: touch; }
   .bg-right-imgBox-showMe ~ .bg-right-content {
     position: absolute;
     z-index: 1;
@@ -2710,6 +2721,7 @@ body {
   /*调整footer显示不全的问题*/
   .bg-right-contentInner {
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
     /*margin-top: -45px;*/ }
   .bigScreen {
     overflow: hidden; }
@@ -2763,6 +2775,7 @@ body {
     width: 720px;
     opacity: 1;
     overflow: inherit;
+    -webkit-overflow-scrolling: touch;
     transition: width 500ms ease, opacity 200ms ease 500ms; }
   .saySomething {
     width: 0;
@@ -2798,7 +2811,8 @@ body {
   .contentInnerBox {
     padding: 0 10px; }
   .contentInnerBox {
-    overflow-y: scroll; }
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; }
   .contentContentBox {
     margin-top: 0; }
   .paper__content {
@@ -2895,11 +2909,13 @@ body {
     min-width: 45px; }
   /*平板模式下,内容区继承父类的滚动设置*/
   .contentInnerBox {
-    overflow: inherit; } }
+    overflow: inherit;
+    -webkit-overflow-scrolling: touch; } }
 
 @media (max-width: 991px) {
   .bg-right {
-    overflow-y: visible; } }
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch; } }
 
 @media (max-width: 991px) {
   .login-content,
@@ -2914,6 +2930,7 @@ body {
     /*min-height: 487px;*/ }
   /*平板模式下,内容区的nav变为relative*/
   .blogPageBox {
-    overflow-y: scroll; }
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; }
     .blogPageBox::-webkit-scrollbar {
       display: none; } }

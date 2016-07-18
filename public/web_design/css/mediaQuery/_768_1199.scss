@@ -6,6 +6,7 @@
     max-width: inherit;
     box-sizing: content-box;
     overflow-y: visible;
+    -webkit-overflow-scrolling:touch;
     transform: translate3d(0, 0, 0);
     display: flex;
     justify-content:center;
@@ -66,6 +67,7 @@
     //height: 75px;
     //position: absolute;
     overflow-y: visible;
+    -webkit-overflow-scrolling:touch;
     //bottom: 0;
     display: flex;
     justify-content:center;
@@ -104,6 +106,7 @@
     /*width: 720px;*/
     height: 300px;
     overflow: inherit;
+    -webkit-overflow-scrolling:touch;
     opacity: 1;
     /*transform: scale(1);*/
     /*transform-origin: top center;*/

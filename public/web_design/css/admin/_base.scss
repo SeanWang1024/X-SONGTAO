@@ -1,6 +1,7 @@
 //后台整个页面的盒子
 .adminBox{
   overflow-y:scroll;
+  -webkit-overflow-scrolling:touch;
   height:100%;
   .adminBox-content {
     width: 780px;

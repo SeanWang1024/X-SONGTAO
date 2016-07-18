@@ -46,12 +46,14 @@
   /*平板模式下,内容区继承父类的滚动设置*/
   .contentInnerBox {
     overflow: inherit;
+    -webkit-overflow-scrolling:touch;
   }
 
 }
 @media (max-width: 991px) {
   .bg-right {
     overflow-y: visible;
+    -webkit-overflow-scrolling:touch;
   }
 
   .bigBox {

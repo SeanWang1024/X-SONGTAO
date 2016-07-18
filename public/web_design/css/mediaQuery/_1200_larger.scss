@@ -3,6 +3,7 @@
   /*调整footer显示不全的问题*/
   .bg-right-contentInner {
     overflow: auto;
+    -webkit-overflow-scrolling:touch;
     //padding-top: 30px;
     /*margin-top: -45px;*/
   }
@@ -78,6 +79,7 @@
     width: 720px;
     opacity: 1;
     overflow: inherit;
+    -webkit-overflow-scrolling:touch;
     transition: width 500ms ease, opacity 200ms ease 500ms;
 
   }

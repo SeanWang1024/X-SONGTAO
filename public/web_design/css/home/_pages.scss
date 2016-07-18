@@ -118,11 +118,12 @@ body {
   width: 100%;
   overflow: visible;
   font-size: 16px;
-
+  -webkit-overflow-scrolling:touch;
   .main-article-body {
     padding: 20px 0;
     position: relative;
     overflow: visible;
+    -webkit-overflow-scrolling:touch;
   }
 
 }
@@ -250,6 +251,7 @@ body {
   display: flex;
   align-items: center;
   overflow: visible;
+  -webkit-overflow-scrolling:touch;
   //text-indent: 2em;
   text-align: left;
   font-size: 16px;

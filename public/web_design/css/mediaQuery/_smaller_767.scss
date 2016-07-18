@@ -15,6 +15,7 @@
   }
   .contentInnerBox {
     overflow-y: scroll;
+    -webkit-overflow-scrolling:touch;
     //padding:0;
   }
   .contentContentBox {

@@ -20,6 +20,7 @@
 
   .bg-right-contentInner {
     overflow: inherit;
+    -webkit-overflow-scrolling:touch;
   }
   .bg-right-imgBox-showMe ~ .bg-right-content {
     position: absolute;

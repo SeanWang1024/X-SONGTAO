@@ -37,6 +37,7 @@
 
   .blogPageBox{
     overflow-y: scroll;
+    -webkit-overflow-scrolling:touch;
     &::-webkit-scrollbar {
       //opacity:0;
       display: none;
