@@ -951,7 +951,7 @@ function copy(source, destination, stackSource, stackDest) {
       }
       setHashKey(destination,h);
     }
-  }
+}
   return destination;
 }
 

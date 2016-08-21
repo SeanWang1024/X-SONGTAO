@@ -39,7 +39,6 @@
                 }, 200, true);
             };
 
-
             //退出操作
             $scope.logout = function () {
                 angular.element(document.getElementById('logout')).modal();

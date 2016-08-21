@@ -18,7 +18,7 @@ const APP_VIEWS_WEB = '../web/index.html';
  * TES;源码 + 文件名加MD5
  * PRO;文件名加MD5 + 压缩
  * */
-var ENV = "PRO";
+var ENV = "DEV";
 
 gulp.task('clean:dist', function () {
     return gulp.src(PATH.DIST, {read: false})

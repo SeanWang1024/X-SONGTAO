@@ -167,22 +167,6 @@
                     case 2:
                         return !!data.isIReplied;
                         break;
-                    //主评论+未回复
-                    // case 3:
-                    //     return !data.isIReplied && data.article_id._id.toString() === data.pre_id.toString();
-                    //     break;
-                    // //主评论+未审核
-                    // case 4:
-                    //     return !data.state && data.article_id._id.toString() === data.pre_id.toString();
-                    //     break;
-                    // //主回复
-                    // case 5:
-                    //     return !data.isIReplied;
-                    //     break;
-                    // //未审核
-                    // case 6:
-                    //     return !data.state;
-                    //     break;
                     default:
                         return true
                         break;

@@ -6,6 +6,16 @@
     //Detail控制器-catalogueName-type-id
         .controller('DetailController', ['$scope', '$stateParams', 'AJAX', 'API', '$localStorage', '$timeout', '$verification', '$interval', function ($scope, $stateParams, AJAX, API, $localStorage, $timeout, $verification, $interval) {
 
+
+// angular.isNumber
+            console.log($localStorage)
+
+
+
+
+
+
+
             $scope.chain = {
                 selectId: 'selectId',
                 main_state: 'default',//default,going,success,error,email,clock
