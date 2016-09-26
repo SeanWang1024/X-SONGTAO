@@ -1,6 +1,6 @@
 {
-  "name": "x-songtao",
-  "version": "0.0.1",
+  "name": "X-Songtao-Admin",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "start": "pm2 start ./bin/www --watch; pm2 logs",
