@@ -452,7 +452,7 @@ module.exports = {
                     DO_ERROR_RES(res);
                     return next();
                 }
-                Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, tagTopDocs) {
+                Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(10).exec(function (err, tagTopDocs) {
                     if (err) {
                         DO_ERROR_RES(res);
                         return next();
