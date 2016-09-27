@@ -198,7 +198,21 @@ module.exports = {
                 "msg": `tag ${req.params.id} delete success!`
             });
         });
-    }
+    },
+    getUsedTop:function (req, res, next) {
+        Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": `find tag all success!`,
+                "data":docs
+            });
+        })
+    },
 };
 
 

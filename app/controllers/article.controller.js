@@ -10,73 +10,83 @@ let Comments = mongoose.model('Comments');
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 
 let marked = require('marked');
+/**
+ * markdown转html 配置
+ **/
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: true,
+    pedantic: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false,
+    highlight: function (code) {
+        return hljs.highlightAuto(code).value;
+    }
+});
 let hljs = require('highlight.js');
 
-//获取所有tags的array
-function findAllTags() {
-    return new Promise(function (resolve) {
-        Tags.find({}, function (err, docs) {
-            if (err) {
-                DO_ERROR_RES(res);
-                return next();
-            }
-            !!docs ? resolve(docs) : resolve([]);
-        });
-    })
-}
+// //获取所有tags的array
+// function findAllTags() {
+//     return new Promise(function (resolve) {
+//         Tags.find({}, function (err, docs) {
+//             if (err) {
+//                 DO_ERROR_RES(res);
+//                 return next();
+//             }
+//             !!docs ? resolve(docs) : resolve([]);
+//         });
+//     })
+// }
 //由id在tagsAray中查找他的名字
-function findTagNameById(tags, id) {
-    for (let tag of tags) {
-        if (tag._id.toString() === id.toString()) {
-            return tag.name;
-            break;
-        }
-    }
-    return null;
-}
+// function findTagNameById(tags, id) {
+//     for (let tag of tags) {
+//         if (tag._id.toString() === id.toString()) {
+//             return tag.name;
+//             break;
+//         }
+//     }
+//     return null;
+// }
 //由id在tagsAray中查找他的对象
-function findTagById(tags, id) {
-    for (let tag of tags) {
-        if (tag._id.toString() === id.toString()) {
-            return tag;
-            break;
+// function findTagById(tags, id) {
+//     for (let tag of tags) {
+//         if (tag._id.toString() === id.toString()) {
+//             return tag;
+//             break;
+//         }
+//     }
+//     return null;
+// }
+
+/**
+ * @name 文档的内容改为摘要，去除不必要的md标记
+ * @param content <string> 查询出来的article文档
+ * @param length <number> 截取的摘要长度，默认250
+ * @return string  转换完毕的内容摘要
+ * */
+function getArticleContentToAbstract(content,length){
+    let _length = length || 250;
+    let _abstractArr = marked.lexer(content);
+    let _abstract = '';
+    let _fragment_text;
+    for (let _fragment of _abstractArr) {
+        _fragment_text = _fragment.text;
+        if (!!_fragment_text && _fragment.type === 'paragraph') {
+            if (_abstract.length < _length) {
+                // 去除markdown的标记符号
+                _abstract += _fragment_text.replace(/(\*+)|(_+)|(\!\[.+\))|(\n)|(\[.+?\]\(.+?\))|(\n)|(\")|(\[.+?\]\[.+?\])|(\`+)/g, '');
+            } else {
+                break;
+            }
         }
     }
-    return null;
+    return _abstract;
 }
 
 module.exports = {
-    //增加,增加的同时对标签使用num++
-    // add: function (req, res, next) {
-    //     let {title, publish_time, tags, state, content} =  req.body;
-    //     let article = new Articles({
-    //         title,
-    //         publish_time,
-    //         read_num: 0,
-    //         comment_num: 0,
-    //         comment_id: "",
-    //         tags,
-    //         state,
-    //         content
-    //     });
-    //     article.save();
-    //     //tag used_num ++
-    //     for (let tag_id of article.tags) {
-    //         Tags.findOne({_id: tag_id}, function (err, tag) {
-    //             if (!!tag) {
-    //                 tag.used_num++;
-    //                 tag.save();
-    //             }
-    //         })
-    //     }
-    //
-    //     res.status(200);
-    //     res.send({
-    //         "code": "1",
-    //         "msg": "article add success!",
-    //         "data": article
-    //     });
-    // },
     //对标签使用num进行处理
     postArt: function (req, res, next) {
         // console.log('req.body._id')
@@ -181,34 +191,19 @@ module.exports = {
      */
     getAll: function (req, res, next) {
         //查找文章
-        Articles.find({},{'content':0}, function (err, docs) {
+        Articles.find({},{'content': 0}).populate({
+            path: "tags",
+            select: 'name'
+        }).exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
-            //docs不为空,最少为[]
-            let articles = docs;
-            findAllTags().then(function (tags) {
-                for (let i = 0, art_len = articles.length; art_len > i; i++) {
-                    for (let j = 0; articles[i].tags.length > j; j++) {
-                        //tag id => tag name
-                        let name = findTagNameById(tags, articles[i].tags[j]);
-                        if (!name) {
-                            //对于未找到tagid的则去除此位置
-                            articles[i].tags.splice(j, 1);
-                            j--;
-                        } else {
-                            articles[i].tags[j] = name;
-                        }
-                    }
-                }
-                //替换标签名字不对数据库数据进行修改
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": "article list get success!",
-                    "data": articles
-                });
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "article list get success!",
+                "data": docs
             });
         })
     },
@@ -217,55 +212,33 @@ module.exports = {
         //查找文章
         let from = parseInt(req.params[0]);
         let limit = parseInt(req.params[1]);
-        Articles.find({state:true}).sort('-publish_time').skip(from).limit(limit).exec(function (err, docs) {
+        Articles.find({state: true}).sort('-publish_time').skip(from).limit(limit).populate({
+            path: "tags",
+            select: 'name'
+        }).exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
             //docs不为空,最少为[]
-            let articles = docs;
-            findAllTags().then(function (tags) {
-                for (let i = 0, art_len = articles.length; art_len > i; i++) {
-                    for (let j = 0; articles[i].tags.length > j; j++) {
-                        //tag id => tag name
-                        let name = findTagNameById(tags, articles[i].tags[j]);
-                        if (!name) {
-                            //对于未找到tagid的则去除此位置
-                            articles[i].tags.splice(j, 1);
-                            j--;
-                        } else {
-                            articles[i].tags[j] = name;
-                        }
-                    }
-
-                    //获取文章摘要
-                    let abstractArr = marked.lexer(articles[i].content);
-                    let abstract = '';
-                    let fragment_text;
-                    for (let fragment of abstractArr) {
-                        fragment_text = fragment.text;
-                        if (!!fragment_text) {
-                            if (abstract.length < 250) {
-                                abstract += fragment_text;
-                            }else{
-                                break;
-                            }
-                        }
-                    }
-                    articles[i].content = abstract;
-                }
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": "article list get success!",
-                    "data": articles
-                });
+            docs.forEach(function (article) {
+                //获取文章摘要
+                article.content = getArticleContentToAbstract(article.content.substr(0, 500),250);
+            });
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "article list get success!",
+                "data": docs
             });
         });
     },
     getById: function (req, res, next) {
         //需要处理,因为单个文章是文章的全文,并且含有文章的评论信息
-        Articles.findOne({_id: req.params.id}, function (err, doc) {
+        Articles.findOne({_id: req.params.id}).populate({
+            path: "tags",
+            select: 'name'
+        }).exec(function (err, doc) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -273,49 +246,20 @@ module.exports = {
             if (!!doc) {
                 //阅读数++
                 doc.read_num++;
-                doc.save();
-                let article = doc;
-                findAllTags().then(function (tags) {
-                    for (let j = 0; article.tags.length > j; j++) {
-                        //tag id => tag name
-                        let name = findTagNameById(tags, article.tags[j]);
-                        if (!name) {
-                            //对于未找到tagid的则去除此位置
-                            article.tags.splice(j, 1);
-                            j--;
-                        } else {
-                            article.tags[j] = name;
-                        }
+                doc.save(function (err) {
+                    if (err) {
+                        DO_ERROR_RES(res);
+                        return next();
                     }
-
-                    /**
-                     * markdown转html
-                     **/
-                    marked.setOptions({
-                        renderer: new marked.Renderer(),
-                        gfm: true,
-                        tables: true,
-                        breaks: true,
-                        pedantic: false,
-                        sanitize: false,
-                        smartLists: true,
-                        smartypants: false,
-                        highlight: function (code) {
-                            return hljs.highlightAuto(code).value;
-                        }
-                    });
-
-
-                    article.content = marked(article.content);
-
-
+                    doc.content = marked(doc.content);
                     res.status(200);
                     res.send({
                         "code": "1",
                         "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
-                        "data": article
+                        "data": doc
                     });
                 });
+
             } else {
                 res.status(200);
                 res.send({
@@ -323,39 +267,23 @@ module.exports = {
                     "msg": `article non-exist!`
                 });
             }
-        });
+        })
     },
     getRawById: function (req, res, next) {
         //需要处理,因为单个文章是文章的全文,并且含有文章的评论信息
-        Articles.findOne({_id: req.params.id}, function (err, doc) {
+        Articles.findOne({_id: req.params.id}).populate({
+            path: "tags",
+        }).exec(function (err, doc) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
             if (!!doc) {
-                //阅读数++ 
-                doc.read_num++;
-                doc.save();
-                let article = doc;
-                findAllTags().then(function (tags) {
-                    for (let j = 0; article.tags.length > j; j++) {
-                        //tag id => tag name
-                        let findOutTag = findTagById(tags, article.tags[j]);
-                        if (!findOutTag) {
-                            //对于未找到tagid的则去除此位置
-                            article.tags.splice(j, 1);
-                            j--;
-                        } else {
-                            article.tags[j] = findOutTag;
-                        }
-                    }
-
-                    res.status(200);
-                    res.send({
-                        "code": "1",
-                        "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
-                        "data": article
-                    });
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": `get aurticle ${req.params.id} success! but get comment need other request to {{url}}/api/article/comments/:id`,
+                    "data": doc
                 });
             } else {
                 res.status(200);
@@ -390,11 +318,16 @@ module.exports = {
                         DO_ERROR_RES(res);
                         return next();
                     }
-                    article.remove();
-                    res.status(200);
-                    res.send({
-                        "code": "1",
-                        "msg": `delete success, article && tag_num && comment has removed!`
+                    article.remove(function (err) {
+                        if (err) {
+                            DO_ERROR_RES(res);
+                            return next();
+                        }
+                        res.status(200);
+                        res.send({
+                            "code": "1",
+                            "msg": `delete success, article && tag_num && comment has removed!`
+                        });
                     });
                 });
             } else {
@@ -409,7 +342,7 @@ module.exports = {
     },
     //获取文章历史记录,需要根据【年】->【月】->【文章arr】划分组合
     getHistory: function (req, res, next) {
-        Articles.find({state:true}, {'title': 1, 'publish_time': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
+        Articles.find({state: true}, {'title': 1, 'publish_time': 1, 'read_num': 1, 'comment_num': 1, 'state': 1}).sort('-publish_time').exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -417,18 +350,6 @@ module.exports = {
             let historyArr = [];
             let yearObj = {};
             let monthObj = {};
-
-            // //将时间戳转化为Date
-            // function toDate(timestamp) {
-            //     let timestampInt = parseInt(timestamp);
-            //     if (timestampInt.toString().length === 13) {
-            //         //正确的时间戳
-            //         return new Date(timestampInt);
-            //     } else {
-            //         //错误的时间戳返回现在时间
-            //         return new Date();
-            //     }
-            // }
 
             //当前循环的-年-月
             let yearNow = 0;
@@ -485,7 +406,6 @@ module.exports = {
                             historyArr.push(yearObj);
                         }
                     }
-
                 }
             }
             res.status(200);
@@ -498,52 +418,98 @@ module.exports = {
     },
     getByTagId: function (req, res, next) {
         //根据tag查找文章,不限制文章数量
-        Articles.find({tags: {"$in": [req.params.id]},state:true}, function (err, docs) {
+        Articles.find({tags: {"$in": [req.params.id]}, state: true}).populate({
+            path: "tags",
+            select: 'name'
+        }).exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
             }
             //docs不为空,最少为[]
-            let articles = docs;
-            findAllTags().then(function (tags) {
-                for (let i = 0, art_len = articles.length; art_len > i; i++) {
-                    for (let j = 0; articles[i].tags.length > j; j++) {
-                        //tag id => tag name
-                        let name = findTagNameById(tags, articles[i].tags[j]);
-                        if (!name) {
-                            //对于未找到tagid的则去除此位置
-                            articles[i].tags.splice(j, 1);
-                            j--;
-                        } else {
-                            articles[i].tags[j] = name;
-                        }
-                    }
-
-                    //获取文章摘要
-                    let abstractArr = marked.lexer(articles[i].content);
-                    let abstract = '';
-                    let fragment_text;
-                    for (let fragment of abstractArr) {
-                        fragment_text = fragment.text;
-                        if (!!fragment_text) {
-                            if (abstract.length < 250) {
-                                abstract += fragment_text;
-                            }else{
-                                break;
-                            }
-                        }
-                    }
-                    articles[i].content = abstract;
+            docs.forEach(function (article) {
+                //获取文章摘要
+                article.content = getArticleContentToAbstract(article.content.substr(0, 500),250);
+            });
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "find article by tag_id success!",
+                "data": docs
+            });
+        })
+    },
+    getArticleTops: function (req, res, next) {
+        //查找文章
+        var _topNum = parseInt(req.params.topNum);
+        Articles.find({state: true}, {'title': 1, 'read_num': 1, 'publish_time': 1}).sort('-publish_time').limit(_topNum).exec(function (err, latestTopDocs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            Articles.find({state: true}, {'title': 1, 'read_num': 1}).sort('-read_num').limit(_topNum).exec(function (err, readTopDocs) {
+                if (err) {
+                    DO_ERROR_RES(res);
+                    return next();
                 }
-                res.status(200);
-                res.send({
-                    "code": "1",
-                    "msg": "find article by tag_id success!",
-                    "data": articles
+                Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, tagTopDocs) {
+                    if (err) {
+                        DO_ERROR_RES(res);
+                        return next();
+                    }
+                    res.status(200);
+                    res.send({
+                        "code": "1",
+                        "msg": "read-top article and latest-top and tags article list get success!",
+                        "data": {
+                            latest:latestTopDocs,
+                            read:readTopDocs,
+                            tag:tagTopDocs,
+                        }
+                    });
                 });
             });
         })
-    }
+
+
+
+    },
+    getLatestTop: function (req, res, next) {
+        //查找文章
+        Articles.find({state: true}, {'title': 1, 'read_num': 1, 'publish_time': 1}).sort('-publish_time').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "latest-top article list get success!",
+                "data": docs
+            });
+        })
+    },
+    getReadTop: function (req, res, next) {
+        //查找文章
+        Articles.find({state: true}, {'title': 1, 'read_num': 1}).sort('-read_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": "read-top article list get success!",
+                "data": docs
+            });
+        })
+    },
+    getUsedTop:function (req, res, next) {
+        Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
+            if (err) {
+                DO_ERROR_RES(res);
+                return next();
+            }
+            res.status(200);
+            res.send({
+                "code": "1",
+                "msg": `find tag all success!`,
+                "data":docs
+            });
+        })
+    },
 }
 ;
 

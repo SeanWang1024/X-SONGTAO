@@ -170,6 +170,16 @@ router.get('/article_history', ArticleController.getHistory);
 //根据tag_id查找文章列表,不限制文章数量
 router.get('/article_tag/:id', ArticleController.getByTagId);
 
+//最新更新Top
+router.get('/article_latest_top/:topNum', ArticleController.getLatestTop);
+//阅读最多Top
+router.get('/article_read_top/:topNum', ArticleController.getReadTop);
+//标签top榜单
+router.get('/tag_used_top/:topNum', TagsController.getUsedTop);
+//上面三个top的集合
+router.get('/article_top/:topNum', ArticleController.getArticleTops);
+
+
 /**
  * Comments 相关
  * */
