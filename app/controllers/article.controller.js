@@ -28,46 +28,13 @@ marked.setOptions({
 });
 let hljs = require('highlight.js');
 
-// //获取所有tags的array
-// function findAllTags() {
-//     return new Promise(function (resolve) {
-//         Tags.find({}, function (err, docs) {
-//             if (err) {
-//                 DO_ERROR_RES(res);
-//                 return next();
-//             }
-//             !!docs ? resolve(docs) : resolve([]);
-//         });
-//     })
-// }
-//由id在tagsAray中查找他的名字
-// function findTagNameById(tags, id) {
-//     for (let tag of tags) {
-//         if (tag._id.toString() === id.toString()) {
-//             return tag.name;
-//             break;
-//         }
-//     }
-//     return null;
-// }
-//由id在tagsAray中查找他的对象
-// function findTagById(tags, id) {
-//     for (let tag of tags) {
-//         if (tag._id.toString() === id.toString()) {
-//             return tag;
-//             break;
-//         }
-//     }
-//     return null;
-// }
-
 /**
  * @name 文档的内容改为摘要，去除不必要的md标记
  * @param content <string> 查询出来的article文档
  * @param length <number> 截取的摘要长度，默认250
  * @return string  转换完毕的内容摘要
  * */
-function getArticleContentToAbstract(content,length){
+function getArticleContentToAbstract(content, length) {
     let _length = length || 250;
     let _abstractArr = marked.lexer(content);
     let _abstract = '';
@@ -86,11 +53,60 @@ function getArticleContentToAbstract(content,length){
     return _abstract;
 }
 
+/**
+ * @name 标签引用数刷新
+ * @description 读取发表的文章，搜集引用的tag的id数组（同时也统计全部tag的id数组），统计更新tag的used_num字段，
+ * @param null
+ * @return null
+ * */
+function refreshTagUsedNum() {
+    Tags.find({},{'_id': 1},function (err, tags) {
+        if (err) {
+            DO_ERROR_RES(res);
+            return next();
+        }
+        var _allTagArr = []
+        tags.forEach(function (tag) {
+            _allTagArr.push(tag._id)
+        })
+        Articles.find({state: true}, {'_id': 0, 'tags': 1}).exec(function (err, articles) {
+            let _arrTmp = [];
+            articles.forEach(function (article) {
+                Array.prototype.push.apply(_arrTmp, article.tags)
+            })
+            //去重,key为id，value为被引用数
+            // 查找文章引用的tag，如果引用则修改usednum。
+            let _tagObj = {};
+            for (let i = 0, len = _arrTmp.length; len > i; i++) {
+                if (!_tagObj[_arrTmp[i]]) {
+                    _tagObj[_arrTmp[i]] = 1;
+                } else {
+                    _tagObj[_arrTmp[i]]++;
+                }
+            }
+
+            // 有tag总列表查找哪些是没引用的，将其设为0
+            for (let i = 0, len = _allTagArr.length; len > i; i++) {
+                if (!_tagObj[_allTagArr[i]]) {
+                    _tagObj[_allTagArr[i]] = 0;
+                }
+            }
+
+            for (let id in _tagObj) {
+                Tags.findOne({_id: id}, function (err, tag) {
+                    if (!!tag) {
+                        tag.used_num = _tagObj[id];
+                        tag.save();
+                    }
+                });
+            }
+        })
+    })
+}
+
 module.exports = {
     //对标签使用num进行处理
     postArt: function (req, res, next) {
-        // console.log('req.body._id')
-        // console.log(req.body._id)
         if (!!req.body._id) {
             //id存在-->修改操作
             Articles.findOne({_id: req.body._id}, function (err, article) {
@@ -101,41 +117,26 @@ module.exports = {
                 if (!!article) {
                     let {title, publish_time, tags, state, content} = req.body;
 
-                    /**
-                     * tag判断操作
-                     * */
-                    let oldTags = article.tags;
-                    //找新增的
-                    for (let new_tag of tags) {
-                        if (oldTags.indexOf(new_tag) === -1) {
-                            Tags.findOne({_id: new_tag}, function (err, tag) {
-                                if (!!tag) {
-                                    tag.used_num++;
-                                    tag.save();
-                                }
-                            });
-                        }
-                    }
-                    //找去除的
-                    for (let old_tag of oldTags) {
-                        if (tags.indexOf(old_tag) === -1) {
-                            Tags.findOne({_id: old_tag}, function (err, tag) {
-                                if (!!tag && tag.used_num > 0) {
-                                    tag.used_num--;
-                                    tag.save();
-                                }
-                            });
+                    // 新旧tag比对，判断tag是否更新
+                    let _oldTagStr = article.tags.sort().join();
+                    let _newTagStr = tags.sort().join();
+
+                    if (state || article.state) {
+                        if (state && article.state) {
+                            if (_oldTagStr != _newTagStr) {
+                                refreshTagUsedNum();
+                            }
+                        } else {
+                            refreshTagUsedNum();
                         }
                     }
 
                     //数据写入并保存
                     article.title = title;
                     article.publish_time = publish_time;
-
                     article.tags = tags;
                     article.state = state;
                     article.content = content;
-                    console.log(content)
                     //保存
                     article.save();
                     res.status(200);
@@ -166,16 +167,8 @@ module.exports = {
                 content
             });
             article.save();
-            //tag used_num ++
-            for (let tag_id of article.tags) {
-                Tags.findOne({_id: tag_id}, function (err, tag) {
-                    if (!!tag) {
-                        tag.used_num++;
-                        tag.save();
-                    }
-                })
-            }
-
+            //更新tag used_num
+            refreshTagUsedNum();
             res.status(200);
             res.send({
                 "code": "1",
@@ -191,21 +184,24 @@ module.exports = {
      */
     getAll: function (req, res, next) {
         //查找文章
-        Articles.find({},{'content': 0}).populate({
-            path: "tags",
-            select: 'name'
-        }).exec(function (err, docs) {
-            if (err) {
-                DO_ERROR_RES(res);
-                return next();
-            }
-            res.status(200);
-            res.send({
-                "code": "1",
-                "msg": "article list get success!",
-                "data": docs
-            });
-        })
+        Articles.find({}, {'content': 0})
+            .populate({
+                path: "tags",
+                select: 'name'
+            })
+            .exec(function (err, docs) {
+                if (err) {
+                    DO_ERROR_RES(res);
+                    return next();
+                }
+                // console.log(docs)
+                res.status(200);
+                res.send({
+                    "code": "1",
+                    "msg": "article list get success!",
+                    "data": docs
+                });
+            })
     },
     //home需要的格式(带分页的文章列表)
     getAllWithPages: function (req, res, next) {
@@ -223,7 +219,7 @@ module.exports = {
             //docs不为空,最少为[]
             docs.forEach(function (article) {
                 //获取文章摘要
-                article.content = getArticleContentToAbstract(article.content.substr(0, 500),250);
+                article.content = getArticleContentToAbstract(article.content.substr(0, 500), 250);
             });
             res.status(200);
             res.send({
@@ -420,7 +416,7 @@ module.exports = {
         //根据tag查找文章,不限制文章数量
         Articles.find({tags: {"$in": [req.params.id]}, state: true}).populate({
             path: "tags",
-            select: 'name'
+            select: 'name',
         }).exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
@@ -429,7 +425,7 @@ module.exports = {
             //docs不为空,最少为[]
             docs.forEach(function (article) {
                 //获取文章摘要
-                article.content = getArticleContentToAbstract(article.content.substr(0, 500),250);
+                article.content = getArticleContentToAbstract(article.content.substr(0, 500), 250);
             });
             res.status(200);
             res.send({
@@ -452,7 +448,7 @@ module.exports = {
                     DO_ERROR_RES(res);
                     return next();
                 }
-                Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(10).exec(function (err, tagTopDocs) {
+                Tags.find({}, {'name': 1, 'used_num': 1}).sort('-used_num').limit(10).exec(function (err, tagTopDocs) {
                     if (err) {
                         DO_ERROR_RES(res);
                         return next();
@@ -462,15 +458,14 @@ module.exports = {
                         "code": "1",
                         "msg": "read-top article and latest-top and tags article list get success!",
                         "data": {
-                            latest:latestTopDocs,
-                            read:readTopDocs,
-                            tag:tagTopDocs,
+                            latest: latestTopDocs,
+                            read: readTopDocs,
+                            tag: tagTopDocs,
                         }
                     });
                 });
             });
         })
-
 
 
     },
@@ -496,8 +491,8 @@ module.exports = {
             });
         })
     },
-    getUsedTop:function (req, res, next) {
-        Tags.find({},{'name':1,'used_num':1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
+    getUsedTop: function (req, res, next) {
+        Tags.find({}, {'name': 1, 'used_num': 1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
             if (err) {
                 DO_ERROR_RES(res);
                 return next();
@@ -506,7 +501,7 @@ module.exports = {
             res.send({
                 "code": "1",
                 "msg": `find tag all success!`,
-                "data":docs
+                "data": docs
             });
         })
     },

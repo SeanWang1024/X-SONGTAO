@@ -8,6 +8,7 @@ let fs = require('fs');
 let Users = mongoose.model('Users');
 //数据库查询同一错误处理
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
+let getClientIp = require('../utils/getClientIp.utils.js');
 let marked = require('marked');
 module.exports = {
     register: function (req, res, next) {
@@ -58,7 +59,7 @@ module.exports = {
     login: function (req, res, next) {
         let username = req.body.username;
         let password = req.body.password;
-        let user_ip = req.headers.host;
+        let user_ip = getClientIp(req);
         console.log("------用户当前请求的ip------");
         console.log(user_ip);
         Users.findOne({username: username}, function (err, user) {

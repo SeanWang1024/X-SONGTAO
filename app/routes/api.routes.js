@@ -9,6 +9,7 @@ let fs = require('fs');
 
 let mongoose = require('mongoose');
 let $checkToken = require('../utils/checkToken.utils.js');
+
 //数据模型
 let Users = mongoose.model('Users');
 let Tags = mongoose.model('Tags');
@@ -20,7 +21,7 @@ let UsersController = require('../controllers/users.controller.js');
 let TagsController = require('../controllers/tags.controller.js');
 let ArticleController = require('../controllers/article.controller.js');
 let CommentController = require('../controllers/comments.controller.js');
-
+let StatisticController = require('../controllers/statistic.controller.js');
 
 //数据库查询同一错误处理
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
@@ -33,12 +34,10 @@ let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 router.all('*', function (req, res, next) {
     let method = req.method.toLocaleLowerCase();
     let path = req.path.toString();
-    console.log(path);
     if (method === 'get' || path.includes('register') || path.includes('login') || path.includes('upload') || (method === 'post' && path.includes('comment'))) {
         return next();
     } else {
         let authorization = req.get("authorization");
-
         if (!!authorization) {
             let token = authorization.split(" ")[1];
             $checkToken(token).then(function () {
@@ -57,6 +56,7 @@ router.all('*', function (req, res, next) {
         }
     }
 });
+
 
 /**
  * User相关
@@ -203,5 +203,15 @@ router.post('/changeCommentReplyState', CommentController.isIReplied);
 router.post('/changeCommentAuthState', CommentController.changeState);
 //commentToArticleList
 router.get('/commentToArticleList', CommentController.commentToArticle);
+
+/**
+ * Statistic 统计相关
+ * */
+//查找all
+router.get('/statistic', StatisticController.get);
+router.get('/statistic/day/:timestamp', StatisticController.getDays);
+
+
+
 
 module.exports = router;
