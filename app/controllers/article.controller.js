@@ -413,8 +413,17 @@ module.exports = {
         })
     },
     getByTagId: function (req, res, next) {
+        let from = parseInt(req.params[0]);
+        let limit = parseInt(req.params[1]);
+        let id = (req.params[2]);
+
+        // console.log('----------')
+        // console.log(req.params)
+        // console.log(from)
+        // console.log(limit)
+        // console.log(id)
         //根据tag查找文章,不限制文章数量
-        Articles.find({tags: {"$in": [req.params.id]}, state: true}).populate({
+        Articles.find({tags: {"$in": [id]}, state: true}).skip(from).limit(limit).populate({
             path: "tags",
             select: 'name',
         }).exec(function (err, docs) {

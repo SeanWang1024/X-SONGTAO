@@ -31,7 +31,7 @@ module.exports = function () {
 
     //访问统计
     mongoose.model('Statistic', new mongoose.Schema({
-        time: {type: Date, default: (new Date())},//当前访问时间,默认当前时间
+        time: Date,//当前访问时间,默认当前时间
         ip: String,// 访问的ip
         path:String,// 访问的路径
     }));

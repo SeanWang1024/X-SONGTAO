@@ -167,8 +167,9 @@ router.post('/article', ArticleController.postArt);
 router.delete('/article/:id', ArticleController.delete);
 //查询历史记录
 router.get('/article_history', ArticleController.getHistory);
-//根据tag_id查找文章列表,不限制文章数量
-router.get('/article_tag/:id', ArticleController.getByTagId);
+//根据tag_id查找文章列表,具有分页
+router.get(/^\/article_tag\/(\d+)_(\d+)\/(\w+)/, ArticleController.getByTagId);
+// router.get('/article_tag/:id', ArticleController.getByTagId);
 
 //最新更新Top
 router.get('/article_latest_top/:topNum', ArticleController.getLatestTop);
@@ -209,7 +210,16 @@ router.get('/commentToArticleList', CommentController.commentToArticle);
  * */
 //查找all
 router.get('/statistic', StatisticController.get);
-router.get('/statistic/day/:timestamp', StatisticController.getDays);
+// router.get('/statistic/day/:timestamp', StatisticController.getDays);
+router.delete('/statistic/deleteAll', StatisticController.deleteAll);
+//total->当日当月当年的数据
+router.get('/statistic/total', StatisticController.total);
+//chart->当前的访问数，折线图
+router.get('/statistic/chart', StatisticController.chart);
+//ip->经纬度+访问数
+router.get('/statistic/map', StatisticController.map);
+
+
 
 
 
