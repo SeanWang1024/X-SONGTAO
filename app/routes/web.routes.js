@@ -25,7 +25,6 @@ let StatisticController = require('../controllers/statistic.controller.js');
  * */
 router.all('*', cors(), function (req, res, next) {
 	let ip = getClientIp(req);
-	ip = '114.216.27.113';
 	let path = req.path.toString();
 	let time = new Date();
 	StatisticController.record(ip, path, time);
@@ -35,6 +34,7 @@ router.all('*', cors(), function (req, res, next) {
 
 /* GET 前端显示-blog home page. 前后端合并*/
 router.get('/', function (req, res, next) {
+	console.log('访问了主页！！')
 	res.set('Content-Type', 'text/html');
 	res.sendfile('public/index.html');
 });

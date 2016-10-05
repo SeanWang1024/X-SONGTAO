@@ -210,7 +210,8 @@ router.get('/commentToArticleList', CommentController.commentToArticle);
  * */
 //查找all
 router.get('/statistic', StatisticController.get);
-// router.get('/statistic/day/:timestamp', StatisticController.getDays);
+router.get('/statistic/sign', StatisticController.sign);
+router.get('/statistic/all', StatisticController.getAll);
 router.delete('/statistic/deleteAll', StatisticController.deleteAll);
 //total->当日当月当年的数据
 router.get('/statistic/total', StatisticController.total);
