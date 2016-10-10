@@ -16,23 +16,11 @@ let StatisticController = require('../controllers/statistic.controller.js');
  * */
 router.use('*', cors(), function (req, res, next) {
 	let ip = getClientIp(req);
-	let path = req.path.toString();
+	let url = req.baseUrl.toString();
 	let time = new Date();
-	StatisticController.record(ip, path, time);
+	StatisticController.record(ip, url, time);
 	next();
 });
-
-
-/* GET 前端显示-blog home page. 前后端合并*/
-router.all('/', function (req, res, next) {
-	console.log('访问了主页！！')
-
-	res.set('Cache-Control', 'no-cache');
-	res.set('Content-Type', 'text/html');
-	res.sendfile('public/index.html');
-});
-module.exports = router;
-
 
 
 router.use(function (req, res, next) {
@@ -42,9 +30,18 @@ router.use(function (req, res, next) {
 		next();
 	} else {
 		//对于访问子页面的路由,跳转到启动页
-		console.log('from api dir 访问了主页！！')
-		res.set('Cache-Control', 'no-cache');
+//		console.log('from api dir 访问了主页！！')
+//		res.set('Cache-Control', 'no-cache');
 		res.set('Content-Type', 'text/html');
 		res.sendfile('public/index.html');
 	}
 });
+/* GET 前端显示-blog home page. 前后端合并*/
+router.all('/', function (req, res, next) {
+	res.set('Cache-Control', 'no-cache');
+	res.set('Content-Type', 'text/html');
+	res.sendfile('public/index.html');
+});
+
+
+module.exports = router;

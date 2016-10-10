@@ -13,14 +13,14 @@ const SIGNPATH = '/api/statistic/sign';
 
 
 module.exports = {
-	record: function record(ip, path, time) {
-		let VisitInfo = new Statistic({ip, path, time});
+	record: function record(ip, url, time) {
+		let VisitInfo = new Statistic({ip, url, time});
 		//保存
 		VisitInfo.save(function (err) {
 			console.log('-----------------------')
 			console.log('--访问信息记录成功')
 			console.log('--ip:' + ip)
-			console.log('--path:' + path)
+			console.log('--url:' + url)
 			console.log('--time:' + moment(time).format("YYYY/MM/DD HH/mm/ss"))
 			console.log('-----------------------')
 		});
@@ -135,7 +135,7 @@ module.exports = {
 			let _uniqueArr = [];
 			for (let doc of docs) {
 				if (!_uniqueObj[doc.ip]) {
-					_uniqueArr.push(doc);
+					_uniqueArr.push(doc)
 					_uniqueObj[doc.ip] = 1;
 				}
 			}
