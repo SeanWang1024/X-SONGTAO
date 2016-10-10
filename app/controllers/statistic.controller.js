@@ -135,7 +135,7 @@ module.exports = {
 			let _uniqueArr = [];
 			for (let doc of docs) {
 				if (!_uniqueObj[doc.ip]) {
-					_uniqueArr.push(doc)
+					_uniqueArr.push(doc);
 					_uniqueObj[doc.ip] = 1;
 				}
 			}

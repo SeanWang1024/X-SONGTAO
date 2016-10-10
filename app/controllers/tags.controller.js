@@ -56,8 +56,6 @@ module.exports = {
                         tagsArr.push(cataObj);
                     }
                 }
-
-
             }
             res.status(200);
             res.send({
