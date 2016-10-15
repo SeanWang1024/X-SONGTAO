@@ -37,7 +37,7 @@ module.exports = {
 
                 //函数定义
                 function getComment(arr) {
-                    console.log(`获取id:${arr[recordLen]}`);
+                    // console.log(`获取id:${arr[recordLen]}`);
                     Comments.findOne({_id: arr[recordLen]}, function (err, comment) {
                         if (err) {
                             DO_ERROR_RES(res);

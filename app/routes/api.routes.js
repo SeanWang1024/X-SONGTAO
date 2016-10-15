@@ -63,8 +63,11 @@ router.all('*', function (req, res, next) {
  * */
 //register
 router.post('/register', UsersController.register);
-//login
+//login之前的请求返回,登录的第一步
+router.get('/do_login', UsersController.doLogin);
+//login,登录的第2步
 router.post('/login', UsersController.login);
+
 //change_password
 router.post('/change_password', UsersController.changePassword);
 //all user list
