@@ -75,7 +75,7 @@ router.get('/users', UsersController.getAll);
 //find user by id
 router.get('/user/:id', UsersController.getById);
 //为了安全,使用post获取某人的个人信息
-router.post('/user/original', UsersController.getByIdWithOriginal);
+router.get('/user/original/:id', UsersController.getByIdWithOriginal);
 //edit user by id
 router.put('/user', UsersController.edit);
 //delete user by id

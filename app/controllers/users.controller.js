@@ -226,7 +226,7 @@ module.exports = {
 	},
 	//原始的个人信息,可以二次修改
 	getByIdWithOriginal: function (req, res, next) {
-		Users.findOne({_id: req.body._id},{
+		Users.findOne({_id: req.params.id},{
 			'username': 0,
 			'password': 0,
 		}, function (err, user) {
