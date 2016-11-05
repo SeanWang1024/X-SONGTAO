@@ -105,8 +105,9 @@ function refreshTagUsedNum() {
 }
 
 module.exports = {
-    //对标签使用num进行处理
+    //修改文章时，对标签使用refreshTagUsedNum进行处理
     postArt: function (req, res, next) {
+        //修改文章
         if (!!req.body._id) {
             //id存在-->修改操作
             Articles.findOne({_id: req.body._id}, function (err, article) {
@@ -137,6 +138,15 @@ module.exports = {
                     article.tags = tags;
                     article.state = state;
                     article.content = content;
+
+
+                    //11-5新增，增加文章摘要存储，一行40字，200共5行
+                    article.abstract = getArticleContentToAbstract(article.content.substr(0, 500), 200);
+                    // 增加文章html字段存储
+                    article.html = marked(article.content);
+                    // 增加最后修改时间存储
+                    article.last_modify_time = new Date();
+
                     //保存
                     article.save();
                     res.status(200);
@@ -217,10 +227,12 @@ module.exports = {
                 return next();
             }
             //docs不为空,最少为[]
-            docs.forEach(function (article) {
-                //获取文章摘要
-                article.content = getArticleContentToAbstract(article.content.substr(0, 500), 250);
-            });
+            //文章摘要在文章保存阶段处理
+
+            // docs.forEach(function (article) {
+            //     //获取文章摘要
+            //     article.content = getArticleContentToAbstract(article.content.substr(0, 500), 250);
+            // });
             res.status(200);
             res.send({
                 "code": "1",
@@ -247,7 +259,8 @@ module.exports = {
                         DO_ERROR_RES(res);
                         return next();
                     }
-                    doc.content = marked(doc.content);
+                    //文章的html内容在html字段中，获取文章时不需要再进行编译转换
+                    // doc.content = marked(doc.content);
                     res.status(200);
                     res.send({
                         "code": "1",
@@ -416,12 +429,6 @@ module.exports = {
         let from = parseInt(req.params[0]);
         let limit = parseInt(req.params[1]);
         let id = (req.params[2]);
-
-        // console.log('----------')
-        // console.log(req.params)
-        // console.log(from)
-        // console.log(limit)
-        // console.log(id)
         //根据tag查找文章,不限制文章数量
         Articles.find({tags: {"$in": [id]}, state: true}).skip(from).limit(limit).populate({
             path: "tags",
@@ -444,6 +451,9 @@ module.exports = {
             });
         })
     },
+    /**
+     * 三个接口的合体
+     * */
     getArticleTops: function (req, res, next) {
         //查找文章
         var _topNum = parseInt(req.params.topNum);
@@ -475,9 +485,10 @@ module.exports = {
                 });
             });
         })
-
-
     },
+    /**
+     * 最新发布榜
+     * */
     getLatestTop: function (req, res, next) {
         //查找文章
         Articles.find({state: true}, {'title': 1, 'read_num': 1, 'publish_time': 1}).sort('-publish_time').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
@@ -489,6 +500,9 @@ module.exports = {
             });
         })
     },
+    /**
+     * 最新阅读榜
+     * */
     getReadTop: function (req, res, next) {
         //查找文章
         Articles.find({state: true}, {'title': 1, 'read_num': 1}).sort('-read_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
@@ -500,6 +514,9 @@ module.exports = {
             });
         })
     },
+    /**
+     * 最多tag榜
+     * */
     getUsedTop: function (req, res, next) {
         Tags.find({}, {'name': 1, 'used_num': 1}).sort('-used_num').limit(parseInt(req.params.topNum)).exec(function (err, docs) {
             if (err) {
