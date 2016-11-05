@@ -9,6 +9,35 @@ let Articles = mongoose.model('Articles');
 //数据库查询同一错误处理
 let DO_ERROR_RES = require('../utils/DO_ERROE_RES.js');
 
+/**
+ * 更新文章的评论数
+ * 不是对文章的评论数做++处理，--处理也通用
+ * 而是通过articleid找comment的count，之后再保存。2016/11/5
+ * */
+function refreshArticleCommentNum(article_id) {
+	return new Promise(function (resolve, reject) {
+		Comments.count({article_id: article_id}, function (err, count) {
+			if (err) {
+				reject('refreshArticle: count comment by article_id failed!');
+			}
+			Articles.findOne({_id: article_id}, function (err, article) {
+				if (err) {
+					reject('refreshArticle: find article by article_id failed!');
+				}
+				if (!!article) {
+					article.comment_num = parseInt(count);
+					article.save(function (err) {
+						resolve();
+					});
+				} else {
+					reject('refreshArticle: find article by article_id failed,article not found!');
+				}
+			});
+		})
+	});
+}
+
+
 module.exports = {
 	getAll: function (req, res, next) {
 		Comments.find({}, function (err, docs) {
@@ -70,6 +99,7 @@ module.exports = {
 			}
 			if (!!comment) {
 				CommentsArr.push(comment);
+
 				if (comment.article_id.toString() === comment.pre_id.toString() && comment.next_id.length > 0) {
 					//在这个情况下,next_id是可能有值的。
 					getCommentDetail(comment.next_id).then(function () {
@@ -137,56 +167,14 @@ module.exports = {
 		});
 	},
 	delete: function (req, res, next) {
-		//更新文章
-		function refreshArticle(comment) {
-			return new Promise(function (resolve, reject) {
-				Articles.findOne({_id: comment.article_id}, function (err, article) {
-					if (err) {
-						reject();
-					}
-
-					if (!!article) {
-						if (comment.article_id.toString() === comment.pre_id.toString()) {
-							//删除主评论时,统计下面子评论数
-							article.comment_num -= comment.next_id.length;
-							!article.comment_num || (article.comment_num = 0);
-						} else {
-							//只是删除子评论自己
-							!!article.comment_num ? article.comment_num-- : (article.comment_num = 0);
-						}
-						article.save();
-						resolve();
-					} else {
-						resolve('article non-exist!');
-					}
+		function removeComment(nextId, cb) {
+			if(nextId.length>0){
+				Comments.remove({_id: nextId.pop()}, function (err) {
+					removeComment(nextId,cb)
 				});
-			})
-		}
-
-		//更新评论,
-		function refreshComment(comment) {
-			return new Promise(function (resolve, reject) {
-				if (comment.article_id.toString() === comment.pre_id.toString()) {
-					//更新的评论是父评论,需要将手下的字评论删除
-					for (let child_comment_id of comment.next_id) {
-						Comments.remove({_id: child_comment_id});
-					}
-					resolve();
-				} else {
-					Comments.findOne({_id: comment.pre_id}, function (err, preComment) {
-						if (err) {
-							reject();
-						}
-						if (!!preComment && preComment.article_id.toString() === preComment.pre_id.toString()) {
-							//更新的是子评论,需要到父级去除自己的信息
-							preComment.next_id.splice(preComment.next_id.indexOf(comment._id), 1);
-							preComment.save();
-						}
-						resolve();
-					})
-				}
-
-			});
+			}else{
+				!!cb && cb();
+			}
 		}
 
 		Comments.findOne({_id: req.params.id}, function (err, comment) {
@@ -195,31 +183,71 @@ module.exports = {
 				return next();
 			}
 			if (!!comment) {
-				refreshArticle(comment).then(function () {
-					refreshComment(comment).then(function () {
-						comment.remove();
-						res.status(200);
-						res.send({
-							"code": "1",
-							"msg": `delete success, comment_num && pre_comment has removed!`
-						});
-					}, function () {
+				let articleId = comment.article_id;
+				let nextId = comment.next_id;
+				let preId = comment.pre_id;
+				comment.remove(function (err) {
+					if (err) {
+						DO_ERROR_RES(res);
+						return next();
+					}
+					refreshArticleCommentNum(articleId).then(function () {
+						if (nextId.length > 0) {
+							//删除的评论是父评论
+							removeComment(nextId,function () {
+								res.status(200);
+								res.send({
+									"code": "1",
+									"msg": 'delete success, refreshed the comment_num, delete the pre_comment and his children!'
+								});
+							});
+						} else {
+							//删除的评论是子评论,还需要更新父评论
+							Comments.findOne({_id: preId}, function (err, preComment) {
+								if (err) {
+									DO_ERROR_RES(res);
+									return next();
+								}
+								if (!!preComment && preComment.next_id > 0) {
+									//更新的是子评论,需要到父级去除自己的信息
+									preComment.next_id.splice(preComment.next_id.indexOf(comment._id), 1);
+									preComment.save(function (err) {
+										if (err) {
+											DO_ERROR_RES(res);
+											return next();
+										}
+										res.status(200);
+										res.send({
+											"code": "1",
+											"msg": 'child_comment delete success, pre_comment has refreshed!'
+										});
+
+									});
+								} else {
+									res.status(200);
+									res.send({
+										"code": "1",
+										"msg": 'child_comment delete success, pre_comment has no child_comment!'
+									});
+								}
+							})
+						}
+					}, function (errMsg) {
 						res.status(200);
 						res.send({
 							"code": "2",
-							"msg": `pre comment non-exist or error!`
+							"msg": errMsg
 						});
-					})
-				})
+					});
+				});
 			} else {
 				res.status(200);
 				res.send({
-					"code": "2",
-					"msg": `comment non-exist!`
+					"code": "1",
+					"msg": 'the comment not found, so i think i can give you a success!'
 				});
 			}
-		});
-
+		})
 	},
 	/**
 	 * 根据文章的id获取对应的评论信息
@@ -259,39 +287,12 @@ module.exports = {
 			state
 		});
 
-		/**
-		 * 更新文章的评论数
-		 * 不是对文章的评论数做++处理，
-		 * 而是通过articleid找comment的count，之后再保存。2016/11/5
-		 * */
-		function refreshArticle(article_id) {
-			return new Promise(function (resolve, reject) {
-				Comments.count({article_id: article_id}, function (err, count) {
-					if (err) {
-						reject('refreshArticle: count comment by article_id failed!');
-					}
-					Articles.findOne({_id: article_id}, function (err, article) {
-						if (err) {
-							reject('refreshArticle: find article by article_id failed!');
-						}
-						if (!!article) {
-							article.comment_num = parseInt(count);
-							article.save(function (err) {
-								resolve();
-							});
-						} else {
-							reject('refreshArticle: find article by article_id failed,article not found!');
-						}
-					});
-				})
-			});
-		}
 
 		/**
-		 * 如果当前增加的评论是子评论，则更新父评论的next_id信息，
-		 * 需要修改父评论的next_id信息，使其指向子评论
+		 * 将子评论添加到父评论中，更新父评论的next_id信息，
+		 * @param comment 子评论的对象
 		 * */
-		function refreshPreComment(comment) {
+		function addToPreComment(comment) {
 			return new Promise(function (resolve, reject) {
 				Comments.findOne({_id: comment.pre_id}, function (err, preComment) {
 					if (err) {
@@ -322,11 +323,11 @@ module.exports = {
 				DO_ERROR_RES(res);
 				return next();
 			}
-			refreshArticle(article_id).then(function () {
+			refreshArticleCommentNum(article_id).then(function () {
 				if (comment.article_id.toString() !== comment.pre_id.toString()) {
 					//如果当前的评论是个子评论
 					//需要修改父评论的next_id信息，使其指向子评论
-					refreshPreComment(comment).then(function () {
+					addToPreComment(comment).then(function () {
 						res.status(200);
 						res.send({
 							"code": "1",
@@ -354,9 +355,10 @@ module.exports = {
 				});
 			});
 		});
-	},
-	//只是修改我对此评论的回复状态
-	//此接口只对我有效
+	}
+	,
+//只是修改我对此评论的回复状态
+//此接口只对我有效
 	isIReplied: function (req, res, next) {
 		Comments.findOne({_id: req.body._id}, function (err, comment) {
 			if (err) {
@@ -381,8 +383,9 @@ module.exports = {
 				});
 			}
 		});
-	},
-	//修改审核情况
+	}
+	,
+//修改审核情况
 	changeState: function (req, res, next) {
 		Comments.findOne({_id: req.body._id}, function (err, comment) {
 			if (err) {
@@ -406,7 +409,8 @@ module.exports = {
 				});
 			}
 		});
-	},
+	}
+	,
 	commentToArticle: function (req, res, next) {
 		// Comments.$where('this.article_id == this.pre_id')
 		// Comments
@@ -423,7 +427,8 @@ module.exports = {
 			})
 		})
 	}
-};
+}
+;
 
 
 
