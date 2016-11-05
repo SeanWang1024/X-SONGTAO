@@ -1,5 +1,6 @@
 /**
  * Created by Hsiang on 2016/11/5.
+ * 缓存设计
  */
 
 function Cache() {
@@ -11,10 +12,10 @@ function Cache() {
 		if (Array.isArray(obj)) {
 			return obj.map(_deepClone)
 		} else if (obj && typeof obj === 'object') {
-			var cloned = {}
-			var keys = Object.keys(obj)
-			for (var i = 0, l = keys.length; i < l; i++) {
-				var key = keys[i]
+			let cloned = {}
+			let keys = Object.keys(obj)
+			for (let i = 0, l = keys.length; i < l; i++) {
+				let key = keys[i]
 				cloned[key] = _deepClone(obj[key])
 			}
 			return cloned
