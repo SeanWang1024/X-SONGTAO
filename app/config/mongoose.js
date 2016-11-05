@@ -60,7 +60,6 @@ module.exports = function () {
         abstract:{type: String, default: null},//文章摘要
         content: {type: String, default: '文章内容(Markdown文本)'},//内容 markdown文本
         html:{type: String, default: null},//内容 HTML文本
-
     }));
 
 
