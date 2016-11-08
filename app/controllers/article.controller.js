@@ -35,7 +35,7 @@ let hljs = require('highlight.js');
  * @return string  转换完毕的内容摘要
  * */
 function getArticleContentToAbstract(content, length) {
-    let _length = length || 250;
+    let _length = length || 200;
     let _abstractArr = marked.lexer(content);
     let _abstract = '';
     let _fragment_text;
@@ -50,6 +50,8 @@ function getArticleContentToAbstract(content, length) {
             }
         }
     }
+    console.log(_abstract)
+    console.log(_length)
     return _abstract;
 }
 
@@ -107,10 +109,11 @@ function refreshTagUsedNum() {
 module.exports = {
     //修改文章时，对标签使用refreshTagUsedNum进行处理
     postArt: function (req, res, next) {
+        var _id = req.body._id;
         //修改文章
-        if (!!req.body._id) {
+        if (!!_id) {
             //id存在-->修改操作
-            Articles.findOne({_id: req.body._id}, function (err, article) {
+            Articles.findOne({_id: _id}, function (err, article) {
                 if (err) {
                     DO_ERROR_RES(res);
                     return next();
@@ -146,15 +149,27 @@ module.exports = {
                     article.html = marked(article.content);
                     // 增加最后修改时间存储
                     article.last_modify_time = new Date();
-
-                    //保存
-                    article.save();
-                    res.status(200);
-                    res.send({
-                        "code": "1",
-                        "msg": "article edit success!",
-                        "data": article
-                    });
+                    //评论数更新
+                    Comments.count({article_id: _id}, function (err, count) {
+                        if (err) {
+                            DO_ERROR_RES(res);
+                            return next();
+                        }
+                        article.comment_num = parseInt(count);
+                        //保存
+                        article.save(function (err) {
+                            if (err) {
+                                DO_ERROR_RES(res);
+                                return next();
+                            }
+                            res.status(200);
+                            res.send({
+                                "code": "1",
+                                "msg": "article edit success!",
+                                "data": article
+                            });
+                        });
+                    })
                 } else {
                     res.status(200);
                     res.send({
@@ -171,7 +186,6 @@ module.exports = {
                 publish_time,
                 read_num: 0,
                 comment_num: 0,
-                comment_id: "",
                 tags,
                 state,
                 content
@@ -179,6 +193,14 @@ module.exports = {
             article.save();
             //更新tag used_num
             refreshTagUsedNum();
+            //11-5新增，增加文章摘要存储，一行40字，200共5行
+            article.abstract = getArticleContentToAbstract(article.content.substr(0, 300), 200);
+            // 增加文章html字段存储
+            article.html = marked(article.content);
+            // 增加最后修改时间存储
+            article.last_modify_time = new Date();
+
+
             res.status(200);
             res.send({
                 "code": "1",
