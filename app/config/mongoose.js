@@ -25,7 +25,7 @@ module.exports = function () {
         position: {type: String, default: '职位'},//职位
         address: {type: String, default: '地址'},//地址
         motto: {type: String, default: '心情'},//心情
-        personal_state: String,//我的称述
+        personal_state: {type: String, default: '我的称述'},//我的称述
         img_url: String//头像imgurl
     }));
 
